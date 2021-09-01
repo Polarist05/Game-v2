@@ -31,6 +31,7 @@ int main() {
             if (event.type == Event::Closed)
                 WorldControl::window().close();
         }
+        printf("123");
         WorldControl::window().setView(view());
         KeyHold();
         ActivateUpdate();
