@@ -18,6 +18,7 @@ int main()
         window.clear();
         window.draw(shape);
         window.display();
+        printf("123");
     }
 
     return 0;
