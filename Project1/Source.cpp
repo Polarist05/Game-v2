@@ -18,7 +18,7 @@ int main()
         window.clear();
         window.draw(shape);
         window.display();
-        printf("123");
+        printf("321");
     }
 
     return 0;
