@@ -18,7 +18,7 @@ int main()
         window.clear();
         window.draw(shape);
         window.display();
-        printf("567");
+        printf("Testcount1");
     }
 
     return 0;
