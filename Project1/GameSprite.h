@@ -5,7 +5,6 @@
 #include <memory>
 #include <vector>
 using namespace std;
-
 enum AnchorType
 {
 	TopLeft,
@@ -19,15 +18,23 @@ enum AnchorType
 	DownRight,
 };
 class GameSprite;
+weak_ptr<GameSprite>& f1();
+class WorldControl;
 class GameTransform
 {
+private:
+	weak_ptr<GameSprite> Hierachy();
+	bool CheckGameTransfromInitialize();
 public:
+
 	type_index typeIndex = type_index(typeid(int));
-	/*weak_ptr<GameSprite> root;
-	weak_ptr<GameSprite> parent;*/
+	weak_ptr<GameSprite> root;
+	weak_ptr<GameSprite> parent;
 	vector<weak_ptr<GameSprite> > childs;
+	weak_ptr<GameSprite> wp;
 	RectangleShape hitBox;
 	RectangleShape spriteBox;
+	void SetParent(weak_ptr<GameSprite>);
 	//int anchorType = AnchorType::MiddleCentor;
 	//bool fixWidth = true;
 	Vector2f scale = Vector2f(1.0, 1.0);
@@ -42,9 +49,8 @@ class GameSprite :public GameBaseClass
 {
 public:
 	GameTransform transform;
-	weak_ptr<GameSprite> wp;
+	weak_ptr<GameSprite> wp();
 };
-
 
 
 

@@ -1,4 +1,4 @@
-#include"WorldControl.h"
+#include "WorldControl.h"
 #include<map>
 #include<vector>
 using namespace std;
@@ -8,5 +8,6 @@ RenderWindow _window(VideoMode((int)(1920. * WorldControl::WorldScale()), (int)(
 RenderWindow& WorldControl::window() { return _window; }
 map<type_index, vector<shared_ptr<GameBaseClass> > > AllEntities;
 map<type_index, vector<shared_ptr<GameBaseClass> > >& GetAllEntities() { return AllEntities; }
-//weak_ptr<GameSprite> _hierarchy = Instantiate<GameSprite>();
-//weak_ptr<GameSprite>& WorldControl::Hierarchy() { return _hierarchy; }
+weak_ptr<GameSprite> _hierarchy;
+weak_ptr<GameSprite>& f1() { return _hierarchy; }
+weak_ptr<GameSprite> GameTransform::Hierachy() { return _hierarchy; }

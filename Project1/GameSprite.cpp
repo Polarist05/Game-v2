@@ -1,4 +1,12 @@
 #include "GameSprite.h"
+bool GameTransform::CheckGameTransfromInitialize() {
+	if (this->wp.expired()) {
+		printf("This wp are expire now.You must initialize before use other command or maybe you already clear this wp");
+		return 1;
+	}
+	else
+		return 0;
+}
 /*void GameTransform::SetAnchorType(AnchorType _anchor) {
 	switch (_anchor)
 	{
@@ -42,14 +50,30 @@ void GameTransform::SetScale(float x, float y) {
 void GameTransform::SetPosition(float x, float y) {
 
 }*/
-GameTransform::GameTransform(weak_ptr<GameSprite> wp, type_index typeIndex) {
-	this->typeIndex = typeIndex;
+GameTransform::GameTransform() {}
+void GameTransform::SetParent(weak_ptr<GameSprite> parent){
+	shared_ptr<GameSprite> sp = parent.lock();
+	if (CheckGameTransfromInitialize())
+		return;
+	if (sp->transform.CheckGameTransfromInitialize()) {
+		printf("Your parent already expire");
+		return;
+	}
+	this->parent = parent;
+	if (sp != Hierachy().lock()) 
+		this->root = sp->transform.root;
+	else 
+		this->root = wp;
+	sp->transform.childs.push_back(this->wp);
 }
-GameTransform::GameTransform() {
-	printf("You don't constuct gameSprite by instantiate,Check your code\n");
+GameTransform::GameTransform(weak_ptr<GameSprite> wp, type_index typeIndex) :wp(wp),typeIndex(typeIndex) {
+	this->SetParent(Hierachy());
 }
 GameTransform::~GameTransform() {
 	for (int i = 0; i < childs.size(); i++) {
-		Destroy(childs[i].lock()->wp, typeIndex);
+		Destroy(childs[i].lock()->wp(), typeIndex);
 	}
+}
+weak_ptr<GameSprite> GameSprite::wp() {
+	return transform.wp;
 }

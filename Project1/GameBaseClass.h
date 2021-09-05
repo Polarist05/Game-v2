@@ -5,6 +5,8 @@
 #include <vector>
 #include<typeindex>
 using namespace std;
+class GameSprite;
+void SetGameSprite(weak_ptr<GameSprite> wp, type_index t);
 class SubClass {
 public:
 	virtual void Start() {}
@@ -21,19 +23,14 @@ map<type_index, vector<shared_ptr<GameBaseClass> > >& GetAllEntities();
 //class GameTransform;
 template <typename T>
 weak_ptr<T> Instantiate() {
+	type_index t = type_index(typeid(T));
 	shared_ptr<GameBaseClass> sp = make_shared<T>();
-	GetAllEntities()[type_index(typeid(T))].push_back(sp);
+	GetAllEntities()[t].push_back(sp);
 	PushQUpdate(sp);
 	PushQStart(sp);
-	//weak_ptr<GameSprite> wp = dynamic_pointer_cast<GameSprite>(sp);
-	//if (!wp.expired()) {
-	//	wp.lock()->transform = GameTransform(wp, type_index(typeid(T)));
-	//	//must not use GameTransform(sp)
-	//	printf("1***\n");
-	//}
-	//else {
-	//	printf("0***\n");
-	//}
+	weak_ptr < GameSprite > wp = dynamic_pointer_cast<GameSprite>(sp);
+	if(!wp.expired())
+		SetGameSprite(wp,t);
 	return dynamic_pointer_cast<T>(sp);
 }
 template <typename T>
