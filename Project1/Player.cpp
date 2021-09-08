@@ -1,4 +1,2 @@
 #include "Player.h"
-CircleShape _circleshape;
-RectangleShape _rectangle;
-RectangleShape& Player::Sprite() { return _rectangle; }
+Player::Player(std::string s) { name = s; }

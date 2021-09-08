@@ -40,9 +40,5 @@ void Destroy(weak_ptr<GameBaseClass> _wp, type_index typeIndex) {
 		if (!_wp.expired()) { printf("It have left some share_ptr somewhere after destroy entity please check your code"); }
 	}
 }
-void SetGameSprite(weak_ptr<GameSprite> wp,type_index t) {
-	if (!wp.expired()) {
-		wp.lock()->transform = GameTransform(wp, t);
-	}
-}
+
 

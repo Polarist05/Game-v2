@@ -1,19 +1,25 @@
 #pragma once
-#pragma once
 #include "SFML.h"
 #include "GameBaseClass.h"
-#include "WorldControl.h"
-class Player :public GameBaseClass
+#include "GameSprite.h"
+class Player :public GameSprite
 {
+protected:
+	RenderWindow& window();
 public:
-	RectangleShape& Sprite();
+	Player(std::string s);
 	void Start() override {
-		Sprite().setSize(Vector2f(50, 50));
-		Sprite().setOrigin(Sprite().getSize().x / 2, Sprite().getSize().y / 2);
-		Sprite().setFillColor(Color::Green);
-		Sprite().setPosition(-460, 0);
+		transform.renderBox.setSize(Vector2f(50, 50));
+		transform.renderBox.setOrigin(transform.renderBox.getSize().x / 2, transform.renderBox.getSize().y / 2);
+		transform.renderBox.setFillColor(Color::Green);
+		transform.renderBox.setPosition(-460, 0);
+		transform.hitBox.setSize(Vector2f(100, 100));
+		transform.hitBox.setOrigin(transform.hitBox.getSize().x / 2, transform.hitBox.getSize().y / 2);
+		transform.hitBox.setFillColor(Color::Magenta);
+		transform.hitBox.setPosition(-460, 0);
 	}
 	void Update() override {
-		WorldControl::window().draw(Sprite());
+		window().draw(transform.hitBox);
+		window().draw(transform.renderBox);
 	}
 };
