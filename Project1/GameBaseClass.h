@@ -34,6 +34,18 @@ weak_ptr<T> Instantiate() {
 		SetGameSprite(wp,t);
 	return dynamic_pointer_cast<T>(sp);
 }
+/*template <typename T,typename U>
+weak_ptr<T> Instantiate(U a) {
+	type_index t = type_index(typeid(T));
+	shared_ptr<GameBaseClass> sp = make_shared<T>(a);
+	GetAllEntities()[t].push_back(sp);
+	PushQUpdate(sp);
+	PushQStart(sp);
+	weak_ptr < GameSprite > wp = dynamic_pointer_cast<GameSprite>(sp);
+	if (!wp.expired())
+		SetGameSprite(wp, t);
+	return dynamic_pointer_cast<T>(sp);
+}*/
 template <typename T>
 weak_ptr<T> Instantiate(std::string s) {
 	type_index t = type_index(typeid(T));

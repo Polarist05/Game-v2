@@ -21,7 +21,6 @@ enum BoxType
 {
 	RenderBox,
 	HitBox,
-	SpriteBox
 };
 class GameSprite :public GameBaseClass
 {
@@ -30,7 +29,6 @@ protected:
 	{
 	private:
 		weak_ptr<GameSprite> Hierachy();
-		Vector2f DistantFromMiddleCenter(RectangleShape& rect,Vector2f v);
 	public:
 		int childIndex=0;
 		type_index typeIndex = type_index(typeid(int));
@@ -39,31 +37,42 @@ protected:
 		vector<weak_ptr<GameSprite> > childs;
 		weak_ptr<GameSprite> wp;
 		RectangleShape hitBox;
-		RectangleShape renderBox;
-		RectangleShape spriteBox;
-		void SetParent(weak_ptr<GameSprite>);
-		int anchorType = AnchorType::MiddleCentor;
+		RectangleShape renderBox;		
+		AnchorType anchorType = AnchorType::MiddleCentor;
 		bool fixWidth = true;
 		Vector2f position;
 		Vector2f OffsetHitBox = Vector2f(0, 0);
 		Vector2f OffsetRenderBox = Vector2f(0, 0);
-		Vector2f defaultOffsetHitBox = Vector2f(0,0);
-		Vector2f defaultOffsetRenderBox = Vector2f(0, 0);
-		Vector2f scale = Vector2f(1.0, 1.0);
-		//void SetScale(float x, float y);
+		Vector2f scale = Vector2f(1,1);
+		void SetScale(Vector2f v);
+		void SetParent(weak_ptr<GameSprite>);
 		void SetPosition(float x, float y);
+		void SetPosition(Vector2f v);
+		void SetPosition(Vector2f v, BoxType boxType);
 		void SetAnchorType(AnchorType _anchor, BoxType boxType);
+		void SetSize(Vector2f v, BoxType boxType);
+		void Move(Vector2f v, BoxType boxType);
+		void Move(Vector2f v);
+		GameTransform();
+		GameTransform(Vector2f position, Vector2f scale, Vector2f hitboxPosition, Vector2f renderPosition);
 		~GameTransform();
 	};
 public:
 	GameSprite();
 	~GameSprite();
 	GameSprite(std::string s);
+	/*NotUseNow
+	GameSprite(std::string s,Vector2f position,Vector2f scale,Vector2f hitboxPosition,Vector2f renderPosition);
+	GameSprite(std::string s,Vector2f position, Vector2f scale);
+	GameSprite(GameSprite& gameSprite);
+	*/
 	GameTransform transform;
 	void SetTransform(weak_ptr<GameSprite> wp, type_index typeIndex);
 	std::string name = "null";
 };
-
+void MoveAndDrawAllSprites(weak_ptr<GameSprite> a, int b, Vector2f position, Vector2f realWorldScale);
+void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f position, Vector2f realWorldScale);
+void DrawAllSprites(weak_ptr<GameSprite> a );
 
 
 

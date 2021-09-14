@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="GameBaseClass.cpp" />
     <ClCompile Include="GameSprite.cpp" />
     <ClCompile Include="KeyPress.cpp" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="GameBaseClass.h" />
     <ClInclude Include="GameSprite.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="WorldControl.h" />
     <ClInclude Include="SFML.h" />

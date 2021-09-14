@@ -19,7 +19,7 @@ public:
 		transform.hitBox.setPosition(-460, 0);
 	}
 	void Update() override {
-		window().draw(transform.hitBox);
-		window().draw(transform.renderBox);
+		//window().draw(transform.hitBox);
+		//window().draw(transform.renderBox);
 	}
 };

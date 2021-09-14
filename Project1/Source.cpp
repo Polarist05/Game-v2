@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 #include "Player.h"
+#include "Collision.h"
 using namespace sf;
 using namespace std;
 void ActivateStart();
@@ -10,46 +11,27 @@ void ActivateUpdate();
 void KeyHold();
 View _view(Vector2f(0,0),Vector2f(1920,1080));
 View& view() { return _view; }
-void f1(weak_ptr<GameSprite> a, int b) {
-    vector< weak_ptr<GameSprite> > v;
-    for (int i = 0; i < b; i++) { printf("\t"); }
-        cout << a.lock()->name << endl;
-    for (int i = 0; i < a.lock()->transform.childs.size(); i++) {
-        if (!a.lock()->transform.childs[i].expired()) {
-            f1(a.lock()->transform.childs[i], b + 1);
-            v.push_back(a.lock()->transform.childs[i]);
-            a.lock()->transform.childs[i].lock()->transform.childIndex = v.size() -1;
-        }
-    }
-    a.lock()->transform.childs = v;
-}
+
 class a1 :public GameSprite {
 public:
-    a1(std::string s) {name = s;}
+    a1(std::string s) :GameSprite(s) {}
+    //a1(a1& a):GameSprite(a.name, a.transform.position, a.transform.scale,a.transform.OffsetHitBox,a.transform.OffsetRenderBox) {}
+    //a1(std::string s,Vector2f v,Vector2f v1,Vector2f v2,Vector2f v3) :GameSprite(s,v,v1,v2,v3) {}
+    //a1(std::string s, Vector2f v, Vector2f v1) :GameSprite(s, v, v1) {}
+   
 };
 class a2 :public GameSprite {
 public:
     a2(std::string s) { name = s; }
 };
+void f1();
 int main(){
-    weak_ptr<a1> sam1 = Instantiate<a1>("sam1");
-    //sam1.lock()->transform.SetParent(WorldControl::player());
-    weak_ptr<GameSprite> sam2 = Instantiate<GameSprite>("sam2");
-    //sam2.lock()->transform.SetParent(sam1);
-    weak_ptr<a2> sam3 = Instantiate<a2>("sam3");
-    //sam3.lock()->transform.SetParent(sam2);
-    weak_ptr<a2> sam4 = Instantiate<a2>("sam4");
-    //sam4.lock()->transform.SetParent(sam2);
-    weak_ptr<GameSprite> sam5 = Instantiate<GameSprite>("sam5");
-    //sam5.lock()->transform.SetParent(sam3);
     WorldControl::window().setFramerateLimit(60);
     WorldControl::window().setKeyRepeatEnabled(false);
     ActivateStart();
-    f1(WorldControl::Hierarchy(),0);
-    Destroy<a1>(sam1);
-    f1(WorldControl::Hierarchy(), 0);
     while (WorldControl::window().isOpen())
     {
+        
         WorldControl::window().clear(sf::Color::Red);
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
@@ -60,9 +42,54 @@ int main(){
                 WorldControl::window().close();
         }
         WorldControl::window().setView(view());
+        f1();
         KeyHold();
         ActivateUpdate();
         WorldControl::window().display();
     }
     cout << endl<<"end program"<<endl;
+}
+void f1() {
+    vector<weak_ptr<a1>>sam(6,weak_ptr<a1>());
+    sam[0] = Instantiate<a1>("sam1");
+    sam[1] = Instantiate<a1>("sam2");
+    sam[2] = Instantiate<a1>("sam3");
+    sam[3] = Instantiate<a1>("sam4");
+    sam[4] = Instantiate<a1>("sam5");
+    sam[5] = Instantiate<a1>("sam6");
+    sam[0].lock()->transform.renderBox.setFillColor(Color::Black);
+    sam[1].lock()->transform.renderBox.setFillColor(Color::Red);
+    sam[2].lock()->transform.renderBox.setFillColor(Color::Green);
+    sam[3].lock()->transform.renderBox.setFillColor(Color::Blue);
+    sam[4].lock()->transform.renderBox.setFillColor(Color::Magenta);
+    sam[5].lock()->transform.renderBox.setFillColor(Color::Yellow);
+    for (int i = 0; i < 6; i++) {
+        sam[i].lock()->transform.hitBox.setPosition(Vector2f(0, 0));
+        sam[i].lock()->transform.renderBox.setPosition(Vector2f(0, 0));
+        sam[i].lock()->transform.hitBox.setFillColor(Color::Cyan);
+        sam[i].lock()->transform.SetSize(Vector2f(2, 2), BoxType::HitBox);
+        sam[i].lock()->transform.SetSize(Vector2f(1.9, 1.9), BoxType::RenderBox);
+        sam[i].lock()->transform.SetPosition(Vector2f(0, 0), BoxType::HitBox);
+        sam[i].lock()->transform.SetPosition(Vector2f(0, 0), BoxType::RenderBox);
+        sam[i].lock()->transform.SetPosition(0, 0);
+        sam[i].lock()->transform.scale = Vector2f(float(100/(i+1)) , float(100/(i+1)) ) ;
+    }
+    sam[0].lock()->transform.Move(Vector2f(400,0));
+    sam[0].lock()->transform.hitBox.setFillColor(Color::Green);
+    MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0), Vector2f(1, 1));
+    if (Collision::isCollision(WorldControl::player().lock()->transform.renderBox, sam[0].lock()->transform.renderBox)) 
+    {
+        printf("123456\n");
+        WorldControl::player().lock()->transform.renderBox.setFillColor(Color::Green);
+    }
+    else
+    {
+        printf("-----------\n");
+        WorldControl::player().lock()->transform.renderBox.setFillColor(Color::Blue);
+    }
+    DrawAllSprites(WorldControl::Hierarchy());
+    //MoveAndDrawAllSprites(WorldControl::Hierarchy(),0,Vector2f(0,0),Vector2f(1,1));
+    for (int i = 0; i < 6; i++) {
+        Destroy(sam[i]);
+    }
 }
