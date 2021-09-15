@@ -168,8 +168,6 @@ void SetGameSprite(weak_ptr<GameSprite> wp, type_index t) {
 }
 void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f realWorldPosition, Vector2f realWorldScale) {
 	vector< weak_ptr<GameSprite> > v;
-	for (int i = 0; i < b; i++) { printf("\t"); }
-	cout << a.lock()->name << endl;
 	shared_ptr<GameSprite> sp = a.lock();
 	realWorldPosition += Multiple(sp->transform->position, realWorldScale);
 	sp->transform->renderBox.setPosition(realWorldPosition + Multiple(sp->transform->OffsetRenderBox, realWorldScale, sp->transform->scale));
@@ -180,7 +178,7 @@ void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f realWorldPosition, V
 		if (!sp->transform->childs[i].expired()) {
 			MoveAllSprites(sp->transform->childs[i], b + 1, realWorldPosition, Multiple(sp->transform->scale, realWorldScale));
 			v.push_back(sp->transform->childs[i]);
-			sp->transform->childs[i].lock()->transform->childIndex = v.size() - 1;
+			sp->transform->childs[i].lock()->transform->childIndex = (int)v.size() - 1;
 		}
 	}
 	sp->transform->childs = v;
@@ -198,8 +196,6 @@ void DrawAllSprites(weak_ptr<GameSprite> a) {
 }
 void MoveAndDrawAllSprites(weak_ptr<GameSprite> a, int b,Vector2f realWorldPosition,Vector2f realWorldScale) {
 	vector< weak_ptr<GameSprite> > v;
-	for (int i = 0; i < b; i++) { printf("\t"); }
-		cout << a.lock()->name << endl;
 	shared_ptr<GameSprite> sp=a.lock();
 	realWorldPosition += Multiple(sp->transform->position, realWorldScale);
 	sp->transform->renderBox.setPosition(realWorldPosition+Multiple(sp->transform->OffsetRenderBox,realWorldScale, sp->transform->scale) );
@@ -212,10 +208,21 @@ void MoveAndDrawAllSprites(weak_ptr<GameSprite> a, int b,Vector2f realWorldPosit
 		if (!sp->transform->childs[i].expired()) {
 			MoveAndDrawAllSprites(sp->transform->childs[i], b + 1,realWorldPosition,Multiple(sp->transform->scale , realWorldScale));
 			v.push_back(sp->transform->childs[i]);
-			sp->transform->childs[i].lock()->transform->childIndex = v.size() - 1;
+			sp->transform->childs[i].lock()->transform->childIndex = (int)v.size() - 1;
 		}
 	}
 	sp->transform->childs = v;
+}
+void CheckAllSpriteName(weak_ptr<GameSprite> a, int b) {
+	for (int i = 0; i < b; i++) { printf("\t"); }
+	cout << a.lock()->name << endl;
+	vector< weak_ptr<GameSprite> > v;
+	shared_ptr<GameSprite> sp = a.lock();
+	for (int i = 0; i < sp->transform->childs.size(); i++) {
+		if (!sp->transform->childs[i].expired()) {
+			CheckAllSpriteName(sp->transform->childs[i], b + 1);
+		}
+	}
 }
 //cout <<"Position" << realWorldPosition.x << "....." << realWorldPosition.y << endl;
 	//cout << "RenderBox" << WorldControl::player().lock()->transform.renderBox.getPosition().x << "....." << WorldControl::player().lock()->transform.renderBox.getPosition().y << endl;

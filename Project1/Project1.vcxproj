@@ -147,18 +147,22 @@
   <ItemGroup>
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="GameBaseClass.cpp" />
+    <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="GameSprite.cpp" />
     <ClCompile Include="KeyPress.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="WorldControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameBaseClass.h" />
+    <ClInclude Include="GameRenderer.h" />
     <ClInclude Include="GameSprite.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="WorldControl.h" />
     <ClInclude Include="SFML.h" />

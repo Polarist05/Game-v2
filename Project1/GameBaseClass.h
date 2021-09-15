@@ -47,7 +47,7 @@ weak_ptr<T> Instantiate(U a) {
 	return dynamic_pointer_cast<T>(sp);
 }*/
 template <typename T>
-weak_ptr<T> Instantiate(std::string s) {
+weak_ptr<T> Instantiate(const std::string s) {
 	type_index t = type_index(typeid(T));
 	shared_ptr<GameBaseClass> sp = make_shared<T>(s);
 	GetAllEntities()[t].push_back(sp);

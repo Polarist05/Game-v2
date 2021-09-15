@@ -10,12 +10,14 @@ public:
 	static RenderWindow& window();
 	static float WorldScale();
 	static weak_ptr<GameSprite> NotrenderSprite();
+	static weak_ptr<Tilemap> NotrenderTilemap();
+	static weak_ptr<Tile> MainTile();
 	static weak_ptr<GameSprite> Hierarchy();
 	static weak_ptr<Tile> NotrenderTile();
-	weak_ptr<Tilemap> NotrenderTilemap();
 	static weak_ptr<Player> player();
-	void Start()override
-	{
+	WorldControl() {
 		NotrenderTile().lock()->transform->SetParent(NotrenderSprite());
+		MainTile().lock()->transform->position = Vector2f(0, 0);
+		MainTile().lock()->SetAreaSize(Vector2f(190, 140));
 	}
 };
