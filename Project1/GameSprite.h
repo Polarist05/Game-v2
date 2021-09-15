@@ -30,6 +30,7 @@ protected:
 	private:
 		weak_ptr<GameSprite> Hierachy();
 	public:
+		bool Parentable = true;
 		int childIndex=0;
 		type_index typeIndex = type_index(typeid(int));
 		weak_ptr<GameSprite> root;
@@ -39,24 +40,26 @@ protected:
 		RectangleShape hitBox;
 		RectangleShape renderBox;		
 		AnchorType anchorType = AnchorType::MiddleCentor;
-		bool fixWidth = true;
 		Vector2f position;
 		Vector2f OffsetHitBox = Vector2f(0, 0);
 		Vector2f OffsetRenderBox = Vector2f(0, 0);
 		Vector2f scale = Vector2f(1,1);
 		void SetScale(Vector2f v);
-		void SetParent(weak_ptr<GameSprite>);
-		void SetPosition(float x, float y);
-		void SetPosition(Vector2f v);
+		void virtual SetParent(weak_ptr<GameSprite>);
+		void virtual SetPosition(float x, float y);
+		void virtual SetPosition(Vector2f v);
 		void SetPosition(Vector2f v, BoxType boxType);
 		void SetAnchorType(AnchorType _anchor, BoxType boxType);
 		void SetSize(Vector2f v, BoxType boxType);
 		void Move(Vector2f v, BoxType boxType);
-		void Move(Vector2f v);
+		void virtual Move(Vector2f v);
 		GameTransform();
 		GameTransform(Vector2f position, Vector2f scale, Vector2f hitboxPosition, Vector2f renderPosition);
 		~GameTransform();
+		virtual void Printing();
 	};
+private:
+	GameTransform m_transform;
 public:
 	GameSprite();
 	~GameSprite();
@@ -66,7 +69,7 @@ public:
 	GameSprite(std::string s,Vector2f position, Vector2f scale);
 	GameSprite(GameSprite& gameSprite);
 	*/
-	GameTransform transform;
+	GameTransform* transform = &m_transform;
 	void SetTransform(weak_ptr<GameSprite> wp, type_index typeIndex);
 	std::string name = "null";
 };

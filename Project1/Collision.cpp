@@ -1,5 +1,4 @@
 #include "Collision.h"
-#include <iostream>
 Vector2f Multiple(Vector2f a, Vector2f b);
 Line::Line(Vector2f p1, Vector2f p2) {
 	point[0] = p1;

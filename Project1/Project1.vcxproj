@@ -151,6 +151,7 @@
     <ClCompile Include="KeyPress.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="WorldControl.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +159,7 @@
     <ClInclude Include="GameSprite.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="WorldControl.h" />
     <ClInclude Include="SFML.h" />
   </ItemGroup>
