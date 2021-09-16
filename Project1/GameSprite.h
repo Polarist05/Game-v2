@@ -17,6 +17,14 @@ enum AnchorType
 	DownCentor,
 	DownRight
 };
+enum RenderPriorityType
+{
+	Setting,
+	UI,
+	PlayerAndObject,
+	Knife,
+	Floor
+};
 enum BoxType
 {
 	RenderBox,
@@ -30,8 +38,8 @@ protected:
 	private:
 		weak_ptr<GameSprite> Hierachy();
 	public:
-		bool Parentable = true;
 		int childIndex=0;
+		int RenderPriority = 0;
 		type_index typeIndex = type_index(typeid(int));
 		weak_ptr<GameSprite> root;
 		weak_ptr<GameSprite> parent;

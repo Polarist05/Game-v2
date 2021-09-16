@@ -1,4 +1,5 @@
 #include "WorldControl.h"
+#include "GameRenderer.h"
 #include<map>
 #include<vector>
 using namespace std;
@@ -23,7 +24,10 @@ weak_ptr<Tile> _RenderTile = Instantiate<Tile>("MainTile");
 weak_ptr<Tile> WorldControl::MainTile() { return _RenderTile; }
 //for.h file
 RenderWindow& Player::window() { return _window; }
+RenderWindow& GameRenderer::window() { return _window; }
+weak_ptr<GameSprite> GameRenderer::player() { return _player; }
 weak_ptr<GameSprite> GameSprite::GameTransform::Hierachy() { return _hierarchy; }
+weak_ptr<GameSprite>GameRenderer::Hierachy() { return _hierarchy; }
 weak_ptr<Tile> Tilemap::TilemapTransform::NotrenderTile() { return _notRenderTile; }
 weak_ptr<Tilemap> Area::AreaTransform::NotrenderTilemap() { return _notRenderTilemap; }
 weak_ptr<WorldControl> WorldControlInstant = Instantiate<WorldControl>();
