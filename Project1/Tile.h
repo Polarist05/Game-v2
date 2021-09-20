@@ -1,6 +1,5 @@
 #pragma once
 #include "GameSprite.h"
-#include<iostream>
 Vector2f Multiple(Vector2f a, Vector2f b);
 class Tile :public GameSprite 
 {

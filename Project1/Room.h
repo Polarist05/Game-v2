@@ -82,7 +82,7 @@ public:
 
 /*
 * weak_ptr<Area> areas[RSIZEX][RSIZEY];
-Room() {
+Room() { 
 
 }
 void f1() {

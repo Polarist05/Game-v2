@@ -7,6 +7,7 @@
 #include "Tile.h"
 #include "Room.h"
 #include "GameRenderer.h"
+#include "Dungeon.h"
 using namespace sf;
 using namespace std;
 void ActivateStart();
@@ -19,6 +20,7 @@ public:
     a1(std::string s):GameSprite(s){}
 };
 int main(){
+    Dungeon();
     weak_ptr<Room> room= Instantiate<Room>("Room1");
     room.lock()->GetTransform()->SetParent(WorldControl::MainTile());
     room.lock()->f1();

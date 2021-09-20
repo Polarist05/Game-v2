@@ -1,4 +1,5 @@
 #include "Tile.h"
+#include<iostream>
 //TileTransform
 //Tile
 Tile::Tile()
@@ -114,7 +115,4 @@ Area::Area(std::string s) :GameSprite(s)
 {
 	transform = &m_transform;
 }
-Area::AreaTransform* Area::GetTransform() 
-{
-	return &m_transform; 
-}
+Area::AreaTransform* Area::GetTransform() {return &m_transform; }
