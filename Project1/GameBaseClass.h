@@ -20,8 +20,6 @@ public:
 void PushQStart(weak_ptr<GameBaseClass> _a);
 void PushQUpdate(weak_ptr<GameBaseClass> _a);
 map<type_index, vector<shared_ptr<GameBaseClass> > >& GetAllEntities();
-//class GameSprite;
-//class GameTransform;
 template <typename T>
 weak_ptr<T> Instantiate() {
 	type_index t = type_index(typeid(T));

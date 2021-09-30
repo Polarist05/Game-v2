@@ -2,7 +2,71 @@
 #include <iostream>
 #include <stdlib.h> 
 #include <time.h>
-#include <stdio.h>  
+#include <stdio.h>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <map>
+#include "WorldControl.h"
+#include <fstream>
+#include <filesystem>
+#include <random>
+Dungeon::Dungeon() {
+	int horizonEdgeWeight[6][5] = {}, verticleEdgeWeight[5][6] = {};
+	srand(time(NULL));
+	RandomEdge(horizonEdgeWeight, verticleEdgeWeight);
+	MakeEdges(horizonEdgeWeight, verticleEdgeWeight);
+	startPosition = Vector2i(rand() % 5, rand() % 5);
+	printf("Start position is %d %d\n", startPosition.y, startPosition.x);
+	PrintDungeon();
+	for (int i = 0; i < 3; i++)
+		GetBreakWallPos();
+	PrintDungeon();
+	for (int i = 0; i < 5; i++) {
+		Rooms.push_back(vector<weak_ptr<Room> >());
+		for (int j = 0; j < 5; j++) {
+			Rooms[i].push_back(Instantiate<Room>("Room"+to_string(i)+to_string(j)));
+			Rooms[i][j].lock()->GetTransform()->SetParent(WorldControl::MainTile(),Vector2i((RSIZEX+2)*(j-2),(RSIZEY+2)*(i-2)));
+			Rooms[i][j].lock()->SetRoom();
+		}
+	}
+}
+RoomType Dungeon::CollectRoomType(Vector2i v,Direction direction) {
+	int yAmount = (int)bHorizonEdge[v.y]+ (int)bHorizonEdge[v.y + 1];
+	int xAmount = (int)bVerticleEdge[v.x] + (int)bVerticleEdge[v.x + 1];
+	switch (yAmount*3+xAmount)
+	{
+	case 0:return RoomType::Type00; break;
+	case 1:return RoomType::Type01; break;
+	case 2:return RoomType::Type02; break;
+	case 3:return RoomType::Type10; break;
+	case 4:
+		if (direction == Direction::Left || direction == Direction::Right)
+			return RoomType::Type11_Horizon;
+		else
+			return RoomType::Type11_Verticle;
+		break;
+	case 5:
+		if (direction == Direction::Left || direction == Direction::Right)
+			return RoomType::Type12_Horizon;
+		else
+			return RoomType::Type12_Verticle;
+		break;
+	case 6:return RoomType::Type20; break;
+	case 7: 
+		if (direction == Direction::Left || direction == Direction::Right)
+			return RoomType::Type21_Horizon;
+		else
+			return RoomType::Type21_Verticle;
+		break;
+	case 8: break;
+		if (direction == Direction::Left || direction == Direction::Right)
+			return RoomType::Type22_Horizon;
+		else
+			return RoomType::Type22_Verticle;
+		break;
+	}
+}
 void Dungeon::PrintDungeon() {
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
@@ -38,18 +102,6 @@ void Dungeon::PrintDungeon() {
 		}
 	}
 	printf("+\n");
-}
-Dungeon::Dungeon() {
-	int horizonEdgeWeight[6][5] = {}, verticleEdgeWeight[5][6] = {};
-	srand(time(NULL));
-	RandomEdge(horizonEdgeWeight, verticleEdgeWeight);
-	MakeEdges(horizonEdgeWeight, verticleEdgeWeight);
-	startPosition = Vector2i(rand() % 5, rand() % 5);
-	printf("Start position is %d %d\n", startPosition.y, startPosition.x);
-	PrintDungeon();
-	for (int i = 0; i < 3; i++)
-		GetBreakWallPos();
-	PrintDungeon();
 }
 std::string Dungeon::EnumDirectionName(int a) {
 	const string direction[10] = { "Up","Down","Right","Left" ,"Null" };
@@ -158,6 +210,7 @@ void Dungeon::GetBreakWallPos() {
 	secondPosition = FindMax(firstDepth);
 	RunDepth(secondDepth, secondPosition);
 	Vector2i pos, pos1;
+	//FindMinEdge
 	for (int i = 1; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			if (!bHorizonEdge[i][j]) {
@@ -198,4 +251,97 @@ Vector2i Dungeon::FindMax(int(*arr)[5]) {
 		}
 	}
 	return ans;
+}
+void LoadAllRoomPrefab() {
+	WorldControl::allRoomPrefabs().clear();
+	std::ifstream t_roomsPrefab("Rooms\\RoomPrefab.txt");
+	int roomGroupAmount;
+	t_roomsPrefab >> roomGroupAmount;
+	for (int i = 0; i < roomGroupAmount; i++) {
+		std::string setName;
+		int setSize;
+		t_roomsPrefab >> setName >> setSize;
+		WorldControl::allRoomPrefabs()[setName].first = true;
+		for (int j = 0; j < setSize; j++) {
+			std::ifstream t_room("Rooms\\" + setName + '\\' + to_string(j));
+			WorldControl::allRoomPrefabs()[setName].second.push_back(RoomData());
+			RoomData& roomData = WorldControl::allRoomPrefabs()[setName].second[WorldControl::allRoomPrefabs()[setName].second.size() - 1];
+			//name and type
+			{	
+				int roomType;
+				t_room >> roomData.name >> roomType;
+				roomData.roomType = (RoomType)roomType;
+			}
+			//floor
+			for (int k = 0; k < RSIZEY; k++) {
+				for (int l = 0; l < RSIZEX; l++) {
+					bool b;
+					t_room >> b;
+					roomData.floor[k][l] = b;
+				}
+			}
+			//object
+			for (int k = 0; k < RSIZEY; k++) {
+				for (int l = 0; l < RSIZEX; l++) {
+					t_room >> roomData.objects[k][l];
+				}
+			}
+			//track
+			for (int k = 0; k < RSIZEY; k++) {
+				for (int l = 0; l < RSIZEX; l++) {
+					t_room >> roomData.track[k][l];
+				}
+			}
+			t_room.close();
+		}
+	}
+	t_roomsPrefab.close();
+}
+void SaveAllRoomPrefab() {
+	std::ofstream save("Rooms\\RoomPrefab.txt");
+	save << WorldControl::allRoomPrefabs().size()<<endl;
+	for (map<std::string, pair<bool,vector< RoomData> > >::iterator it= WorldControl::allRoomPrefabs().begin(); it != WorldControl::allRoomPrefabs().end(); it++) {
+		save << it->first << " " << it->second.second.size() << endl;
+		std::filesystem::remove_all("Rooms\\" + it->first);
+		std::filesystem::create_directory("Rooms\\"+it->first);
+		for (int i = 0; i < it->second.second.size(); i++) {
+			std::ofstream rooomSave("Rooms\\" + it->first+'\\'+ to_string(i));
+			rooomSave << it->second.second[i].name << " " << it->second.second[i].roomType << endl;
+			for (int j = 0; j < RSIZEY; j++) {
+				for (int k = 0; k < RSIZEX; k++) {
+					rooomSave << it->second.second[i].floor[j][k] <<" ";
+				}
+				rooomSave  << endl;
+			}
+			rooomSave << endl;
+			for (int j = 0; j < RSIZEY; j++) {
+				for (int k = 0; k < RSIZEX; k++) {
+					rooomSave <<it->second.second[i].objects[j][k] << " ";
+				}
+				rooomSave  << endl;
+			}
+			rooomSave << endl;
+			for (int j = 0; j < RSIZEY; j++) {
+				for (int k = 0; k < RSIZEX; k++) {
+					rooomSave << it->second.second[i].track[j][k] << " ";
+				}
+				rooomSave  << endl;
+			}
+		}
+	}
+	save.close();
+}
+void SetUsedRoomPrefab() {
+	WorldControl::usedRoomPrefabs().clear();
+	for (map<std::string, pair<bool, vector< RoomData> > >::iterator it = WorldControl::allRoomPrefabs().begin(); it != WorldControl::allRoomPrefabs().end(); it++) {
+		if (it->second.first) {
+			for (int i=0; i<it->second.second.size();i++) {
+				WorldControl::usedRoomPrefabs()[it->second.second[i].roomType].push_back(it->second.second[i]);
+			}
+		}
+	}
+	for (int i = 0; i < (RoomType::Type22_Verticle + 1); i++) {
+		auto rng = std::default_random_engine{};
+		std::shuffle(WorldControl::usedRoomPrefabs()[(RoomType)i].begin(), WorldControl::usedRoomPrefabs()[(RoomType)i].end(), rng);
+	}
 }

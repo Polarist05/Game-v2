@@ -20,7 +20,9 @@ class GameRenderer
 	}
 public:
 	weak_ptr<Room> room;
-	void SetRoom(weak_ptr<Room> room) { this->room = room; }
+	weak_ptr<Room> subRoom[4];
+	void SetRenderRoom(weak_ptr<Room> room) { this->room = room; }
+	void SetSubRenderRoom(weak_ptr<Room> *room) { for(int i=0;i<4;i++) subRoom[i] = room[i]; }
 	void RenderAll() {
 		RenderWallAndFloor();
 		//RenderKnife();
@@ -30,10 +32,22 @@ public:
 	}
 	void RenderWallAndFloor()
 	{
-		for (int i = 0; i < RSIZEY; i++) 
-		{
-			for (int j = 0; j < RSIZEX; j++) {
-				window().draw(room.lock()->areas[j][i].lock()->transform->renderBox);
+		if (!room.expired()) {
+			for (int i = 0; i < RSIZEY; i++)
+			{
+				for (int j = 0; j < RSIZEX; j++) {
+					window().draw(room.lock()->areas[j][i].lock()->transform->renderBox);
+				}
+			}
+		}
+		for (int k = 0; k < 4; k++) {
+			if (!subRoom[k].expired()) {
+				for (int i = 0; i < RSIZEY; i++)
+				{
+					for (int j = 0; j < RSIZEX; j++) {
+						window().draw(subRoom[k].lock()->areas[j][i].lock()->transform->renderBox);
+					}
+				}
 			}
 		}
 	}

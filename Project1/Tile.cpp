@@ -18,11 +18,10 @@ void Tile::SetAreaSize(Vector2f v) { AreaSize = v; printf("AreaSize:%f\t%f\n",Ar
 //TilemapTransform
 void Tilemap::TilemapTransform::SetParent(weak_ptr<GameSprite> parent)
 {
-	SetParent(parent, Vector2i(0, 0));
+	SetParent(dynamic_pointer_cast<Tile>(parent.lock()) , Vector2i(0, 0));
 }
-void Tilemap::TilemapTransform::SetParent(weak_ptr<GameSprite> parent, Vector2i positionInTile) {
-	weak_ptr<Tile> wp = dynamic_pointer_cast<Tile>(parent.lock());
-	if (!wp.expired())
+void Tilemap::TilemapTransform::SetParent(weak_ptr<Tile> parent, Vector2i positionInTile) {
+	if (!parent.expired())
 		GameTransform::SetParent(parent);
 	else
 		GameTransform::SetParent(NotrenderTile());

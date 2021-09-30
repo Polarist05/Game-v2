@@ -5,6 +5,7 @@
 #include "GameSprite.h"
 #include "Tile.h"
 #include "Player.h"
+#include "Dungeon.h"
 class WorldControl:public GameBaseClass {
 public:
 	static RenderWindow& window();
@@ -15,6 +16,8 @@ public:
 	static weak_ptr<GameSprite> Hierarchy();
 	static weak_ptr<Tile> NotrenderTile();
 	static weak_ptr<Player> player();
+	static map<std::string, pair<bool,vector< RoomData > > >& allRoomPrefabs();
+	static map< RoomType, vector< RoomData > >& usedRoomPrefabs();
 	WorldControl() {
 		NotrenderTile().lock()->transform->SetParent(NotrenderSprite());
 		MainTile().lock()->transform->position = Vector2f(0, 0);

@@ -20,7 +20,7 @@ class Tilemap :public GameSprite
 		Vector2i positionInTile;
 	public:
 		void SetParent(weak_ptr<GameSprite> parent)override;
-		void SetParent(weak_ptr<GameSprite> parent, Vector2i positionInTile);
+		void SetParent(weak_ptr<Tile> parent, Vector2i positionInTile);
 		void SetPosition(float x, float y)override;
 		void SetPosition(Vector2f v)override;
 		void Move(Vector2f v)override;

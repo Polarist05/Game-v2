@@ -16,15 +16,31 @@ enum ObjectType {
 	Stone,
 	Null
 };
+enum RoomType {
+	Type00,
+	Type01,
+	Type02,
+	Type10,
+	Type11_Horizon,
+	Type11_Verticle,
+	Type12_Horizon,
+	Type12_Verticle,
+	Type20,
+	Type21_Horizon,
+	Type21_Verticle,
+	Type22_Horizon,
+	Type22_Verticle
+};
 class Room:public Tilemap
 {
 	bool floor[RSIZEY][RSIZEX] = {};
 	int objects[RSIZEY][RSIZEX] = {};
 	bool track[RSIZEY][RSIZEX] = {};
 public:
+	Room() {}
 	Room(std::string s):Tilemap(s) {}
 	weak_ptr<Area> areas[RSIZEX][RSIZEY];
-	void f1() {
+	void SetRoom() {
 		for (int i = 0; i < RSIZEX; i++)
 		{
 			for (int j = 0; j < RSIZEY; j++)
@@ -39,6 +55,9 @@ public:
 				areas[i][j].lock()->GetTransform()->SetSize(GetTransform()->GetAreaSize(), BoxType::RenderBox);
 			}
 		}
+	}
+	void Update() override {
+
 	}
 	void LoadallObject() {
 		for (int i = 0; i < RSIZEY; i++) {
@@ -77,26 +96,5 @@ public:
 			}
 		}
 	}
-	map<ObjectType,vector<GameSprite*>> allObjectinroom;
+	map<ObjectType,vector <GameSprite*> > allObjectinroom;
 };
-
-/*
-* weak_ptr<Area> areas[RSIZEX][RSIZEY];
-Room() { 
-
-}
-void f1() {
-	for (int i = 0; i < RSIZEX; i++)
-	{
-		for (int j = 0; j < RSIZEY; j++)
-		{
-			areas[i][j] = Instantiate<Area>(");
-			areas[i][j].lock()->GetTransform()->SetParent(transform->wp, Vector2i(i-RSIZEX/2, j-RSIZEY/2));
-				if ((i + j) % 2)
-					areas[i][j].lock()->GetTransform()->renderBox.setFillColor(Color::Magenta);
-				else
-					areas[i][j].lock()->GetTransform()->renderBox.setFillColor(Color::Black);
-			areas[i][j].lock()->GetTransform()->SetSize(GetTransform()->GetAreaSize(), BoxType::RenderBox);
-		}
-	}
-}*/

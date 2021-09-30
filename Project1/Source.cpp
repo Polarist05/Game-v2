@@ -20,20 +20,32 @@ public:
     a1(std::string s):GameSprite(s){}
 };
 int main(){
-    Dungeon();
-    weak_ptr<Room> room= Instantiate<Room>("Room1");
-    room.lock()->GetTransform()->SetParent(WorldControl::MainTile());
-    room.lock()->f1();
+    LoadAllRoomPrefab();
+    SetUsedRoomPrefab();
+    Dungeon dungeon;
     GameRenderer gameRenderer;
-    gameRenderer.SetRoom(room);
+    gameRenderer.SetRenderRoom(dungeon.Rooms[2][2]);
+    weak_ptr<Room> aa[4] = { dungeon.Rooms[1][2],dungeon.Rooms[3][2],dungeon.Rooms[2][1],dungeon.Rooms[2][3] };
+    gameRenderer.SetSubRenderRoom(aa);
     WorldControl::window().setFramerateLimit(60);
     WorldControl::window().setKeyRepeatEnabled(false);
     ActivateStart();
     while (WorldControl::window().isOpen())
     {   
         if (Keyboard::isKeyPressed(Keyboard::K)) {
-            room.lock()->GetTransform()->SetPositionInTile(Vector2i(0, 0));
-            printf("In");
+            gameRenderer.SetRenderRoom(dungeon.Rooms[2][1]);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::SemiColon)) {
+            gameRenderer.SetRenderRoom(dungeon.Rooms[2][3]);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::O)) {
+            gameRenderer.SetRenderRoom(dungeon.Rooms[1][2]);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Comma)) {
+            gameRenderer.SetRenderRoom(dungeon.Rooms[3][2]);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::L)) {
+            gameRenderer.SetRenderRoom(dungeon.Rooms[2][2]);
         }
         WorldControl::window().clear(sf::Color::Red);
         // check all the window's events that were triggered since the last iteration of the loop
@@ -44,6 +56,7 @@ int main(){
             if (event.type == Event::Closed)
                 WorldControl::window().close();
         }
+        view().setCenter(WorldControl::player().lock()->transform->renderBox.getPosition());
         WorldControl::window().setView(view());
         MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0), Vector2f(1, 1));
         //DrawAllSprites(WorldControl::Hierarchy());
@@ -53,5 +66,4 @@ int main(){
         WorldControl::window().display();
     }
     cout << endl<<"end program"<<endl;
-    
 }
