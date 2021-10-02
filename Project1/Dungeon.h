@@ -11,32 +11,27 @@ enum Direction
 	Right,
 	Left
 };
-struct RoomData
-{
-	RoomData() :floor(RSIZEY,vector<bool>(RSIZEX,false)),objects(RSIZEY, vector<int>(RSIZEX, 0)),track(RSIZEY, vector<int>(RSIZEX, 0)){}
-	std::string name = "null";
-	RoomType roomType = RoomType::Type00;
-	std::vector<vector<bool> > floor;
-	std::vector<vector<int> > objects;
-	std::vector<vector<int> > track;
-};
 class Dungeon
 {
 	bool bHorizonEdge[6][5] = {}, bVerticleEdge[5][6] = {};
 	Vector2i startPosition;
 public:
+	bool havePast[5][5] = {};
+	RoomType roomTypes = {};
 	vector<vector< weak_ptr<Room> > > Rooms;
 	void PrintDungeon();
 	Dungeon();
 private:
+	void GenerateMaze();
+	void InstantRoom();
 	std::string EnumDirectionName(int a);
 	void RandomEdge(int(*horizonEdge)[5], int(*verticleEdge)[6]);
-	void pushQueue(Vector2i v, bool(*arr)[5], std::priority_queue<pair< pair<int, bool*>, int> >& pq, int weight
+	void pushDepthQueue(Vector2i v, bool(*arr)[5], std::priority_queue<pair< pair<int, bool*>, int> >& pq, int weight
 					,int(*horizonEdge)[5], int(*verticleEdge)[6]);
 	void MakeEdges(int(*horizonEdge)[5], int(*verticleEdge)[6]);
 	void RunDepth(int(*arr)[5], Vector2i startPosition);
-	void GetBreakWallPos();
-	Vector2i FindMax(int(*arr)[5]);
+	void BreakWall();
+	Vector2i FindMaxAndReturnPos(int(*arr)[5]);
 	RoomType CollectRoomType(Vector2i room,Direction direction);
 };
 void LoadAllRoomPrefab();

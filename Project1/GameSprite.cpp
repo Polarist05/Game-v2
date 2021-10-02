@@ -1,24 +1,20 @@
 #include "GameSprite.h"
 #include "WorldControl.h"
 #include <iostream>
-Vector2f Multiple(Vector2f a, Vector2f b) {return Vector2f(a.x * b.x, a.y * b.y);}
-Vector2f Multiple(Vector2f a, Vector2f b, Vector2f c) { return Vector2f(a.x * b.x*c.x, a.y * b.y*c.y); }
+Vector2f Multiple(const Vector2f& a, const Vector2f& b);
+Vector2f Multiple(const Vector2f& a, const Vector2f& b, const Vector2f& c);
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>GameTransfrom<<<<<<<<<<<<<<<<<<<<<<<<
-void GameSprite::GameTransform::SetSize(Vector2f v, BoxType boxType) {
+void GameSprite::GameTransform::SetSize(Vector2f v, BoxType boxType,bool FIXTYPE) {
 	switch (boxType)
 	{
 	case RenderBox:
 		renderBox.setSize(v);
-		SetAnchorType(anchorType,boxType);
 		break;
 	case HitBox:
 		hitBox.setSize(v);
-		SetAnchorType(anchorType, boxType);
-		break;
-	default:
-		SetAnchorType(anchorType, boxType);
 		break;
 	}
+	SetAnchorType(anchorType, boxType,FIXTYPE);
 }
 void GameSprite::GameTransform::SetAnchorType(AnchorType _anchor,BoxType boxType) {
 	anchorType = _anchor;
@@ -87,6 +83,68 @@ void GameSprite::GameTransform::SetAnchorType(AnchorType _anchor,BoxType boxType
 		break;
 	}
 }
+void GameSprite::GameTransform::SetAnchorType(AnchorType _anchor, BoxType boxType,bool FIXTYPE) {
+	if (FIXTYPE == FIX_ALL_RECT_POSITION) {
+		SetAnchorType(anchorType, boxType);
+		return;
+	}
+	anchorType = _anchor;
+	Vector2f nPos;
+	Vector2f* _offsetBox = &OffsetHitBox;
+	RectangleShape* _box = &hitBox;
+	switch (boxType)
+	{
+	case BoxType::HitBox:
+		_box = &hitBox;
+		_offsetBox = &OffsetHitBox;
+		break;
+	case BoxType::RenderBox:
+		_box = &renderBox;
+		_offsetBox = &OffsetRenderBox;
+		break;
+	}
+	RectangleShape& box = *_box;
+	Vector2f& offsetBox = *_offsetBox;
+	switch (_anchor)
+	{
+	case TopLeft:
+		nPos = Vector2f(0, 0);
+		box.setOrigin(nPos);
+		break;
+	case TopCentor:
+		nPos = Vector2f(box.getSize().x / 2, 0);;
+		box.setOrigin(nPos);
+		break;
+	case TopRight:
+		nPos = Vector2f(box.getSize().x, 0);
+		box.setOrigin(nPos);
+		break;
+	case MiddleLeft:
+		nPos = Vector2f(0, box.getSize().y / 2);
+		box.setOrigin(nPos);
+		break;
+	case MiddleCentor:
+		nPos = Vector2f(box.getSize().x / 2, box.getSize().y / 2);
+		box.setOrigin(nPos);
+		break;
+	case MiddleRight:
+		nPos = Vector2f(box.getSize().x, box.getSize().y / 2);
+		box.setOrigin(nPos);
+		break;
+	case DownLeft:
+		nPos = Vector2f(0, box.getSize().y);
+		box.setOrigin(nPos);
+		break;
+	case DownCentor:
+		nPos = Vector2f(box.getSize().x / 2, box.getSize().y);
+		box.setOrigin(nPos);
+		break;
+	case DownRight:
+		nPos = Vector2f(box.getSize().x, box.getSize().y);
+		box.setOrigin(nPos);
+		break;
+	}
+}
 void GameSprite::GameTransform::Move(Vector2f v) {position += v;}
 void GameSprite::GameTransform::Move(Vector2f v, BoxType boxType) {
 	Vector2f* _offsetBox = &OffsetHitBox;
@@ -132,8 +190,6 @@ GameSprite::GameTransform::~GameTransform() {}
 void GameSprite::GameTransform::Printing() {
 	printf("game transform 1");
 }
-/*GameSprite::GameTransform::GameTransform(Vector2f position, Vector2f scale, Vector2f hitboxPosition, Vector2f renderPosition)
-	:position(position),scale(scale),OffsetHitBox(hitboxPosition),OffsetRenderBox(renderPosition) {}*/
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>GameSprite<<<<<<<<<<<<<<<<<<<<<<<<
 GameSprite::GameSprite() {}
@@ -224,17 +280,3 @@ void CheckAllSpriteName(weak_ptr<GameSprite> a, int b) {
 		}
 	}
 }
-//cout <<"Position" << realWorldPosition.x << "....." << realWorldPosition.y << endl;
-	//cout << "RenderBox" << WorldControl::player().lock()->transform.renderBox.getPosition().x << "....." << WorldControl::player().lock()->transform.renderBox.getPosition().y << endl;
-	//cout << "HitBox" << WorldControl::player().lock()->transform.hitBox.getPosition().x << "....." << WorldControl::player().lock()->transform.hitBox.getPosition().y << endl<<endl;
-	//cout << "scale:" << a.lock()->name<<endl;
-	//cout << "position:" << a.lock()->transform.renderBox.getPosition().x << "........" << a.lock()->transform.renderBox.getPosition().y << endl;
-	//cout << "origin:" << a.lock()->transform.renderBox.getOrigin().x << "........" << a.lock()->transform.renderBox.getOrigin().y << endl << endl;
-/*NotUseNow
-	GameSprite::GameSprite(std::string s, Vector2f position, Vector2f scale, Vector2f hitboxPosition, Vector2f renderPosition)
-		:name(s),transform(position,scale,hitboxPosition,renderPosition) {}
-	GameSprite::GameSprite(std::string s, Vector2f position, Vector2f scale) :
-		name(s), transform(position, scale,Vector2f(0,0),Vector2f(0,0)) {}
-	GameSprite::GameSprite(GameSprite& gameSprite)
-		: name(gameSprite.name), transform(gameSprite.transform.position, gameSprite.transform.scale, gameSprite.transform.OffsetHitBox, gameSprite.transform.OffsetRenderBox) {}
-	*/

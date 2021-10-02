@@ -31,70 +31,29 @@ enum RoomType {
 	Type22_Horizon,
 	Type22_Verticle
 };
+struct RoomData
+{
+	RoomData() :floor(RSIZEY, vector<bool>(RSIZEX, false)), objects(RSIZEY, vector<int>(RSIZEX, 0)), track(RSIZEY, vector<int>(RSIZEX, 0)) {}
+	std::string name = "null";
+	RoomType roomType = RoomType::Type00;
+	std::vector<vector<bool> > floor;
+	std::vector<vector<int> > objects;
+	std::vector<vector<int> > track;
+};
 class Room:public Tilemap
 {
-	bool floor[RSIZEY][RSIZEX] = {};
-	int objects[RSIZEY][RSIZEX] = {};
-	bool track[RSIZEY][RSIZEX] = {};
+	RoomData rooomdata;
 public:
-	Room() {}
-	Room(std::string s):Tilemap(s) {}
-	weak_ptr<Area> areas[RSIZEX][RSIZEY];
-	void SetRoom() {
-		for (int i = 0; i < RSIZEX; i++)
-		{
-			for (int j = 0; j < RSIZEY; j++)
-			{
-				areas[i][j] = Instantiate<Area>("123");
-				areas[i][j].lock()->GetTransform()->SetParent(transform->wp, Vector2i(i - RSIZEX / 2, j - RSIZEY / 2));
-				areas[i][j].lock()->GetTransform()->RenderPriority = RenderPriorityType::Floor;
-				if ((i + j) % 2)
-					areas[i][j].lock()->GetTransform()->renderBox.setFillColor(Color::Magenta);
-				else
-					areas[i][j].lock()->GetTransform()->renderBox.setFillColor(Color::Black);
-				areas[i][j].lock()->GetTransform()->SetSize(GetTransform()->GetAreaSize(), BoxType::RenderBox);
-			}
-		}
-	}
-	void Update() override {
-
-	}
-	void LoadallObject() {
-		for (int i = 0; i < RSIZEY; i++) {
-			for (int j = 0; j < RSIZEX; j++) {
-				switch (objects[i][j]/10)
-				{
-				case 1:
-					break;
-				case 2:
-					break;
-				case 3:
-					break;
-				case 4:
-					break;
-				case 5:
-					break;
-				case 6:
-					break;
-				case 7:
-					break;
-				case 8:
-					break;
-				case 9:
-					break;
-				case 10:
-					break;
-				case 11:
-					break;
-				case 12:
-					break;
-				case 13:
-					break;
-				case 14:
-					break;
-				}
-			}
-		}
-	}
-	map<ObjectType,vector <GameSprite*> > allObjectinroom;
+	Room();
+	Room(std::string s);
+	weak_ptr<Area> areas[RSIZEY][RSIZEX];
+	void SetRoom();
+	void SetFloor();
+	void SetObject();
+	void LoadallObject();
+	void LoadNearbyRoom();
+	void Update() override;
+private:
+	void CheckCollisionInRoom();
+	void CheckCollisionBetweenPlayerAndWall();
 };

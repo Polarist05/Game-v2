@@ -13,4 +13,6 @@ public:
 	static bool isCollision(RectangleShape rect1, RectangleShape rect2);
 	static bool isCollision(RectangleShape rect, Line line);
 	static bool isCollision(Line line1, Line line2);
+private:
+	static bool inBetween(float left, float middle, float right);
 };

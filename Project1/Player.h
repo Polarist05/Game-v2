@@ -1,6 +1,5 @@
 #pragma once
 #include "SFML.h"
-#include "GameBaseClass.h"
 #include "GameSprite.h"
 class Player :public GameSprite
 {
@@ -18,6 +17,5 @@ public:
 		transform->hitBox.setFillColor(Color::Magenta);
 		transform->hitBox.setPosition(-460, 0);
 	}
-	void Update() override {
-	}
+	void Update() override;
 };

@@ -2,8 +2,8 @@
 #pragma once
 #include "SFML.h"
 #include "GameBaseClass.h"
-#include <memory>
-#include <vector>
+#define FIX_ONLY_ANCHOR_POSITION 0
+#define FIX_ALL_RECT_POSITION 1
 using namespace std;
 enum AnchorType
 {
@@ -37,7 +37,9 @@ protected:
 	{
 	private:
 		weak_ptr<GameSprite> Hierachy();
+		void SetAnchorType(AnchorType _anchor, BoxType boxType, bool FIXTYPE);
 	public:
+		void SetSize(Vector2f v, BoxType boxType, bool FIXTYPE);
 		int childIndex=0;
 		int RenderPriority = 0;
 		type_index typeIndex = type_index(typeid(int));
@@ -58,7 +60,6 @@ protected:
 		void virtual SetPosition(Vector2f v);
 		void SetPosition(Vector2f v, BoxType boxType);
 		void SetAnchorType(AnchorType _anchor, BoxType boxType);
-		void SetSize(Vector2f v, BoxType boxType);
 		void Move(Vector2f v, BoxType boxType);
 		void virtual Move(Vector2f v);
 		GameTransform();
@@ -78,7 +79,7 @@ public:
 	GameSprite(GameSprite& gameSprite);
 	*/
 	GameTransform* transform = &m_transform;
-	void SetTransform(weak_ptr<GameSprite> wp, type_index typeIndex);
+	void virtual SetTransform(weak_ptr<GameSprite> wp, type_index typeIndex);
 	std::string name = "null";
 };
 void MoveAndDrawAllSprites(weak_ptr<GameSprite> a, int b, Vector2f position, Vector2f realWorldScale);

@@ -23,30 +23,18 @@ int main(){
     LoadAllRoomPrefab();
     SetUsedRoomPrefab();
     Dungeon dungeon;
+    WorldControl::SetCurrentRoom(Vector2i(2, 2));
     GameRenderer gameRenderer;
-    gameRenderer.SetRenderRoom(dungeon.Rooms[2][2]);
+    WorldControl::SetMainDungeon(&dungeon);
+    WorldControl::isGamePlaying() = true;
     weak_ptr<Room> aa[4] = { dungeon.Rooms[1][2],dungeon.Rooms[3][2],dungeon.Rooms[2][1],dungeon.Rooms[2][3] };
+    gameRenderer.SetRenderRoom(dungeon.Rooms[2][2]) ;
     gameRenderer.SetSubRenderRoom(aa);
     WorldControl::window().setFramerateLimit(60);
     WorldControl::window().setKeyRepeatEnabled(false);
     ActivateStart();
     while (WorldControl::window().isOpen())
     {   
-        if (Keyboard::isKeyPressed(Keyboard::K)) {
-            gameRenderer.SetRenderRoom(dungeon.Rooms[2][1]);
-        }
-        if (Keyboard::isKeyPressed(Keyboard::SemiColon)) {
-            gameRenderer.SetRenderRoom(dungeon.Rooms[2][3]);
-        }
-        if (Keyboard::isKeyPressed(Keyboard::O)) {
-            gameRenderer.SetRenderRoom(dungeon.Rooms[1][2]);
-        }
-        if (Keyboard::isKeyPressed(Keyboard::Comma)) {
-            gameRenderer.SetRenderRoom(dungeon.Rooms[3][2]);
-        }
-        if (Keyboard::isKeyPressed(Keyboard::L)) {
-            gameRenderer.SetRenderRoom(dungeon.Rooms[2][2]);
-        }
         WorldControl::window().clear(sf::Color::Red);
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;

@@ -11,7 +11,13 @@
 #include <fstream>
 #include <filesystem>
 #include <random>
+
+
 Dungeon::Dungeon() {
+	GenerateMaze();
+	InstantRoom();
+}
+void Dungeon::GenerateMaze() {
 	int horizonEdgeWeight[6][5] = {}, verticleEdgeWeight[5][6] = {};
 	srand(time(NULL));
 	RandomEdge(horizonEdgeWeight, verticleEdgeWeight);
@@ -20,14 +26,21 @@ Dungeon::Dungeon() {
 	printf("Start position is %d %d\n", startPosition.y, startPosition.x);
 	PrintDungeon();
 	for (int i = 0; i < 3; i++)
-		GetBreakWallPos();
+		BreakWall();
 	PrintDungeon();
+}
+void Dungeon::InstantRoom() {
 	for (int i = 0; i < 5; i++) {
 		Rooms.push_back(vector<weak_ptr<Room> >());
 		for (int j = 0; j < 5; j++) {
-			Rooms[i].push_back(Instantiate<Room>("Room"+to_string(i)+to_string(j)));
-			Rooms[i][j].lock()->GetTransform()->SetParent(WorldControl::MainTile(),Vector2i((RSIZEX+2)*(j-2),(RSIZEY+2)*(i-2)));
+			Rooms[i].push_back(Instantiate<Room>("Room" + to_string(i) + to_string(j)));
 			Rooms[i][j].lock()->SetRoom();
+			Rooms[i][j].lock()->GetTransform()->SetParent(WorldControl::MainTile(), Vector2i((RSIZEX + 2) * (j - 2), (RSIZEY + 2) * (i - 2)));
+			
+			//extension
+			Vector2f v = Multiple(Multiple(Rooms[i][j].lock()->GetTransform()->GetAreaSize(), Vector2f(RSIZEX, RSIZEY)),Vector2f((float)(RSIZEX + 0.5)/RSIZEX, (float)(RSIZEY + 0.5) / RSIZEY)) ;
+			Rooms[i][j].lock()->GetTransform()->renderBox.setFillColor(Color::White);
+			Rooms[i][j].lock()->GetTransform()->SetSize(v, BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
 		}
 	}
 }
@@ -67,83 +80,13 @@ RoomType Dungeon::CollectRoomType(Vector2i v,Direction direction) {
 		break;
 	}
 }
-void Dungeon::PrintDungeon() {
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			printf("+");
-			if (bHorizonEdge[i][j]) {
-				printf(" ");
-			}
-			else {
-				printf("-");
-			}
-		}
-		printf("+");
-		printf("\n");
-		for (int j = 0; j < 6; j++) {
-			if (bVerticleEdge[i][j]) {
-				printf(" ");
-			}
-			else {
-				printf("|");
-			}
-			if (j < 5)
-				printf(" ");
-		}
-		printf("\n");
-	}
-	for (int j = 0; j < 5; j++) {
-		printf("+");
-		if (bHorizonEdge[5][j]) {
-			printf(" ");
-		}
-		else {
-			printf("-");
-		}
-	}
-	printf("+\n");
-}
-std::string Dungeon::EnumDirectionName(int a) {
-	const string direction[10] = { "Up","Down","Right","Left" ,"Null" };
-	return direction[a];
-}
+
+// ForGenerateMaze
 void Dungeon::RandomEdge(int(*horizonEdge)[5], int(*verticleEdge)[6]) {
-	int SumEachRoom[5][5];
 	for (int i = 0; i < 6; i++) {
 		for (int j = 0; j < 5; j++) {
 			horizonEdge[i][j] = rand() % 80;
 			verticleEdge[j][i] = rand() % 80;
-		}
-	}
-}
-void Dungeon::pushQueue(Vector2i v, bool(*arr)[5], std::priority_queue<pair< pair<int, bool*>, int> >& pq, int weight, int(*horizonEdge)[5], int(*verticleEdge)[6])
-{
-	if (v.x < 4)
-	{
-		if (!arr[v.y][v.x + 1])
-		{
-			pq.push({ { verticleEdge[v.y][v.x + 1],&arr[v.y][v.x + 1] }, Direction::Right });
-		}
-	}
-	if (v.x > 0)
-	{
-		if (!arr[v.y][v.x - 1])
-		{
-			pq.push({ { verticleEdge[v.y][v.x],&arr[v.y][v.x - 1]},Direction::Left });
-		}
-	}
-	if (v.y < 4)
-	{
-		if (!arr[v.y + 1][v.x])
-		{
-			pq.push({ { horizonEdge[v.y + 1][v.x],&arr[v.y + 1][v.x] },Direction::Down });
-		}
-	}
-	if (v.y > 0)
-	{
-		if (!arr[v.y - 1][v.x])
-		{
-			pq.push({ { horizonEdge[v.y][v.x],&arr[v.y - 1][v.x] },Direction::Up });
 		}
 	}
 }
@@ -163,7 +106,7 @@ void Dungeon::MakeEdges(int(*horizonEdge)[5], int(*verticleEdge)[6])
 		{
 			count++;
 			havePass[pos.y][pos.x] = true;
-			pushQueue(pos, havePass, pq, weight, horizonEdge, verticleEdge);
+			pushDepthQueue(pos, havePass, pq, weight, horizonEdge, verticleEdge);
 			switch (direction)
 			{
 			case Direction::Down:bHorizonEdge[pos.y][pos.x] = true; break;
@@ -202,12 +145,43 @@ void Dungeon::RunDepth(int(*arr)[5], Vector2i startPosition)
 		q.pop();
 	}
 }
-void Dungeon::GetBreakWallPos() {
+void Dungeon::pushDepthQueue(Vector2i v, bool(*arr)[5], std::priority_queue<pair< pair<int, bool*>, int> >& pq, int weight, int(*horizonEdge)[5], int(*verticleEdge)[6])
+{
+	if (v.x < 4)
+	{
+		if (!arr[v.y][v.x + 1])
+		{
+			pq.push({ { verticleEdge[v.y][v.x + 1],&arr[v.y][v.x + 1] }, Direction::Right });
+		}
+	}
+	if (v.x > 0)
+	{
+		if (!arr[v.y][v.x - 1])
+		{
+			pq.push({ { verticleEdge[v.y][v.x],&arr[v.y][v.x - 1]},Direction::Left });
+		}
+	}
+	if (v.y < 4)
+	{
+		if (!arr[v.y + 1][v.x])
+		{
+			pq.push({ { horizonEdge[v.y + 1][v.x],&arr[v.y + 1][v.x] },Direction::Down });
+		}
+	}
+	if (v.y > 0)
+	{
+		if (!arr[v.y - 1][v.x])
+		{
+			pq.push({ { horizonEdge[v.y][v.x],&arr[v.y - 1][v.x] },Direction::Up });
+		}
+	}
+}
+void Dungeon::BreakWall() {
 	Vector2i secondPosition;
 	int firstDepth[5][5] = {}, secondDepth[5][5] = {}, horizontalMin = INT_MAX, VerticalMin = INT_MAX;
 	RunDepth(firstDepth, startPosition);
 	printf("\n");
-	secondPosition = FindMax(firstDepth);
+	secondPosition = FindMaxAndReturnPos(firstDepth);
 	RunDepth(secondDepth, secondPosition);
 	Vector2i pos, pos1;
 	//FindMinEdge
@@ -238,7 +212,7 @@ void Dungeon::GetBreakWallPos() {
 		printf("Delete Verticle: %d %d \n", pos1.x, pos1.y);
 	}
 }
-Vector2i Dungeon::FindMax(int(*arr)[5]) {
+Vector2i Dungeon::FindMaxAndReturnPos(int(*arr)[5]) {
 	int mx = INT_MIN;
 	Vector2i ans;
 	for (int i = 0; i < 5; i++) {
@@ -252,6 +226,50 @@ Vector2i Dungeon::FindMax(int(*arr)[5]) {
 	}
 	return ans;
 }
+
+// Extention
+ void Dungeon::PrintDungeon() {
+for (int i = 0; i < 5; i++) {
+	for (int j = 0; j < 5; j++) {
+		printf("+");
+		if (bHorizonEdge[i][j]) {
+			printf(" ");
+		}
+		else {
+			printf("-");
+		}
+	}
+	printf("+");
+	printf("\n");
+	for (int j = 0; j < 6; j++) {
+		if (bVerticleEdge[i][j]) {
+			printf(" ");
+		}
+		else {
+			printf("|");
+		}
+		if (j < 5)
+			printf(" ");
+	}
+	printf("\n");
+}
+for (int j = 0; j < 5; j++) {
+	printf("+");
+	if (bHorizonEdge[5][j]) {
+		printf(" ");
+	}
+	else {
+		printf("-");
+	}
+}
+printf("+\n");
+}
+ std::string Dungeon::EnumDirectionName(int a) {
+	 const string direction[10] = { "Up","Down","Right","Left" ,"Null" };
+	 return direction[a];
+ }
+
+ // Local
 void LoadAllRoomPrefab() {
 	WorldControl::allRoomPrefabs().clear();
 	std::ifstream t_roomsPrefab("Rooms\\RoomPrefab.txt");

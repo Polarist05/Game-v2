@@ -1,17 +1,22 @@
 #include "Collision.h"
-Vector2f Multiple(Vector2f a, Vector2f b);
+Vector2f Multiple(const Vector2f& a,const Vector2f& b);
 Line::Line(Vector2f p1, Vector2f p2) {
 	point[0] = p1;
 	point[1] = p2;
 }
+bool  Collision::inBetween(float left, float middle, float right) {
+	if (left <= middle && right >= middle)
+		return true;
+	return false;
+}
 bool Collision::isCollision(RectangleShape rect1, RectangleShape rect2)
 {
-	Vector2f pos1 = rect1.getPosition() - Multiple(rect1.getOrigin(), rect1.getScale());
-	Vector2f pos2 = pos1 + Multiple(rect1.getSize(), rect1.getScale());
-	Vector2f pos3 = rect2.getPosition() -Multiple(rect2.getOrigin(), rect2.getScale()); ;
-	Vector2f pos4 = pos3 + Multiple(rect2.getSize(), rect2.getScale());
-	if ((pos1.x >= pos3.x && pos1.x <= pos4.x) || (pos2.x >= pos3.x && pos2.x <= pos4.x))
-		if ((pos1.y >= pos3.y && pos1.y <= pos4.y) || (pos2.y >= pos3.y && pos2.y <= pos4.y))
+	Vector2f minRect1 = rect1.getPosition() - Multiple(rect1.getOrigin(), rect1.getScale());
+	Vector2f maxRect1 = minRect1 + Multiple(rect1.getSize(), rect1.getScale());
+	Vector2f minRect2 = rect2.getPosition() -Multiple(rect2.getOrigin(), rect2.getScale()); ;
+	Vector2f maxRect2 = minRect2 + Multiple(rect2.getSize(), rect2.getScale());
+	if (inBetween(minRect1.x,minRect2.x,maxRect1.x) || inBetween(minRect1.x, maxRect2.x, maxRect1.x))
+		if (inBetween(minRect1.y, minRect2.y, maxRect1.y) || inBetween(minRect1.y, maxRect2.y, maxRect1.y))
 			return true;
 	return false;
 }
