@@ -4,7 +4,7 @@
 #include<iostream>
 View& view();
 void KeyHold() {
-    float speed=3.0;
+    float speed=8.0;
     shared_ptr<Player> player = WorldControl::player().lock();
     if (Keyboard::isKeyPressed(Keyboard::Escape))
         WorldControl::window().close();
@@ -16,6 +16,4 @@ void KeyHold() {
         player->transform->Move(Vector2f(0, -2*speed));
     if (Keyboard::isKeyPressed(Keyboard::S))
         player->transform->Move(Vector2f(0, 2*speed));
-    if (Keyboard::isKeyPressed(Keyboard::J))
-        player->transform->SetScale(player->transform->scale+Vector2f(0.005,0.005));
 }

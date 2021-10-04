@@ -1,5 +1,6 @@
 #include "GameRenderer.h"
 #include "WorldControl.h"
+#include <iostream>
 void GameRenderer::FindPlayerAndObject(weak_ptr<GameSprite> a, vector<weak_ptr<GameSprite> >& v, vector<pair<float, int > >& v1) {
 	shared_ptr<GameSprite> sp = a.lock();
 	if (sp->transform->RenderPriority == RenderPriorityType::PlayerAndObject) {
@@ -12,8 +13,6 @@ void GameRenderer::FindPlayerAndObject(weak_ptr<GameSprite> a, vector<weak_ptr<G
 		}
 	}
 }
-void GameRenderer::SetRenderRoom(weak_ptr<Room> room) { this->room = room; }
-void GameRenderer::SetSubRenderRoom(weak_ptr<Room>* room) { for (int i = 0; i < 4; i++) subRoom[i] = room[i]; }
 void GameRenderer::RenderAll() {
 	window().draw(WControl::getMainDungeon().Rooms[WControl::GetCurrentRoom().y][WControl::GetCurrentRoom().x].lock()->GetTransform()->renderBox);
 	RenderWallAndFloor();
@@ -21,7 +20,7 @@ void GameRenderer::RenderAll() {
 	RenderPlayerAndObject();
 	//RenderUI();
 	//RenderSettingView();
-	
+
 }
 void GameRenderer::RenderWallAndFloor()
 {
@@ -36,6 +35,12 @@ void GameRenderer::RenderWallAndFloor()
 			RenderFloorAt(WControl::getMainDungeon().Rooms[y][x + 1]);
 		if (x - 1 >= 0)
 			RenderFloorAt(WControl::getMainDungeon().Rooms[y][x - 1]);
+		RenderEdge();
+	}
+}
+void GameRenderer::RenderEdge() {
+	for (size_t i = 0; i < WControl::getMainDungeon().EdgeFloors.size(); i++) {
+		window().draw(WControl::getMainDungeon().EdgeFloors[i].lock()->GetTransform()->renderBox);
 	}
 }
 void GameRenderer::RenderFloorAt(weak_ptr<Room> renderRoom) {
@@ -57,6 +62,7 @@ void GameRenderer::RenderPlayerAndObject()
 	sort(v1.begin(), v1.end());
 	for (int i = 0; i < v.size(); i++)
 	{
+		window().draw(v[v1[i].second].lock()->transform->hitBox);
 		window().draw(v[v1[i].second].lock()->transform->renderBox);
 	}
 }

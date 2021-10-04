@@ -3,7 +3,7 @@
 #include "SFML.h"
 #include "GameBaseClass.h"
 #define FIX_ONLY_ANCHOR_POSITION 0
-#define FIX_ALL_RECT_POSITION 1
+//#define FIX_ALL_RECT_POSITION 1
 using namespace std;
 enum AnchorType
 {
@@ -58,7 +58,7 @@ protected:
 		void virtual SetParent(weak_ptr<GameSprite>);
 		void virtual SetPosition(float x, float y);
 		void virtual SetPosition(Vector2f v);
-		void SetPosition(Vector2f v, BoxType boxType);
+		void SetPositionOffset(Vector2f v, BoxType boxType);
 		void SetAnchorType(AnchorType _anchor, BoxType boxType);
 		void Move(Vector2f v, BoxType boxType);
 		void virtual Move(Vector2f v);

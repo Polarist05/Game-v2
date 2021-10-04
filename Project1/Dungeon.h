@@ -12,16 +12,17 @@ enum Direction
 	Left
 };
 class Dungeon
-{
-	bool bHorizonEdge[6][5] = {}, bVerticleEdge[5][6] = {};
-	Vector2i startPosition;
+{	
+	Vector2i startRoom;
 public:
+	bool bHorizonEdge[6][5] = {}, bVerticleEdge[5][6] = {};
 	bool havePast[5][5] = {};
-	RoomType roomTypes = {};
 	vector<vector< weak_ptr<Room> > > Rooms;
+	vector<weak_ptr<Area> > EdgeFloors;
 	void PrintDungeon();
 	Dungeon();
 private:
+	void InstantEdge();
 	void GenerateMaze();
 	void InstantRoom();
 	std::string EnumDirectionName(int a);
@@ -34,6 +35,3 @@ private:
 	Vector2i FindMaxAndReturnPos(int(*arr)[5]);
 	RoomType CollectRoomType(Vector2i room,Direction direction);
 };
-void LoadAllRoomPrefab();
-void SaveAllRoomPrefab();
-void SetUsedRoomPrefab();

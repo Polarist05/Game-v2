@@ -4,14 +4,14 @@
 Vector2f Multiple(const Vector2f& a, const Vector2f& b);
 Vector2f Multiple(const Vector2f& a, const Vector2f& b, const Vector2f& c);
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>GameTransfrom<<<<<<<<<<<<<<<<<<<<<<<<
-void GameSprite::GameTransform::SetSize(Vector2f v, BoxType boxType,bool FIXTYPE) {
+void GameSprite::GameTransform::SetSize(Vector2f boxSize, BoxType boxType,bool FIXTYPE) {
 	switch (boxType)
 	{
 	case RenderBox:
-		renderBox.setSize(v);
+		renderBox.setSize(boxSize);
 		break;
 	case HitBox:
-		hitBox.setSize(v);
+		hitBox.setSize(boxSize);
 		break;
 	}
 	SetAnchorType(anchorType, boxType,FIXTYPE);
@@ -84,7 +84,7 @@ void GameSprite::GameTransform::SetAnchorType(AnchorType _anchor,BoxType boxType
 	}
 }
 void GameSprite::GameTransform::SetAnchorType(AnchorType _anchor, BoxType boxType,bool FIXTYPE) {
-	if (FIXTYPE == FIX_ALL_RECT_POSITION) {
+	if (FIXTYPE != FIX_ONLY_ANCHOR_POSITION) {
 		SetAnchorType(anchorType, boxType);
 		return;
 	}
@@ -161,7 +161,7 @@ void GameSprite::GameTransform::Move(Vector2f v, BoxType boxType) {
 void GameSprite::GameTransform::SetScale(Vector2f v) {scale = v;}
 void GameSprite::GameTransform::SetPosition(float x, float y) {	position = Vector2f(x, y);}
 void GameSprite::GameTransform::SetPosition(Vector2f v) { position = v; }
-void GameSprite::GameTransform::SetPosition(Vector2f v, BoxType boxType) {
+void GameSprite::GameTransform::SetPositionOffset(Vector2f v, BoxType boxType) {
 	switch (boxType)
 	{
 		case RenderBox:

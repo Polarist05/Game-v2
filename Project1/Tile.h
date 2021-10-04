@@ -6,14 +6,16 @@ class Tile :public GameSprite
 	class TileTransform :public GameTransform {};
 	TileTransform m_transform;
 	Vector2f AreaSize = Vector2f(0, 0);
-	Vector2f GetRealRoomSize();
+	
 public:
 	Tile();
 	Tile(std::string s);
+	Vector2f GetRealRoomSize();
 	TileTransform* GetTransform();
 	Vector2f GetAreaSize();
 	void SetAreaSize(Vector2f v);
-	Vector2f GetRealPositionAt(Vector2i RoomPosition, Vector2i AreaPosition);
+	Vector2f GetRealPositionAt(const Vector2i& RoomPosition, const Vector2i& AreaPosition);
+	Vector2f GetRealPositionAt(const Vector2i& RoomPosition, const Vector2f& AreaPosition);
 };
 class Tilemap :public GameSprite 
 {	
@@ -25,6 +27,8 @@ class Tilemap :public GameSprite
 		void SetParent(weak_ptr<Tile> parent, Vector2i positionInTile);
 		void SetPosition(float x, float y)override;
 		void SetPosition(Vector2f v)override;
+		
+		//void SetPosition(Vector2f v,BoxType) override;
 		void Move(Vector2f v)override;
 		void SetPositionInTile(Vector2i);
 		void SetAllAreasSizeInTilemap();
@@ -50,6 +54,10 @@ class Area :public GameSprite {
 		void SetParent(weak_ptr<Tilemap> parent, Vector2i positionInTile);
 		void SetPosition(float x, float y)override;
 		void SetPosition(Vector2f v)override;
+		void SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, RenderPriorityType RenderPriority);
+		void SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, RenderPriorityType RenderPriority, Color color);
+		void SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority);
+		void SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority, Color color);
 		void Move(Vector2f v)override;
 		void SetPositionInTilemap(Vector2i);
 		Vector2i GetPositionInTilemap();

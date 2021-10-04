@@ -3,17 +3,23 @@
 #include <string>
 #define RSIZEX 8
 #define RSIZEY 6
+enum  Align
+{
+	Verticle,
+	HoriZontal
+};
 enum ObjectType {
 	Switch,
 	PlacingSwitch,
 	Gate,
 	Laser,
 	Portal,
-	SoulCharge,
+	ChargeSoul,
 	Bell,
 	Hook,
-	Berry,
+	Strawberry,
 	Stone,
+	MovingPlatform,
 	Null
 };
 enum RoomType {
@@ -42,18 +48,28 @@ struct RoomData
 };
 class Room:public Tilemap
 {
-	RoomData rooomdata;
+	RoomData rooomData;
+	vector<weak_ptr<Area> > Objects;
+	Vector2i roomPosition;
 public:
 	Room();
 	Room(std::string s);
+	void SetRoom(const Vector2i& roomPosition);
 	weak_ptr<Area> areas[RSIZEY][RSIZEX];
-	void SetRoom();
+	void SetRoom1(RoomData roomData);
+	void ResetRoom();
 	void SetFloor();
 	void SetObject();
-	void LoadallObject();
 	void LoadNearbyRoom();
 	void Update() override;
+	void UnLoadNearbyRoom();
+	Vector2f MiddlePositionOfRoom();
+	static RoomType GetRoomType(const Align& align, Vector2i roomPosition);
+	static void SetObjectTypeString();
+	static std::string ObjectTypeToString(const ObjectType& objectType);
 private:
+	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
+	static RoomType GetRoomType(const Align& align, const int& xSum, const int& ySum);
 	void CheckCollisionInRoom();
 	void CheckCollisionBetweenPlayerAndWall();
 };

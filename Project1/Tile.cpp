@@ -17,8 +17,11 @@ void Tile::SetAreaSize(Vector2f v) {AreaSize = v; printf("AreaSize:%f\t%f\n",Are
 Vector2f Tile::GetRealRoomSize() {
 	return Multiple(Vector2f((RSIZEX + 2), (RSIZEY + 2)), GetAreaSize());
 }
-Vector2f Tile::GetRealPositionAt(Vector2i RoomPosition, Vector2i AreaPosition) {
-	return Vector2f(Multiple(GetRealRoomSize() , ((Vector2f)RoomPosition - Vector2f(2, 2))) + Multiple((Vector2f)AreaPosition-Vector2f(RSIZEX/2,RSIZEY/2),GetAreaSize()));
+Vector2f Tile::GetRealPositionAt(const Vector2i& RoomPosition, const Vector2i& AreaPosition) {
+	return Multiple(GetRealRoomSize() ,(Vector2f)RoomPosition)+Multiple(GetAreaSize(),(Vector2f)AreaPosition);
+}
+Vector2f Tile::GetRealPositionAt(const Vector2i& RoomPosition, const Vector2f& AreaPosition) {
+	return Multiple(GetRealRoomSize(), (Vector2f)RoomPosition) + Multiple(GetAreaSize(), AreaPosition);
 }
 
 //--------------------------------------------------------------------------------------
@@ -74,7 +77,7 @@ void Tilemap::TilemapTransform::SetAllAreasSizeInTilemap() {
 	for (int i = 0; i < childs.size(); i++) {
 		weak_ptr<Area> wp = dynamic_pointer_cast<Area>(childs[i].lock()->transform->wp.lock());
 		if (!wp.expired()) {
-			wp.lock()->GetTransform()->SetSize(wp.lock()->GetTransform()->GetAreaSize(),BoxType::RenderBox,FIX_ALL_RECT_POSITION);
+			wp.lock()->GetTransform()->SetSize(wp.lock()->GetTransform()->GetAreaSize(),BoxType::RenderBox,FIX_ONLY_ANCHOR_POSITION);
 		}
 	}
 }
@@ -139,6 +142,32 @@ void Area::AreaTransform::SetPosition(Vector2f v)
 {
 	cout << "Area can't set position" << endl;
 }
+
+void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile,RenderPriorityType RenderPriority) {
+	SetParent(tileParent, positionInTile);
+	this->RenderPriority = RenderPriority;
+	//renderBox.setFillColor(Color::Cyan);
+	SetSize(GetAreaSize(), BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
+}
+void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, RenderPriorityType RenderPriority,Color color) {
+	SetParent(tileParent, positionInTile);
+	this->RenderPriority = RenderPriority;
+	renderBox.setFillColor(color);
+	SetSize(GetAreaSize(), BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
+}
+void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile,Vector2f renderSize, RenderPriorityType RenderPriority) {
+	SetParent(tileParent, positionInTile);
+	this->RenderPriority = RenderPriority;
+	//renderBox.setFillColor(Color::Cyan);
+	SetSize(renderSize, BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
+}
+void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority, Color color) {
+	SetParent(tileParent, positionInTile);
+	this->RenderPriority = RenderPriority;
+	renderBox.setFillColor(color);
+	SetSize(renderSize, BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
+}
+
 void Area::AreaTransform::Move(Vector2f v)
 {
 	cout << "Area can't Move" << endl;
