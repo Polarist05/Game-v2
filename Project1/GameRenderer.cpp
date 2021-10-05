@@ -5,7 +5,7 @@ void GameRenderer::FindPlayerAndObject(weak_ptr<GameSprite> a, vector<weak_ptr<G
 	shared_ptr<GameSprite> sp = a.lock();
 	if (sp->transform->RenderPriority == RenderPriorityType::PlayerAndObject) {
 		v.push_back(a);
-		v1.push_back({ sp->transform->renderBox.getPosition().y,v1.size() });
+		v1.push_back({ sp->transform->hitBox.getPosition().y,v1.size() });
 	}
 	for (int i = 0; i < sp->transform->childs.size(); i++) {
 		if (!sp->transform->childs[i].expired()) {
@@ -27,14 +27,23 @@ void GameRenderer::RenderWallAndFloor()
 	if (WorldControl::isGamePlaying()) {
 		int y = WControl::GetCurrentRoom().y, x = WControl::GetCurrentRoom().x;
 		RenderFloorAt(WControl::getMainDungeon().Rooms[y][x]);
-		if (y + 1 < 5)
+		RenderWallAt(WControl::getMainDungeon().Rooms[y][x]);
+		if (y + 1 < 5) {
 			RenderFloorAt(WControl::getMainDungeon().Rooms[y + 1][x]);
-		if (y - 1 >= 0)
+			RenderWallAt(WControl::getMainDungeon().Rooms[y + 1][x]);
+		}
+		if (y - 1 >= 0) {
 			RenderFloorAt(WControl::getMainDungeon().Rooms[y - 1][x]);
-		if (x + 1 < 5)
+			RenderWallAt(WControl::getMainDungeon().Rooms[y - 1][x]);
+		}
+		if (x + 1 < 5) {
 			RenderFloorAt(WControl::getMainDungeon().Rooms[y][x + 1]);
-		if (x - 1 >= 0)
+			RenderWallAt(WControl::getMainDungeon().Rooms[y][x+1]);
+		}
+		if (x - 1 >= 0) {
 			RenderFloorAt(WControl::getMainDungeon().Rooms[y][x - 1]);
+			RenderWallAt(WControl::getMainDungeon().Rooms[y ][x-1]);
+		}
 		RenderEdge();
 	}
 }
@@ -53,6 +62,11 @@ void GameRenderer::RenderFloorAt(weak_ptr<Room> renderRoom) {
 		}
 	}
 }
+void GameRenderer::RenderWallAt(weak_ptr<Room> renderRoom) {
+	for (int i = 0; i < renderRoom.lock()->Walls.size(); i++) {
+		window().draw(renderRoom.lock()->Walls[i].lock()->GetTransform()->renderBox);
+	}
+}
 void GameRenderer::RenderKnife() {}
 void GameRenderer::RenderPlayerAndObject()
 {
@@ -62,6 +76,7 @@ void GameRenderer::RenderPlayerAndObject()
 	sort(v1.begin(), v1.end());
 	for (int i = 0; i < v.size(); i++)
 	{
+		window().draw(v[v1[i].second].lock()->transform->pseudoRenderBox);
 		window().draw(v[v1[i].second].lock()->transform->hitBox);
 		window().draw(v[v1[i].second].lock()->transform->renderBox);
 	}

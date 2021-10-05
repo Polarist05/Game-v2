@@ -19,7 +19,7 @@ public:
 };
 int main() {
 	auto seed = time(NULL);
-	srand(seed);
+	srand(1633453637);
 	WControl::SetUsedRoomPrefab();
 	for (map<std::string, Texture>::iterator it = WControl::objectsPrefab().begin(); it != WControl::objectsPrefab().end(); it++)
 	{
@@ -47,9 +47,10 @@ int main() {
 		//WControl::view().setCenter(WorldControl::player().lock()->transform->renderBox.getPosition());
 		WorldControl::window().setView(WControl::view());
 		MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0), Vector2f(1, 1));
+		ActivateUpdate();
 		gameRenderer.RenderAll();
 		KeyHold();
-		ActivateUpdate();
+		
 		WorldControl::window().display();
 		
 	}

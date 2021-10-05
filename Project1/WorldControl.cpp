@@ -72,11 +72,9 @@ void WorldControl::LoadPlayerPerfab() {
 	Vector2f scale(0.8, 0.8);
 	_playerPrefab.setSmooth(true);
 	WControl::player().lock()->transform->renderBox.setTexture(playerPrefab());
-	WControl::player().lock()->transform->renderBox.setTextureRect(IntRect(26, 26,98,193) );
-	WControl::player().lock()->transform->SetSize(Multiple(scale, Vector2f(98, 193)), RenderBox, FIX_ONLY_ANCHOR_POSITION);
-	WControl::player().lock()->transform->SetSize(Multiple(scale, Vector2f(98, 20)), HitBox, FIX_ONLY_ANCHOR_POSITION);
-	WControl::player().lock()->transform->SetPositionOffset(Multiple(scale, Vector2f(0, 85)),HitBox);
-	WControl::player().lock()->transform->hitBox.setFillColor(Color::Green);
+	SpriteOffsetData spriteOffset(Vector2i(26, 26), Vector2i(98, 193), Vector2f(98, 20), Vector2f(0, 85), Vector2f(0, 0), float(0.75));
+	player().lock()->transform->SetSpriteOffset(spriteOffset);
+	
 }
 void WorldControl::LoadAllObjectPrefab() {
 	std::ifstream t_objectsPrefab("Sprites\\ObjectsPrefab.txt");

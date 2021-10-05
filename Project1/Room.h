@@ -52,6 +52,7 @@ class Room:public Tilemap
 	vector<weak_ptr<Area> > Objects;
 	Vector2i roomPosition;
 public:
+	vector<weak_ptr<Area> > Walls;
 	Room();
 	Room(std::string s);
 	void SetRoom(const Vector2i& roomPosition);
@@ -72,4 +73,6 @@ private:
 	static RoomType GetRoomType(const Align& align, const int& xSum, const int& ySum);
 	void CheckCollisionInRoom();
 	void CheckCollisionBetweenPlayerAndWall();
+	void CheckCollisionBetweenPlayerAndObject();
+	void CheckCollisionBetweenPlayerAndRoomEdge();
 };

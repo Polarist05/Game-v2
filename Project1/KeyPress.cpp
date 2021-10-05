@@ -4,7 +4,7 @@
 #include<iostream>
 View& view();
 void KeyHold() {
-    float speed=8.0;
+    float speed=2.0;
     shared_ptr<Player> player = WorldControl::player().lock();
     if (Keyboard::isKeyPressed(Keyboard::Escape))
         WorldControl::window().close();

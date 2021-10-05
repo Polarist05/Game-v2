@@ -22,21 +22,52 @@ Dungeon::Dungeon() {
 	WControl::getMainDungeon().havePast[startRoom.y][startRoom.x] = 1;
 	Rooms[startRoom.y][startRoom.x].lock()->SetRoom1(WControl::allRoomPrefabs()["startRoom"].second[0]);
 	Rooms[startRoom.y][startRoom.x].lock()->LoadNearbyRoom();
-	WControl::player().lock()->transform->SetPosition(Rooms[startRoom.y][startRoom.x].lock()->GetTransform()->GetTile().lock()->GetRealPositionAt(Vector2i(startRoom.x, startRoom.y), Vector2i(1,1)));
+	WControl::player().lock()->transform->SetPosition(Rooms[startRoom.y][startRoom.x].lock()->GetTransform()->GetTile().lock()->GetRealPositionAt(Vector2i(startRoom.x, startRoom.y), Vector2i(1, 1)));
 }
 void Dungeon::InstantEdge() {
+	Color color(32, 32, 32, 255);
 	for (size_t i = 0; i < 5; i++)
 	{
 		for (size_t j = 0; j < 5; j++)
 		{
-			int middleX=RSIZEX/2, middleY=RSIZEY/2;
+			int middleX = RSIZEX / 2, middleY = RSIZEY / 2;
 			if (bVerticleEdge[i][j]) {
 				EdgeFloors.push_back(Instantiate<Area>());
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(0,middleY), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(0, middleY), RenderPriorityType::Floor, Color::Cyan);
 				EdgeFloors.push_back(Instantiate<Area>());
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(0, middleY+1), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(0, middleY + 1), RenderPriorityType::Floor, Color::Cyan);
+				{
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+							, Vector2i(0, 0), RenderPriorityType::Floor, color);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAnchorType(AnchorType::TopCentor, RenderBox, FIX_ALL_RECT_POSITION);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY /2)), RenderBox);
+				}
+				{
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+							, Vector2i(0, RSIZEY+1), RenderPriorityType::Floor, color);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAnchorType(AnchorType::DownCentor, RenderBox, FIX_ALL_RECT_POSITION);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY / 2)), RenderBox);
+				}
+			}
+			else {
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(0,0), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAnchorType(AnchorType::TopCentor, RenderBox, FIX_ALL_RECT_POSITION);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(),Vector2f(1,RSIZEY+2)),RenderBox);
 			}
 			if (bVerticleEdge[i][j + 1]) {
 				EdgeFloors.push_back(Instantiate<Area>());
@@ -44,7 +75,37 @@ void Dungeon::InstantEdge() {
 					, Vector2i(RSIZEX + 1, middleY), RenderPriorityType::Floor, Color::Cyan);
 				EdgeFloors.push_back(Instantiate<Area>());
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(RSIZEX + 1, middleY+1), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(RSIZEX + 1, middleY + 1), RenderPriorityType::Floor, Color::Cyan);
+				{
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+							, Vector2i(RSIZEX + 1, 0), RenderPriorityType::Floor, color);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAnchorType(AnchorType::TopCentor, RenderBox, FIX_ALL_RECT_POSITION);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY / 2)), RenderBox);
+				}
+				{
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+							, Vector2i(RSIZEX + 1, RSIZEY + 1), RenderPriorityType::Floor, color);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAnchorType(AnchorType::DownCentor, RenderBox, FIX_ALL_RECT_POSITION);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY / 2)), RenderBox);
+				}
+			}
+			else {
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(RSIZEX+1, 0), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAnchorType(AnchorType::TopCentor, RenderBox, FIX_ALL_RECT_POSITION);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY+2)), RenderBox);
 			}
 			if (bHorizonEdge[i][j]) {
 				EdgeFloors.push_back(Instantiate<Area>());
@@ -52,15 +113,75 @@ void Dungeon::InstantEdge() {
 					, Vector2i(middleX, 0), RenderPriorityType::Floor, Color::Cyan);
 				EdgeFloors.push_back(Instantiate<Area>());
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(middleX+1,0), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(middleX + 1, 0), RenderPriorityType::Floor, Color::Cyan);
+				{
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+							, Vector2i(0, 0), RenderPriorityType::Floor, color);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAnchorType(AnchorType::TopLeft, RenderBox, FIX_ALL_RECT_POSITION);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(RSIZEX/2, 1)), RenderBox);
+				}
+				{
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+							, Vector2i(RSIZEX + 1, 0), RenderPriorityType::Floor, color);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAnchorType(AnchorType::TopRight, RenderBox, FIX_ALL_RECT_POSITION);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(RSIZEX/2,1)), RenderBox);
+				}
+			}
+			else {
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(0, 0), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAnchorType(AnchorType::MiddleLeft, RenderBox, FIX_ALL_RECT_POSITION);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(RSIZEX+2,1)), RenderBox);
 			}
 			if (bHorizonEdge[i + 1][j]) {
 				EdgeFloors.push_back(Instantiate<Area>());
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(middleX,RSIZEY+1), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(middleX, RSIZEY + 1), RenderPriorityType::Floor, Color::Cyan);
 				EdgeFloors.push_back(Instantiate<Area>());
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(middleX+1,RSIZEY+1), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(middleX + 1, RSIZEY + 1), RenderPriorityType::Floor, Color::Cyan);
+				{
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+							, Vector2i(0, RSIZEY+1), RenderPriorityType::Floor, color);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAnchorType(AnchorType::TopLeft, RenderBox, FIX_ALL_RECT_POSITION);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(RSIZEX / 2, 1)), RenderBox);
+				}
+				{
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+							, Vector2i(RSIZEX + 1, RSIZEY+1), RenderPriorityType::Floor, color);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetAnchorType(AnchorType::TopRight, RenderBox, FIX_ALL_RECT_POSITION);
+					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(RSIZEX / 2, 1)), RenderBox);
+				}
+			}
+			else {
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(0, RSIZEY+1), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAnchorType(AnchorType::MiddleLeft, RenderBox, FIX_ALL_RECT_POSITION);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(RSIZEX + 2, 1)), RenderBox);
 			}
 		}
 	}
@@ -81,16 +202,61 @@ void Dungeon::InstantRoom() {
 		Rooms.push_back(vector<weak_ptr<Room> >());
 		for (int j = 0; j < 5; j++) {
 			Rooms[i].push_back(Instantiate<Room>("Room" + to_string(i) + to_string(j)));
-			Rooms[i][j].lock()->SetRoom(Vector2i(j,i));
-			Rooms[i][j].lock()->GetTransform()->SetParent(WorldControl::MainTile(), Vector2i((RSIZEX + 2) *j, (RSIZEY + 2) *i));
+			Rooms[i][j].lock()->SetRoom(Vector2i(j, i));
+			Rooms[i][j].lock()->GetTransform()->SetParent(WorldControl::MainTile(), Vector2i((RSIZEX + 2) * j, (RSIZEY + 2) * i));
 
 			//extension
-			Vector2f boxSize = Multiple(Rooms[i][j].lock()->GetTransform()->GetTile().lock()->GetRealRoomSize()- Rooms[i][j].lock()->GetTransform()->GetAreaSize(),Vector2f(1,1));
+			Vector2f boxSize = Multiple(Rooms[i][j].lock()->GetTransform()->GetTile().lock()->GetRealRoomSize() - Rooms[i][j].lock()->GetTransform()->GetAreaSize(), Vector2f(1, 1));
 			Rooms[i][j].lock()->GetTransform()->renderBox.setFillColor(Color::White);
-			Rooms[i][j].lock()->GetTransform()->SetSize(boxSize, BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
-			Rooms[i][j].lock()->GetTransform()->SetPositionOffset(Rooms[i][j].lock()->MiddlePositionOfRoom()-Rooms[i][j].lock()->GetTransform()->position,BoxType::RenderBox);
+			Rooms[i][j].lock()->GetTransform()->SetSize(boxSize, BoxType::RenderBox);
+			Rooms[i][j].lock()->GetTransform()->SetPositionOffset(Rooms[i][j].lock()->MiddlePositionOfRoom() - Rooms[i][j].lock()->GetTransform()->position, BoxType::RenderBox);
 		}
 	}
+}
+void Dungeon::InstantWall() {
+	Color color(32,32,32,255);
+	for (size_t i = 0; i < 5; i++) {
+		for (size_t j = 0; j < 5; j++) {
+			WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+			for (int k = 0; k < RSIZEX / 2; k++) {
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(k, 0), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(k, RSIZEY + 1), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(RSIZEX+1-k, 0), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(RSIZEX+1-k, RSIZEY + 1), RenderPriorityType::Floor, color);
+			}
+			for (int k = 1; k < RSIZEY / 2; k++) {
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(0, k), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(0, RSIZEY + 1-k), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(RSIZEX + 1 , k), RenderPriorityType::Floor, color);
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls.push_back(Instantiate<Area>());
+				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[WControl::getMainDungeon().Rooms[i][j].lock()->Walls.size() - 1].lock()
+					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
+						, Vector2i(RSIZEX + 1 , RSIZEY + 1 - k), RenderPriorityType::Floor, color);
+			}
+		}
+	}
+	
 }
 RoomType Dungeon::CollectRoomType(Vector2i v, Direction direction) {
 	int yAmount = (int)bHorizonEdge[v.y] + (int)bHorizonEdge[v.y + 1];

@@ -25,6 +25,7 @@ private:
 	void InstantEdge();
 	void GenerateMaze();
 	void InstantRoom();
+	void InstantWall();
 	std::string EnumDirectionName(int a);
 	void RandomEdge(int(*horizonEdge)[5], int(*verticleEdge)[6]);
 	void pushDepthQueue(Vector2i v, bool(*arr)[5], std::priority_queue<pair< pair<int, bool*>, int> >& pq, int weight

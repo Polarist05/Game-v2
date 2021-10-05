@@ -77,7 +77,8 @@ void Tilemap::TilemapTransform::SetAllAreasSizeInTilemap() {
 	for (int i = 0; i < childs.size(); i++) {
 		weak_ptr<Area> wp = dynamic_pointer_cast<Area>(childs[i].lock()->transform->wp.lock());
 		if (!wp.expired()) {
-			wp.lock()->GetTransform()->SetSize(wp.lock()->GetTransform()->GetAreaSize(),BoxType::RenderBox,FIX_ONLY_ANCHOR_POSITION);
+			wp.lock()->GetTransform()->SetSize(wp.lock()->GetTransform()->GetAreaSize(),BoxType::RenderBox);
+			wp.lock()->GetTransform()->SetSize(wp.lock()->GetTransform()->GetAreaSize(), BoxType::PseudoRenderBox);
 		}
 	}
 }
@@ -146,26 +147,28 @@ void Area::AreaTransform::SetPosition(Vector2f v)
 void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile,RenderPriorityType RenderPriority) {
 	SetParent(tileParent, positionInTile);
 	this->RenderPriority = RenderPriority;
-	//renderBox.setFillColor(Color::Cyan);
-	SetSize(GetAreaSize(), BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
+	SetSize(GetAreaSize(), BoxType::RenderBox);
+	SetSize(GetAreaSize(), BoxType::PseudoRenderBox);
 }
 void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, RenderPriorityType RenderPriority,Color color) {
 	SetParent(tileParent, positionInTile);
 	this->RenderPriority = RenderPriority;
 	renderBox.setFillColor(color);
-	SetSize(GetAreaSize(), BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
+	SetSize(GetAreaSize(), BoxType::RenderBox);
+	SetSize(GetAreaSize(), BoxType::PseudoRenderBox);
 }
 void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile,Vector2f renderSize, RenderPriorityType RenderPriority) {
 	SetParent(tileParent, positionInTile);
 	this->RenderPriority = RenderPriority;
-	//renderBox.setFillColor(Color::Cyan);
-	SetSize(renderSize, BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
+	SetSize(renderSize, BoxType::RenderBox);
+	SetSize(GetAreaSize(), BoxType::PseudoRenderBox);
 }
 void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority, Color color) {
 	SetParent(tileParent, positionInTile);
 	this->RenderPriority = RenderPriority;
 	renderBox.setFillColor(color);
-	SetSize(renderSize, BoxType::RenderBox, FIX_ONLY_ANCHOR_POSITION);
+	SetSize(renderSize, BoxType::RenderBox);
+	SetSize(GetAreaSize(), BoxType::PseudoRenderBox);
 }
 
 void Area::AreaTransform::Move(Vector2f v)
