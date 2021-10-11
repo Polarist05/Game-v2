@@ -18,9 +18,9 @@ Dungeon::Dungeon() {
 	GenerateMaze();
 	InstantRoom();
 	InstantEdge();
-	WControl::SetCurrentRoom(Vector2i(startRoom.x, startRoom.y));
+	WControl::SetCurrentRoomPositon(Vector2i(startRoom.x, startRoom.y));
 	WControl::getMainDungeon().havePast[startRoom.y][startRoom.x] = 1;
-	Rooms[startRoom.y][startRoom.x].lock()->SetRoom1(WControl::allRoomPrefabs()["startRoom"].second[0]);
+	Rooms[startRoom.y][startRoom.x].lock()->SetAllObjectsInRoom(WControl::allRoomPrefabs()["startRoom"].second[0]);
 	Rooms[startRoom.y][startRoom.x].lock()->LoadNearbyRoom();
 	WControl::player().lock()->transform->SetPosition(Rooms[startRoom.y][startRoom.x].lock()->GetTransform()->GetTile().lock()->GetRealPositionAt(Vector2i(startRoom.x, startRoom.y), Vector2i(1, 1)));
 }

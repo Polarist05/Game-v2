@@ -10,8 +10,8 @@ class GameSprite;
 void SetGameSprite(weak_ptr<GameSprite> wp, type_index t);
 class SubClass {
 public:
-	virtual void Start() {}
-	virtual void Update() {}
+	virtual void Start() {};
+	virtual void Update() {};
 };
 class  GameBaseClass :public SubClass {
 public:
@@ -26,10 +26,13 @@ weak_ptr<T> Instantiate() {
 	shared_ptr<GameBaseClass> sp = make_shared<T>();
 	GetAllEntities()[t].push_back(sp);
 	PushQUpdate(sp);
-	PushQStart(sp);
 	weak_ptr < GameSprite > wp = dynamic_pointer_cast<GameSprite>(sp);
-	if(!wp.expired())
-		SetGameSprite(wp,t);
+	if (!wp.expired()) {
+		SetGameSprite(wp, t);
+		if (wp.lock()->transform->wp.expired())
+			printf("WTFISTHIS\n\n");
+	}
+	sp->Start();
 	return dynamic_pointer_cast<T>(sp);
 }
 /*template <typename T,typename U>
@@ -50,10 +53,12 @@ weak_ptr<T> Instantiate(const std::string s) {
 	shared_ptr<GameBaseClass> sp = make_shared<T>(s);
 	GetAllEntities()[t].push_back(sp);
 	PushQUpdate(sp);
-	PushQStart(sp);
+	
+	//PushQStart(sp);
 	weak_ptr < GameSprite > wp = dynamic_pointer_cast<GameSprite>(sp);
 	if (!wp.expired())
 		SetGameSprite(wp, t);
+	sp->Start();
 	return dynamic_pointer_cast<T>(sp);
 }
 template <typename T>

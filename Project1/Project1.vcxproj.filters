@@ -13,6 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{90474dbc-0bd6-4fda-be80-f54c174b8572}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tilemap">
+      <UniqueIdentifier>{e7f7324d-2b70-472d-80db-d8bf90351c8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interface">
+      <UniqueIdentifier>{46cb37da-28bf-4b6a-8dab-ee9f81c84771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tilemap">
+      <UniqueIdentifier>{8174055f-12de-4aef-8dd4-be7999522ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{0d9345e4-f8f0-427b-b68c-13b5b3564f93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -36,17 +51,29 @@
     <ClCompile Include="Collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PortalClass.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="StrawberryClass.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files\Tilemap</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Source Files\Tilemap</Filter>
+    </ClCompile>
     <ClCompile Include="Dungeon.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Tilemap</Filter>
+    </ClCompile>
+    <ClCompile Include="ChargeSoulClass.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="BellClass.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,17 +95,35 @@
     <ClInclude Include="Collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Room.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Walkable.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="MeleeAttackable.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
     <ClInclude Include="Dungeon.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Tilemap</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Header Files\Tilemap</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files\Tilemap</Filter>
+    </ClInclude>
+    <ClInclude Include="PortalClass.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="StrawberryClass.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ChargeSoulClass.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BellClass.h">
+      <Filter>Header Files\Tilemap</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

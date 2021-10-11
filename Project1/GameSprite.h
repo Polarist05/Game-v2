@@ -46,7 +46,6 @@ protected:
 		weak_ptr<GameSprite> Hierachy();
 		void SetAnchorType(const AnchorType& _anchor,const BoxType& boxType);
 	public:
-		void SetSize(const Vector2f& boxSize, const BoxType& boxType);
 		int childIndex=0;
 		int RenderPriority = 0;
 		type_index typeIndex = type_index(typeid(int));
@@ -54,31 +53,35 @@ protected:
 		weak_ptr<GameSprite> parent;
 		vector<weak_ptr<GameSprite> > childs;
 		weak_ptr<GameSprite> wp;
+		
 		RectangleShape hitBox;
-		RectangleShape renderBox;
-		RectangleShape pseudoRenderBox;
-		//AnchorType anchorType = AnchorType::MiddleCentor;
-		Vector2f position;
 		Vector2f OffsetHitBox = Vector2f(0, 0);
-		Vector2f OffsetRenderBox = Vector2f(0, 0);
-		Vector2f OffsetPseudoRenderBox = Vector2f(0, 0);
 		AnchorType hitBoxAnchorType = MiddleCentor;
+
+		RectangleShape renderBox;
+		Vector2f OffsetRenderBox = Vector2f(0, 0);
 		AnchorType renderBoxAnchorType = MiddleCentor;
+
+		RectangleShape pseudoRenderBox;
+		Vector2f OffsetPseudoRenderBox = Vector2f(0, 0);
 		AnchorType pseudoRenderBoxAnchorType = MiddleCentor;
-		Vector2f scale = Vector2f(1,1);
-		void SetScale(Vector2f v);
+
+		Vector2f position;
+		
 		void virtual SetParent(weak_ptr<GameSprite>);
+		void SetSize(const Vector2f& boxSize, const BoxType& boxType);
+		
 		void virtual SetPosition(float x, float y);
 		void virtual SetPosition(Vector2f v);
+		Vector2f GetRealposition();
 		void SetPositionOffset(Vector2f v, BoxType boxType);
-		void SetAnchorType(AnchorType _anchor, BoxType boxType, bool FIXTYPE);
-		void SetSpriteOffset(const SpriteOffsetData& spriteOffsetData);
-		void Move(Vector2f v, BoxType boxType);
+		void SetAllSpriteOffset(const SpriteOffsetData& spriteOffsetData);
+		void MoveOffset(Vector2f v, BoxType boxType);
 		void virtual Move(Vector2f v);
-		GameTransform();
-		GameTransform(Vector2f position, Vector2f scale, Vector2f hitboxPosition, Vector2f renderPosition);
+
+		void SetAnchorType(AnchorType _anchor, BoxType boxType, bool FIXTYPE);
+		
 		~GameTransform();
-		virtual void Printing();
 	};
 private:
 	GameTransform m_transform;
@@ -86,18 +89,13 @@ public:
 	GameSprite();
 	~GameSprite();
 	GameSprite(std::string s);
-	/*NotUseNow
-	GameSprite(std::string s,Vector2f position,Vector2f scale,Vector2f hitboxPosition,Vector2f renderPosition);
-	GameSprite(std::string s,Vector2f position, Vector2f scale);
-	GameSprite(GameSprite& gameSprite);
-	*/
 	GameTransform* transform = &m_transform;
 	void virtual SetTransform(weak_ptr<GameSprite> wp, type_index typeIndex);
+	
 	std::string name = "null";
 };
-void MoveAndDrawAllSprites(weak_ptr<GameSprite> a, int b, Vector2f position, Vector2f realWorldScale);
+
 void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f position, Vector2f realWorldScale);
-void DrawAllSprites(weak_ptr<GameSprite> a );
 
 
 

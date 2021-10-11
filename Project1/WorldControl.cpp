@@ -50,8 +50,9 @@ bool _isGamePlaying = false;
 bool& WorldControl::isGamePlaying() { return _isGamePlaying; };
 
 Vector2i _currentRoom;
-Vector2i& WorldControl::GetCurrentRoom() { return _currentRoom; }
-void WorldControl::SetCurrentRoom(const Vector2i& currentRoom) { _currentRoom = currentRoom; }
+weak_ptr<Room> WorldControl::GetCurrentRoom() { return getMainDungeon().Rooms[GetCurrentRoomPosition().y][GetCurrentRoomPosition().x]; }
+Vector2i& WorldControl::GetCurrentRoomPosition() { return _currentRoom; }
+void WorldControl::SetCurrentRoomPositon(const Vector2i& currentRoom) { _currentRoom = currentRoom; }
 
 View _view(Vector2f(AREA_SIZEX*(RSIZEX+2)*(2.5), AREA_SIZEY* (RSIZEY + 2) * 2.5)-Vector2f(AREA_SIZEX/2.,AREA_SIZEY/2.), Vector2f(1920*viewSize.x , 1080*viewSize.y ));
 View& WorldControl::view() { return _view; }
@@ -72,9 +73,9 @@ void WorldControl::LoadPlayerPerfab() {
 	Vector2f scale(0.8, 0.8);
 	_playerPrefab.setSmooth(true);
 	WControl::player().lock()->transform->renderBox.setTexture(playerPrefab());
-	SpriteOffsetData spriteOffset(Vector2i(26, 26), Vector2i(98, 193), Vector2f(98, 20), Vector2f(0, 85), Vector2f(0, 0), float(0.75));
-	player().lock()->transform->SetSpriteOffset(spriteOffset);
-	
+	SpriteOffsetData spriteOffset(Vector2i(26, 26), Vector2i(98, 193), Vector2f(80, 50), Vector2f(0, 85), Vector2f(0, 0), float(0.75));
+	player().lock()->transform->SetAllSpriteOffset(spriteOffset);
+	player().lock()->transform->SetSize(player().lock()->transform->pseudoRenderBox.getSize()-Vector2f(20,0), PseudoRenderBox);
 }
 void WorldControl::LoadAllObjectPrefab() {
 	std::ifstream t_objectsPrefab("Sprites\\ObjectsPrefab.txt");

@@ -10,7 +10,6 @@
 #include "Dungeon.h"
 using namespace sf;
 using namespace std;
-void ActivateStart();
 void ActivateUpdate();
 void KeyHold();
 class a1 :public GameSprite {
@@ -30,7 +29,6 @@ int main() {
 	WorldControl::isGamePlaying() = true;
 	WorldControl::window().setFramerateLimit(60);
 	WorldControl::window().setKeyRepeatEnabled(false);
-	ActivateStart();
 	while (WorldControl::window().isOpen())
 	{
 		if (Keyboard::isKeyPressed(Keyboard::J))
@@ -43,7 +41,7 @@ int main() {
 			if (event.type == Event::Closed)
 				WorldControl::window().close();
 		}
-		WControl::view().setCenter(WControl::getMainDungeon().Rooms[WControl::GetCurrentRoom().y][WControl::GetCurrentRoom().x].lock()->MiddlePositionOfRoom());
+		WControl::view().setCenter(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom());
 		//WControl::view().setCenter(WorldControl::player().lock()->transform->renderBox.getPosition());
 		WorldControl::window().setView(WControl::view());
 		MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0), Vector2f(1, 1));

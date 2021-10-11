@@ -1,4 +1,36 @@
 #include "Collision.h"
+Range2f::Range2f() :min(0), max(0) {}
+Range2f::Range2f(float min, float max) :min(min), max(max) {}
+void Range2f::operator *(const Range2f& a) {
+	min *= a.min;
+	max *= a.max;
+}
+void Range2f::operator +(const Range2f& a) {
+	min += a.min;
+	max += a.max;
+}
+void Range2f::operator -(const Range2f& a) {
+	min -= a.min;
+	max -= a.max;
+}
+void Range2f::operator /(const Range2f& a) {
+	min /= a.min;
+	max /= a.max;
+}
+void Range2f::operator =(const Range2f& a) {
+	min = a.min;
+	max = a.max;
+}
+void Range2f::operator *(const float& a) {
+	min *= a;
+	max *= a;
+}
+void Range2f::operator /(const float& a) {
+	min /= a;
+	max /= a;
+}
+
+
 Vector2f Multiple(const Vector2f& a, const Vector2f& b);
 Line::Line(Vector2f p1, Vector2f p2) {
 	point[0] = p1;
@@ -19,10 +51,17 @@ bool Collision::isCollision(const RectangleShape& rect1,const RectangleShape& re
 		if (maxRect1.y - minRect2.y > 0 && maxRect2.y - minRect1.y > 0)
 			return true;
 	return false;
-	/*if (inBetween(minRect1.x, minRect2.x, maxRect1.x) || inBetween(minRect1.x, maxRect2.x, maxRect1.x))
-		if (inBetween(minRect1.y, minRect2.y, maxRect1.y) || inBetween(minRect1.y, maxRect2.y, maxRect1.y))
+}
+bool Collision::isCollision(const RectangleShape& rect1, const Range2f& RangeX2, const Range2f& RangeY2)
+{
+	Vector2f minRect1 = rect1.getPosition() - Multiple(rect1.getOrigin(), rect1.getScale());
+	Vector2f maxRect1 = minRect1 + Multiple(rect1.getSize(), rect1.getScale());
+	Vector2f minRect2(RangeX2.min,RangeY2.max);
+	Vector2f maxRect2(RangeX2.max,RangeY2.max);
+	if (maxRect1.x - minRect2.x > 0 && maxRect2.x - minRect1.x > 0)
+		if (maxRect1.y - minRect2.y > 0 && maxRect2.y - minRect1.y > 0)
 			return true;
-	return false;*/
+	return false;
 }
 bool Collision::isCollision(const RectangleShape& rect,const Line& line)
 {
@@ -70,10 +109,145 @@ bool Collision::findShortestCollisionDistance(Vector2f& result,const RectangleSh
 	else {
 		mnDistance.y =  minRect1.y- maxRect2.y;
 	}
-	if (abs(mnDistance.x)  <abs(mnDistance.y) )
+	if (abs(mnDistance.x) < abs(mnDistance.y)) {
+		mnDistance.y = 0;
+		mnDistance.x *= 1.0001;
+	}
+	else {
+		mnDistance.x = 0;
+		mnDistance.y *= 1.0001;
+	}
+	result = -mnDistance;
+	return true;
+}
+bool Collision::findShortestCollisionDistance(Vector2f& result, const RectangleShape& movingRect, const Range2f& NotMoveXRange, const Range2f& NotMoveYRange) {
+	Vector2f minRect1 = movingRect.getPosition() - Multiple(movingRect.getOrigin(), movingRect.getScale());
+	Vector2f maxRect1 = minRect1 + Multiple(movingRect.getSize(), movingRect.getScale());
+	Vector2f minRect2(NotMoveXRange.min,NotMoveYRange.min);
+	Vector2f maxRect2(NotMoveXRange.max,NotMoveYRange.max) ;
+	Vector2f mnDistance;
+	bool inBetweenX = false, inBetweenY = false;
+	if (!isCollision(movingRect, NotMoveXRange,NotMoveYRange))
+		return false;
+	if (maxRect1.x - minRect2.x < maxRect2.x - minRect1.x) {
+		mnDistance.x = maxRect1.x - minRect2.x;
+	}
+	else {
+		mnDistance.x = minRect1.x - maxRect2.x;
+	}
+	if (maxRect1.y - minRect2.y < maxRect2.y - minRect1.y) {
+		mnDistance.y = maxRect1.y - minRect2.y;
+	}
+	else {
+		mnDistance.y = minRect1.y - maxRect2.y;
+	}
+	if (abs(mnDistance.x) < abs(mnDistance.y))
 		mnDistance.y = 0;
 	else
 		mnDistance.x = 0;
 	result = -mnDistance;
 	return true;
+}
+bool Collision::findShortestCollisionDistance(Vector2f& result, const Range2f& moveXRange, const Range2f& moveYRange, const RectangleShape& notMovingRect) {
+	Vector2f minRect1(moveXRange.min, moveYRange.min); 
+	Vector2f maxRect1(moveXRange.max, moveYRange.max);
+	Vector2f minRect2 = notMovingRect.getPosition() - Multiple(notMovingRect.getOrigin(), notMovingRect.getScale());
+	Vector2f maxRect2 = minRect2 + Multiple(notMovingRect.getSize(), notMovingRect.getScale());
+	Vector2f mnDistance;
+	bool inBetweenX = false, inBetweenY = false;
+	if (!isCollision(notMovingRect, moveXRange, moveYRange))
+		return false;
+	if (maxRect1.x - minRect2.x < maxRect2.x - minRect1.x) {
+		mnDistance.x = maxRect1.x - minRect2.x;
+	}
+	else {
+		mnDistance.x = minRect1.x - maxRect2.x;
+	}
+	if (maxRect1.y - minRect2.y < maxRect2.y - minRect1.y) {
+		mnDistance.y = maxRect1.y - minRect2.y;
+	}
+	else {
+		mnDistance.y = minRect1.y - maxRect2.y;
+	}
+	if (abs(mnDistance.x) < abs(mnDistance.y))
+		mnDistance.y = 0;
+	else
+		mnDistance.x = 0;
+	result = -mnDistance;
+	return true;
+}
+bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const Vector2f& point, const vector<RectangleShape>& Rects, const Direction& direction) {
+	float mn = FLT_MAX;
+	if (direction == Direction::Right) {
+		for (size_t i = 0; i < Rects.size(); i++)
+		{
+			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
+			Vector2f maxPos = minPos + Rects[i].getSize();
+			if (inBetween(minPos.y, point.y, maxPos.y) && minPos.x > point.x && minPos.x - point.x < mn) {
+				mn = minPos.x - point.x;	
+			}
+		}
+		if (mn != FLT_MAX) {
+			result = point + Vector2f(mn, 0);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if (direction == Direction::Left) {
+		for (size_t i = 0; i < Rects.size(); i++)
+		{
+			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
+			Vector2f maxPos = minPos + Rects[i].getSize();
+			if (inBetween(minPos.y, point.y, maxPos.y) && maxPos.x < point.x && point.x - maxPos.x < mn) {
+				mn = point.x - maxPos.x;
+			}
+		}
+		if (mn != FLT_MAX) {
+			result = point + Vector2f(-mn, 0);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if (direction == Direction::Down) {
+		for (size_t i = 0; i < Rects.size(); i++)
+		{
+			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
+			Vector2f maxPos = minPos + Rects[i].getSize();
+			if (inBetween(minPos.x, point.x, maxPos.x) && minPos.y > point.y && minPos.y-point.y < mn) {
+				mn = minPos.y - point.y;
+			}
+		}
+		if (mn != FLT_MAX) {
+			result = point + Vector2f(0, mn);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else {
+		for (size_t i = 0; i < Rects.size(); i++)
+		{
+			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
+			Vector2f maxPos = minPos + Rects[i].getSize();
+			if (inBetween(minPos.x, point.x, maxPos.x) && maxPos.y < point.y && point.y - maxPos.y < mn) {
+				mn = point.y - maxPos.y;
+			}
+		}
+		if (mn != FLT_MAX) {
+			result = point + Vector2f(0, -mn);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

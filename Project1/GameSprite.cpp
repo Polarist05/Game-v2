@@ -187,7 +187,7 @@ void GameSprite::GameTransform::SetAnchorType(AnchorType _anchor, BoxType boxTyp
 	}
 }
 void GameSprite::GameTransform::Move(Vector2f v) {position += v;}
-void GameSprite::GameTransform::Move(Vector2f v, BoxType boxType) {
+void GameSprite::GameTransform::MoveOffset(Vector2f v, BoxType boxType) {
 	Vector2f* _offsetBox = &OffsetHitBox;
 	switch (boxType)
 	{
@@ -202,7 +202,8 @@ void GameSprite::GameTransform::Move(Vector2f v, BoxType boxType) {
 			break;
 	}
 }
-void GameSprite::GameTransform::SetScale(Vector2f v) {scale = v;}
+
+
 void GameSprite::GameTransform::SetPosition(float x, float y) {	position = Vector2f(x, y);}
 void GameSprite::GameTransform::SetPosition(Vector2f v) { position = v; }
 void GameSprite::GameTransform::SetPositionOffset(Vector2f v, BoxType boxType) {
@@ -219,6 +220,15 @@ void GameSprite::GameTransform::SetPositionOffset(Vector2f v, BoxType boxType) {
 			break;
 	}
 }
+Vector2f GameSprite::GameTransform::GetRealposition() {
+	if (parent.lock() != WControl::Hierarchy().lock()&& !parent.expired()) {
+		return position + parent.lock()->transform->GetRealposition();
+	}
+	else {
+		return position;
+	}
+}
+
 void GameSprite::GameTransform::SetParent(weak_ptr<GameSprite> parent) {
 	if (parent.expired()) {
 		printf("parent is null please add value\n");
@@ -232,12 +242,9 @@ void GameSprite::GameTransform::SetParent(weak_ptr<GameSprite> parent) {
 	sp->transform->childs.push_back(this->wp);
 	this->childIndex = (int)sp->transform->childs.size() - 1;
 }
-GameSprite::GameTransform::GameTransform() {};
+//GameSprite::GameTransform::GameTransform() {};
 GameSprite::GameTransform::~GameTransform() {}
-void GameSprite::GameTransform::Printing() {
-	printf("game transform 1");
-}
-void GameSprite::GameTransform::SetSpriteOffset(const SpriteOffsetData& spriteOffsetData) {
+void GameSprite::GameTransform::SetAllSpriteOffset(const SpriteOffsetData& spriteOffsetData) {
 	{
 		renderBox.setTextureRect(IntRect(spriteOffsetData.startPixel, spriteOffsetData.renderPixelSize));
 		SetSize((Vector2f)spriteOffsetData.renderPixelSize * spriteOffsetData.scale, BoxType::RenderBox);
@@ -286,48 +293,12 @@ void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f realWorldPosition, V
 	vector< weak_ptr<GameSprite> > v;
 	shared_ptr<GameSprite> sp = a.lock();
 	realWorldPosition += Multiple(sp->transform->position, realWorldScale);
-	sp->transform->renderBox.setPosition(realWorldPosition + Multiple(sp->transform->OffsetRenderBox, realWorldScale, sp->transform->scale));
-	sp->transform->pseudoRenderBox.setPosition(realWorldPosition + Multiple(sp->transform->OffsetPseudoRenderBox, realWorldScale, sp->transform->scale));
-	sp->transform->hitBox.setPosition(realWorldPosition + Multiple(sp->transform->OffsetHitBox, realWorldScale, sp->transform->scale));
-	sp->transform->renderBox.setScale(sp->transform->scale);
-	sp->transform->pseudoRenderBox.setScale(sp->transform->scale);
-	sp->transform->hitBox.setScale(sp->transform->scale);
+	sp->transform->renderBox.setPosition(realWorldPosition +sp->transform->OffsetRenderBox);
+	sp->transform->pseudoRenderBox.setPosition(realWorldPosition + sp->transform->OffsetPseudoRenderBox);
+	sp->transform->hitBox.setPosition(realWorldPosition + sp->transform->OffsetHitBox);
 	for (int i = 0; i < sp->transform->childs.size(); i++) {
 		if (!sp->transform->childs[i].expired()) {
-			MoveAllSprites(sp->transform->childs[i], b + 1, realWorldPosition, Multiple(sp->transform->scale, realWorldScale));
-			v.push_back(sp->transform->childs[i]);
-			sp->transform->childs[i].lock()->transform->childIndex = (int)v.size() - 1;
-		}
-	}
-	sp->transform->childs = v;
-}
-void DrawAllSprites(weak_ptr<GameSprite> a) {
-	vector< weak_ptr<GameSprite> > v;
-	shared_ptr<GameSprite> sp = a.lock();
-	//WorldControl::window().draw(sp->transform.hitBox);
-	WorldControl::window().draw(sp->transform->renderBox);
-	for (int i = 0; i < sp->transform->childs.size(); i++) {
-		if (!sp->transform->childs[i].expired()) {
-			DrawAllSprites(sp->transform->childs[i]);
-		}
-	}
-}
-void MoveAndDrawAllSprites(weak_ptr<GameSprite> a, int b,Vector2f realWorldPosition,Vector2f realWorldScale) {
-	vector< weak_ptr<GameSprite> > v;
-	shared_ptr<GameSprite> sp=a.lock();
-	realWorldPosition += Multiple(sp->transform->position, realWorldScale);
-	sp->transform->hitBox.setPosition(realWorldPosition + Multiple(sp->transform->OffsetHitBox, realWorldScale, sp->transform->scale));
-	sp->transform->renderBox.setPosition(realWorldPosition+Multiple(sp->transform->OffsetRenderBox,realWorldScale, sp->transform->scale) );
-	sp->transform->pseudoRenderBox.setPosition(realWorldPosition + Multiple(sp->transform->OffsetPseudoRenderBox, realWorldScale, sp->transform->scale));
-	sp->transform->hitBox.setScale(sp->transform->scale);
-	sp->transform->renderBox.setScale(sp->transform->scale);
-	sp->transform->pseudoRenderBox.setScale(sp->transform->scale);
-	WorldControl::window().draw(sp->transform->hitBox);
-	WorldControl::window().draw(sp->transform->renderBox);
-	WorldControl::window().draw(sp->transform->pseudoRenderBox);
-	for (int i = 0; i < sp->transform->childs.size(); i++) {
-		if (!sp->transform->childs[i].expired()) {
-			MoveAndDrawAllSprites(sp->transform->childs[i], b + 1,realWorldPosition,Multiple(sp->transform->scale , realWorldScale));
+			MoveAllSprites(sp->transform->childs[i], b + 1, realWorldPosition,  realWorldScale);
 			v.push_back(sp->transform->childs[i]);
 			sp->transform->childs[i].lock()->transform->childIndex = (int)v.size() - 1;
 		}

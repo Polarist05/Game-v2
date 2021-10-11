@@ -1,5 +1,6 @@
 #pragma once
 #include "Tile.h"
+#include "Walkable.h"
 #include <string>
 #define RSIZEX 8
 #define RSIZEY 6
@@ -9,18 +10,18 @@ enum  Align
 	HoriZontal
 };
 enum ObjectType {
+	Null,
+	ChargeSoul,
+	Bell,
+	Hook,
+	Portal,
+	Strawberry,
+	MovingPlatform,
 	Switch,
 	PlacingSwitch,
 	Gate,
 	Laser,
-	Portal,
-	ChargeSoul,
-	Bell,
-	Hook,
-	Strawberry,
-	Stone,
-	MovingPlatform,
-	Null
+	Stone
 };
 enum RoomType {
 	Type00,
@@ -45,29 +46,43 @@ struct RoomData
 	std::vector<vector<bool> > floor;
 	std::vector<vector<int> > objects;
 	std::vector<vector<int> > track;
+	int BerryAmount = 0;
 };
 class Room:public Tilemap
 {
 	RoomData rooomData;
-	vector<weak_ptr<Area> > Objects;
+	map<ObjectType,vector<weak_ptr<Area> > > Objects;
 	Vector2i roomPosition;
 public:
+	weak_ptr<Area> areas[RSIZEY][RSIZEX];
 	vector<weak_ptr<Area> > Walls;
+	static const vector<ObjectType>& WalkableObjectTypes();
+	static const vector<ObjectType>& UnwalkableObjectTypes();
+	static const vector<ObjectType>& MeleeAttackableObjectTypes();
+	static const vector<ObjectType>& HookAbleableObjectTypes();
+	static const vector<ObjectType>& HookingCanclerObjectTypes();
+
 	Room();
 	Room(std::string s);
+	
 	void SetRoom(const Vector2i& roomPosition);
-	weak_ptr<Area> areas[RSIZEY][RSIZEX];
-	void SetRoom1(RoomData roomData);
-	void ResetRoom();
+	void SetAllObjectsInRoom(RoomData roomData);
 	void SetFloor();
-	void SetObject();
+
+	void ResetRoom();
 	void LoadNearbyRoom();
 	void Update() override;
 	void UnLoadNearbyRoom();
+	
 	Vector2f MiddlePositionOfRoom();
+	
 	static RoomType GetRoomType(const Align& align, Vector2i roomPosition);
 	static void SetObjectTypeString();
 	static std::string ObjectTypeToString(const ObjectType& objectType);
+	
+	void CheckCollisionBetweenAttackHitBoxAndObject();
+	void CheckCollisionRingHitBoxAndMeleeAttackableObject(weak_ptr<GameSprite> bell);
+	void CheckNearestObjectHooking();
 private:
 	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
 	static RoomType GetRoomType(const Align& align, const int& xSum, const int& ySum);
@@ -75,4 +90,5 @@ private:
 	void CheckCollisionBetweenPlayerAndWall();
 	void CheckCollisionBetweenPlayerAndObject();
 	void CheckCollisionBetweenPlayerAndRoomEdge();
+	void CheckCollisionBetweenPlayerAndHookingCancler();
 };

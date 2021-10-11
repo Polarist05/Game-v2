@@ -29,12 +29,13 @@ public:
 	static map<std::string, Texture>& objectsPrefab();
 	static Dungeon& getMainDungeon();
 	static bool& isGamePlaying();
-	static Vector2i& GetCurrentRoom();
 	static Texture* playerPrefab();
-	//Set
-	static void SetCurrentRoom(const Vector2i& currentRoom);
+	
+	static weak_ptr<Room> GetCurrentRoom();
+	static Vector2i& GetCurrentRoomPosition();
+	static void SetCurrentRoomPositon(const Vector2i& currentRoom);
+	
 	static void SetMainDungeon(Dungeon* MainDungeon);
-	//
 	static void SaveAllRoomPrefab();
 	static void SetUsedRoomPrefab();
 	

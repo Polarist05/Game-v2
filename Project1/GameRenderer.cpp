@@ -14,7 +14,7 @@ void GameRenderer::FindPlayerAndObject(weak_ptr<GameSprite> a, vector<weak_ptr<G
 	}
 }
 void GameRenderer::RenderAll() {
-	window().draw(WControl::getMainDungeon().Rooms[WControl::GetCurrentRoom().y][WControl::GetCurrentRoom().x].lock()->GetTransform()->renderBox);
+	window().draw(WControl::GetCurrentRoom().lock()->GetTransform()->renderBox);
 	RenderWallAndFloor();
 	//RenderKnife();
 	RenderPlayerAndObject();
@@ -25,9 +25,9 @@ void GameRenderer::RenderAll() {
 void GameRenderer::RenderWallAndFloor()
 {
 	if (WorldControl::isGamePlaying()) {
-		int y = WControl::GetCurrentRoom().y, x = WControl::GetCurrentRoom().x;
-		RenderFloorAt(WControl::getMainDungeon().Rooms[y][x]);
-		RenderWallAt(WControl::getMainDungeon().Rooms[y][x]);
+		RenderFloorAt(WControl::GetCurrentRoom());
+		RenderWallAt(WControl::GetCurrentRoom());
+		int y = WControl::GetCurrentRoomPosition().y, x = WControl::GetCurrentRoomPosition().x;
 		if (y + 1 < 5) {
 			RenderFloorAt(WControl::getMainDungeon().Rooms[y + 1][x]);
 			RenderWallAt(WControl::getMainDungeon().Rooms[y + 1][x]);
@@ -80,6 +80,7 @@ void GameRenderer::RenderPlayerAndObject()
 		window().draw(v[v1[i].second].lock()->transform->hitBox);
 		window().draw(v[v1[i].second].lock()->transform->renderBox);
 	}
+	window().draw(WControl::player().lock()->hookGuideLine);
 }
 void GameRenderer::RenderUI() {}
 void GameRenderer::RenderSettingView() {}
