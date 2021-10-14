@@ -28,6 +28,12 @@
     <Filter Include="Header Files\Objects">
       <UniqueIdentifier>{0d9345e4-f8f0-427b-b68c-13b5b3564f93}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Objects\Blocks">
+      <UniqueIdentifier>{e0c3a3b2-5159-4d29-8287-51e5b52fc692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Objects\Blocks">
+      <UniqueIdentifier>{6e725bf8-f8c8-495f-8bf9-aabc1cf2a45a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -74,6 +80,15 @@
     </ClCompile>
     <ClCompile Include="BellClass.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Knife.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NormalBlockClass.cpp">
+      <Filter>Source Files\Objects\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteBlockClass.cpp">
+      <Filter>Source Files\Objects\Blocks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,8 +137,20 @@
     <ClInclude Include="ChargeSoulClass.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Knife.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KnifeInteractable.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
     <ClInclude Include="BellClass.h">
-      <Filter>Header Files\Tilemap</Filter>
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalBlockClass.h">
+      <Filter>Header Files\Objects\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteBlockClass.h">
+      <Filter>Header Files\Objects\Blocks</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -18,10 +18,13 @@ enum ObjectType {
 	Strawberry,
 	MovingPlatform,
 	Switch,
+	NormalBlock,
+	DeleteBlock,
+	SignalBlock,
+	MoveableBlock,
 	PlacingSwitch,
-	Gate,
-	Laser,
-	Stone
+	Laser
+	
 };
 enum RoomType {
 	Type00,
@@ -55,12 +58,13 @@ class Room:public Tilemap
 	Vector2i roomPosition;
 public:
 	weak_ptr<Area> areas[RSIZEY][RSIZEX];
-	vector<weak_ptr<Area> > Walls;
+	vector<weak_ptr<Area> > Walls[4];
 	static const vector<ObjectType>& WalkableObjectTypes();
 	static const vector<ObjectType>& UnwalkableObjectTypes();
 	static const vector<ObjectType>& MeleeAttackableObjectTypes();
 	static const vector<ObjectType>& HookAbleableObjectTypes();
 	static const vector<ObjectType>& HookingCanclerObjectTypes();
+	static const vector<ObjectType>& KnifeInteractableObjectTypes();
 
 	Room();
 	Room(std::string s);
@@ -91,4 +95,5 @@ private:
 	void CheckCollisionBetweenPlayerAndObject();
 	void CheckCollisionBetweenPlayerAndRoomEdge();
 	void CheckCollisionBetweenPlayerAndHookingCancler();
+	void CheckCollisionOfKnife();
 };

@@ -2,9 +2,11 @@
 #include "SFML.h"
 #include "GameSprite.h"
 #include "Dungeon.h"
+#include "Knife.h"
+#include <queue>
 #define ATTACK_DURATION 800
 #define MAX_SOUL 4
-#define THROWING_LEVEL 0
+#define THROWING_LEVEL 85
 #define GUIDELINE_THICKNESS 10
 #define HOOKIN_MOVEMENT_X_PER_FRAME 20
 #define HOOKIN_MOVEMENT_Y_PER_FRAME 20
@@ -16,14 +18,17 @@ private:
 	clock_t StartMeleeAttackTime;
 	int soul = 0;
 	int score = 0;
-	Vector2f OffsetThrowingKnife = Vector2f(0, THROWING_LEVEL);
+	
 public:
+	Vector2f OffsetThrowingKnife = Vector2f(0, -THROWING_LEVEL);
+	queue<weak_ptr<Knife> > knifes;
 	bool canHook;
 	bool isHoldHookButton = false;
 	bool isHooking=false;
 	Direction HoldingDirection;
 	
-	Vector2f& LastPosition();
+	Vector2f& StartPosition();
+	Vector2f& EndPosition();
 	void ActivateHooking();
 	void CancleHooking();
 

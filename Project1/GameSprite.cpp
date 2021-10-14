@@ -187,7 +187,7 @@ void GameSprite::GameTransform::SetAnchorType(AnchorType _anchor, BoxType boxTyp
 	}
 }
 void GameSprite::GameTransform::Move(Vector2f v) {position += v;}
-void GameSprite::GameTransform::MoveOffset(Vector2f v, BoxType boxType) {
+void GameSprite::GameTransform::MoveOffset(const Vector2f& v,const BoxType& boxType) {
 	Vector2f* _offsetBox = &OffsetHitBox;
 	switch (boxType)
 	{
@@ -252,6 +252,19 @@ void GameSprite::GameTransform::SetAllSpriteOffset(const SpriteOffsetData& sprit
 		SetSize(spriteOffsetData.hitBoxSize * spriteOffsetData.scale, BoxType::HitBox);
 		hitBox.setFillColor(Color::Blue);
 		SetPositionOffset(spriteOffsetData.hitboxOffset * spriteOffsetData.scale + spriteOffsetData.allOffset, HitBox);
+		SetPositionOffset(spriteOffsetData.allOffset, RenderBox);
+		SetPositionOffset(spriteOffsetData.allOffset, PseudoRenderBox);
+		SetAnchorType(AnchorType::DownCentor, HitBox, FIX_ALL_RECT_POSITION);
+	}
+}
+void GameSprite::GameTransform::SetAllSpriteOffset(const SpriteOffsetData& spriteOffsetData,const Vector2f& scale) {
+	{
+		renderBox.setTextureRect(IntRect(spriteOffsetData.startPixel, spriteOffsetData.renderPixelSize));
+		SetSize(Multiple((Vector2f)spriteOffsetData.renderPixelSize , scale) , BoxType::RenderBox);
+		SetSize(Multiple((Vector2f)spriteOffsetData.renderPixelSize ,scale) , BoxType::PseudoRenderBox);
+		SetSize(Multiple(spriteOffsetData.hitBoxSize , scale) , BoxType::HitBox);
+		hitBox.setFillColor(Color::Blue);
+		SetPositionOffset(Multiple(spriteOffsetData.hitboxOffset ,scale)  + spriteOffsetData.allOffset, HitBox);
 		SetPositionOffset(spriteOffsetData.allOffset, RenderBox);
 		SetPositionOffset(spriteOffsetData.allOffset, PseudoRenderBox);
 		SetAnchorType(AnchorType::DownCentor, HitBox, FIX_ALL_RECT_POSITION);

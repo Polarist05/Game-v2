@@ -1,7 +1,8 @@
 #pragma once
 #include "Tile.h"
 #include "Walkable.h"
-class PortalClass:public Area,public Walkable
+#include "KnifeInteractable.h"
+class PortalClass:public Area,public Walkable,public KnifeInteractable
 {
 	Uint32 lastCollisionTime =0;
 public:
@@ -10,5 +11,6 @@ public:
 	PortalClass(std::string s);
 	void WalkThroughActivate()override;
 	bool Linking(weak_ptr<PortalClass> pairPortal);
+	void interacting(weak_ptr<Knife> knife) override;
 };
 

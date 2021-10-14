@@ -5,6 +5,13 @@
 #define FIX_ONLY_ANCHOR_POSITION 0
 #define FIX_ALL_RECT_POSITION 1
 using namespace std;
+enum Direction
+{
+	Up,
+	Down,
+	Right,
+	Left
+};
 enum AnchorType
 {
 	TopLeft,
@@ -22,7 +29,7 @@ enum RenderPriorityType
 	Setting,
 	UI,
 	PlayerAndObject,
-	Knife,
+	KnifeType,
 	Floor
 };
 enum BoxType
@@ -76,7 +83,8 @@ protected:
 		Vector2f GetRealposition();
 		void SetPositionOffset(Vector2f v, BoxType boxType);
 		void SetAllSpriteOffset(const SpriteOffsetData& spriteOffsetData);
-		void MoveOffset(Vector2f v, BoxType boxType);
+		void SetAllSpriteOffset(const SpriteOffsetData& spriteOffsetData,const Vector2f& scale);
+		void MoveOffset(const Vector2f& v,const BoxType& boxType);
 		void virtual Move(Vector2f v);
 
 		void SetAnchorType(AnchorType _anchor, BoxType boxType, bool FIXTYPE);

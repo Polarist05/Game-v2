@@ -20,3 +20,14 @@ bool PortalClass::Linking(weak_ptr<PortalClass> pairPortal) {
 		return false;
 	}
 }
+
+void PortalClass::interacting(weak_ptr<Knife> knife)
+{
+	if (!pairPortal.expired()) {
+		if (clock() - knife.lock()->startCollisionTimeWithPortal > 50) {
+			knife.lock()->transform->position = pairPortal.lock()->GetTransform()->GetRealposition()- knife.lock()->transform->OffsetPseudoRenderBox;
+		
+		}
+		knife.lock()->startCollisionTimeWithPortal = clock();
+	}
+}

@@ -2,8 +2,10 @@
 #include "WorldControl.h"
 #include "Collision.h"
 
-Vector2f _lastPosition;
-Vector2f& Player::LastPosition() { return _lastPosition; }
+Vector2f _endPosition;
+Vector2f& Player::EndPosition() { return _endPosition; }
+Vector2f _startPosition;
+Vector2f& Player::StartPosition() { return _startPosition; }
 
 Player::Player(std::string s) { name = s; transform->RenderPriority = RenderPriorityType::PlayerAndObject; }
 void Player::Start() {
@@ -21,37 +23,48 @@ void Player::Update() {
 		meleeAttackHitbox.lock()->transform->hitBox.setFillColor(Color::Transparent);
 	}
 	if (isHooking) {
-		if (transform->hitBox.getPosition().x > _lastPosition.x) {
-			if (transform->hitBox.getPosition().x - _lastPosition.x > HOOKIN_MOVEMENT_X_PER_FRAME) {
+		if (StartPosition().x > EndPosition().x) {
+			if (StartPosition().x - EndPosition().x > HOOKIN_MOVEMENT_X_PER_FRAME) {
 				transform->Move(Vector2f(-HOOKIN_MOVEMENT_X_PER_FRAME, 0));
+				StartPosition() += Vector2f(-HOOKIN_MOVEMENT_X_PER_FRAME, 0);
 			}
 			else {
-				transform->Move(Vector2f(_lastPosition.x - transform->hitBox.getPosition().x, 0));
+				transform->Move(Vector2f(EndPosition().x - StartPosition().x, 0));
+				StartPosition() += Vector2f(-HOOKIN_MOVEMENT_X_PER_FRAME, 0);
+				
 			}
 		}
-		else if (transform->hitBox.getPosition().x < _lastPosition.x) {
-			if (_lastPosition.x- transform->hitBox.getPosition().x  > HOOKIN_MOVEMENT_X_PER_FRAME)
+		else if (StartPosition().x < EndPosition().x) {
+			if (EndPosition().x - StartPosition().x > HOOKIN_MOVEMENT_X_PER_FRAME) {
 				transform->Move(Vector2f(HOOKIN_MOVEMENT_X_PER_FRAME, 0));
-			else
-				transform->Move(Vector2f(_lastPosition.x - transform->hitBox.getPosition().x, 0));
+				StartPosition() += Vector2f(HOOKIN_MOVEMENT_X_PER_FRAME, 0);
+			}
+			else {
+				transform->Move(Vector2f(EndPosition().x - StartPosition().x, 0));
+				StartPosition() += Vector2f(EndPosition().x - StartPosition().x, 0);
+			}
 		}
-		if (transform->hitBox.getPosition().y > _lastPosition.y) {
-			if (transform->hitBox.getPosition().y - _lastPosition.y > HOOKIN_MOVEMENT_Y_PER_FRAME) {
+		if (StartPosition().y > EndPosition().y) {
+			if (StartPosition().y - EndPosition().y > HOOKIN_MOVEMENT_Y_PER_FRAME) {
 				transform->Move(Vector2f(0, -HOOKIN_MOVEMENT_Y_PER_FRAME));
+				StartPosition() += Vector2f(0, -HOOKIN_MOVEMENT_Y_PER_FRAME);
 			}
 			else {
-				transform->Move(Vector2f(0, _lastPosition.y - transform->hitBox.getPosition().y));
+				transform->Move(Vector2f(0, EndPosition().y - StartPosition().y));
+				StartPosition() += Vector2f(0, EndPosition().y - StartPosition().y);
 			}
 		}
-		else if (transform->hitBox.getPosition().y < _lastPosition.y) {
-			if (_lastPosition.y - transform->hitBox.getPosition().y > HOOKIN_MOVEMENT_Y_PER_FRAME) {
+		else if (StartPosition().y < EndPosition().y) {
+			if (EndPosition().y - StartPosition().y > HOOKIN_MOVEMENT_Y_PER_FRAME) {
 				transform->Move(Vector2f(0, HOOKIN_MOVEMENT_Y_PER_FRAME));
+				StartPosition() += Vector2f(0, HOOKIN_MOVEMENT_Y_PER_FRAME);
 			}
 			else {
-				transform->Move(Vector2f(0, _lastPosition.y - transform->hitBox.getPosition().y));
+				transform->Move(Vector2f(0, EndPosition().y - StartPosition().y));
+				StartPosition() += Vector2f(0, EndPosition().y - StartPosition().y);
 			}
 		}
-		if (transform->hitBox.getPosition() == _lastPosition) {
+		if (StartPosition() ==  EndPosition()) {
 			CancleHooking();
 		}
 	}

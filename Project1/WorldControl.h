@@ -14,6 +14,7 @@ class WorldControl:public GameBaseClass {
 	static void LoadAllRoomPrefab();
 	static void LoadAllObjectPrefab();
 	static void LoadPlayerPerfab();
+	static void LoadOtherPrefab();
 public:
 	//local variable
 	static RenderWindow& window();
@@ -27,6 +28,7 @@ public:
 	static map<std::string, pair<pair<bool, bool>,vector< RoomData > > >& allRoomPrefabs();
 	static map< RoomType, vector< RoomData > >& usedRoomPrefabs();
 	static map<std::string, Texture>& objectsPrefab();
+	static map<std::string, Texture>& otherPrefab();
 	static Dungeon& getMainDungeon();
 	static bool& isGamePlaying();
 	static Texture* playerPrefab();

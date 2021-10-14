@@ -1,34 +1,8 @@
 #include "Collision.h"
+#include < algorithm >
 Range2f::Range2f() :min(0), max(0) {}
-Range2f::Range2f(float min, float max) :min(min), max(max) {}
-void Range2f::operator *(const Range2f& a) {
-	min *= a.min;
-	max *= a.max;
-}
-void Range2f::operator +(const Range2f& a) {
-	min += a.min;
-	max += a.max;
-}
-void Range2f::operator -(const Range2f& a) {
-	min -= a.min;
-	max -= a.max;
-}
-void Range2f::operator /(const Range2f& a) {
-	min /= a.min;
-	max /= a.max;
-}
-void Range2f::operator =(const Range2f& a) {
-	min = a.min;
-	max = a.max;
-}
-void Range2f::operator *(const float& a) {
-	min *= a;
-	max *= a;
-}
-void Range2f::operator /(const float& a) {
-	min /= a;
-	max /= a;
-}
+Range2f::Range2f(const float& point1,const float& point2) :min(std::min(point1, point2)), max(std::max(point1,point2)) {  }
+
 
 
 Vector2f Multiple(const Vector2f& a, const Vector2f& b);
@@ -43,10 +17,10 @@ bool  Collision::inBetween(const float& left,const float& middle,const float& ri
 }
 bool Collision::isCollision(const RectangleShape& rect1,const RectangleShape& rect2)
 {
-	Vector2f minRect1 = rect1.getPosition() - Multiple(rect1.getOrigin(), rect1.getScale());
-	Vector2f maxRect1 = minRect1 + Multiple(rect1.getSize(), rect1.getScale());
-	Vector2f minRect2 = rect2.getPosition() - Multiple(rect2.getOrigin(), rect2.getScale()); ;
-	Vector2f maxRect2 = minRect2 + Multiple(rect2.getSize(), rect2.getScale());
+	Vector2f minRect1 = rect1.getPosition() -rect1.getOrigin();
+	Vector2f maxRect1 = minRect1 + rect1.getSize();
+	Vector2f minRect2 = rect2.getPosition() - rect2.getOrigin() ;
+	Vector2f maxRect2 = minRect2 + rect2.getSize();
 	if (maxRect1.x - minRect2.x > 0 && maxRect2.x - minRect1.x > 0)
 		if (maxRect1.y - minRect2.y > 0 && maxRect2.y - minRect1.y > 0)
 			return true;
@@ -54,8 +28,8 @@ bool Collision::isCollision(const RectangleShape& rect1,const RectangleShape& re
 }
 bool Collision::isCollision(const RectangleShape& rect1, const Range2f& RangeX2, const Range2f& RangeY2)
 {
-	Vector2f minRect1 = rect1.getPosition() - Multiple(rect1.getOrigin(), rect1.getScale());
-	Vector2f maxRect1 = minRect1 + Multiple(rect1.getSize(), rect1.getScale());
+	Vector2f minRect1 = rect1.getPosition() - rect1.getOrigin();
+	Vector2f maxRect1 = minRect1 + rect1.getSize();
 	Vector2f minRect2(RangeX2.min,RangeY2.max);
 	Vector2f maxRect2(RangeX2.max,RangeY2.max);
 	if (maxRect1.x - minRect2.x > 0 && maxRect2.x - minRect1.x > 0)
@@ -65,15 +39,17 @@ bool Collision::isCollision(const RectangleShape& rect1, const Range2f& RangeX2,
 }
 bool Collision::isCollision(const RectangleShape& rect,const Line& line)
 {
-	Vector2f pos1 = rect.getPosition() - Multiple(rect.getOrigin(), rect.getScale());
-	Vector2f pos4 = pos1 + Multiple(rect.getSize(), rect.getScale());
-	Vector2f pos2(pos1.x, pos4.y);
-	Vector2f pos3(pos4.x, pos1.x);
-	Line rectLines[4] = { Line(pos1,pos2),Line(pos1,pos3),Line(pos3,pos4),Line(pos2,pos4) };
-	for (int i = 0; i < 4; i++) {
-		if (isCollision(line, rectLines[i]))
+	Vector2f minRect = rect.getPosition() - rect.getOrigin();
+	Vector2f maxRect = minRect + rect.getSize();
+	Range2f rangeX,rangeY;
+	float deltaY = line.point[1].y - line.point[0].y, deltaX = line.point[1].x - line.point[0].x;
+	if (findIntercept(Range2f(minRect.x, maxRect.x), Range2f(line.point[0].x, line.point[1].x), rangeX)) {
+		rangeY = Range2f(line.point[0].x + (rangeX.min - minRect.x) * deltaY / deltaX, line.point[0].x + (rangeX.max - minRect.x) * deltaY / deltaX);
+		if (isIntercept(Range2f(minRect.y, maxRect.y), Range2f(rangeY.min, rangeY.max))) {
 			return true;
+		}
 	}
+	return false;
 }
 bool Collision::isCollision(const Line& line1, const Line& line2)
 {
@@ -179,16 +155,18 @@ bool Collision::findShortestCollisionDistance(Vector2f& result, const Range2f& m
 bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const Vector2f& point, const vector<RectangleShape>& Rects, const Direction& direction) {
 	float mn = FLT_MAX;
 	if (direction == Direction::Right) {
+		float sizeX;
 		for (size_t i = 0; i < Rects.size(); i++)
 		{
 			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
 			Vector2f maxPos = minPos + Rects[i].getSize();
 			if (inBetween(minPos.y, point.y, maxPos.y) && minPos.x > point.x && minPos.x - point.x < mn) {
 				mn = minPos.x - point.x;	
+				sizeX = (maxPos.x - minPos.x)/2;
 			}
 		}
 		if (mn != FLT_MAX) {
-			result = point + Vector2f(mn, 0);
+			result = point + Vector2f(mn+sizeX, 0);
 			return true;
 		}
 		else
@@ -197,16 +175,18 @@ bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const 
 		}
 	}
 	else if (direction == Direction::Left) {
+		float sizeX;
 		for (size_t i = 0; i < Rects.size(); i++)
 		{
 			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
 			Vector2f maxPos = minPos + Rects[i].getSize();
 			if (inBetween(minPos.y, point.y, maxPos.y) && maxPos.x < point.x && point.x - maxPos.x < mn) {
 				mn = point.x - maxPos.x;
+				sizeX = (maxPos.x - minPos.x)/2;
 			}
 		}
 		if (mn != FLT_MAX) {
-			result = point + Vector2f(-mn, 0);
+			result = point + Vector2f(-mn-sizeX, 0);
 			return true;
 		}
 		else
@@ -215,16 +195,18 @@ bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const 
 		}
 	}
 	else if (direction == Direction::Down) {
+		float sizeY;
 		for (size_t i = 0; i < Rects.size(); i++)
 		{
 			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
 			Vector2f maxPos = minPos + Rects[i].getSize();
 			if (inBetween(minPos.x, point.x, maxPos.x) && minPos.y > point.y && minPos.y-point.y < mn) {
 				mn = minPos.y - point.y;
+				sizeY = (maxPos.y - minPos.y)/2;
 			}
 		}
 		if (mn != FLT_MAX) {
-			result = point + Vector2f(0, mn);
+			result = point + Vector2f(0, mn+sizeY);
 			return true;
 		}
 		else
@@ -250,4 +232,16 @@ bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const 
 			return false;
 		}
 	}
+}
+bool Collision::isIntercept(const Range2f& range1, const Range2f& range2) {
+	float min=std::max(range1.min,range2.min) , max=std::min(range1.max,range1.min);
+	return min < max;
+}
+bool Collision::findIntercept(const Range2f& range1, const Range2f& range2,Range2f& result) {
+	float min = std::max(range1.min, range2.min), max = std::min(range1.max, range1.min);
+	if (min < max) {
+		result = Range2f(min, max);
+		return true;
+	}
+	return false;
 }

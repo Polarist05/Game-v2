@@ -24,7 +24,7 @@ void Destroy(weak_ptr<GameBaseClass> _wp, type_index typeIndex) {
 	if (it == GetAllEntities()[typeIndex].end()) { printf(" Cant find that entity error please check your code\n"); }
 	else {
 		GetAllEntities()[typeIndex].erase(it);
-		if (!_wp.expired()) { printf("It have left some share_ptr somewhere after destroy entity please check your code"); }
+		if (!_wp.expired()) { printf("It have left some share_ptr somewhere after destroy entity please check your code\n"); }
 	}
 }
 

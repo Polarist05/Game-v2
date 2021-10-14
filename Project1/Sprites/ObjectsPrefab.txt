@@ -1,2 +1,14 @@
-7
-Bell ChargeSoul Hook MovingPlatform Portal Strawberry Switch
+13
+ChargeSoul
+Bell
+Hook
+Portal
+Strawberry
+MovingPlatform
+Switch
+NormalBlock
+DeleteBlock
+SignalBlock
+MoveableBlock
+PlacingSwitch
+Laser

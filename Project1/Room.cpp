@@ -7,16 +7,19 @@
 #include "ChargeSoulClass.h"
 #include "PortalClass.h"
 #include "BellClass.h"
+#include "NormalBlockClass.h"
+#include "DeleteBlockClass.h"
 
 #include <iostream>
 #include <time.h>
 #include <stdio.h>
 
-vector<ObjectType> _walkableObjectTypes({ Strawberry, Portal});
-vector<ObjectType> _unwalkableObjectTypes({Bell,ChargeSoul,Hook,Switch});
-vector<ObjectType> _meleeAttackableObjectTypes({ ChargeSoul ,Bell});
-vector<ObjectType> _hookAbleableObjectTypes({ Hook});
-vector<ObjectType> _hookingCanclerObjectTypes({ Hook,Bell,Portal,ChargeSoul});
+vector<ObjectType> _walkableObjectTypes({ Strawberry, Portal ,SignalBlock});
+vector<ObjectType> _unwalkableObjectTypes({ Bell,ChargeSoul,Hook,Switch,NormalBlock,DeleteBlock,MoveableBlock });
+vector<ObjectType> _meleeAttackableObjectTypes({ ChargeSoul ,Bell });
+vector<ObjectType> _hookAbleableObjectTypes({ Hook });
+vector<ObjectType> _hookingCanclerObjectTypes({ Hook,Bell,Portal,ChargeSoul ,NormalBlock,DeleteBlock,MoveableBlock});
+vector<ObjectType> _knifeInteractable({Portal,Bell,DeleteBlock,NormalBlock,SignalBlock});
 
 Room::Room() {}
 Room::Room(std::string s) :Tilemap(s) {}
@@ -26,6 +29,7 @@ const vector<ObjectType>& Room::UnwalkableObjectTypes() { return _unwalkableObje
 const vector<ObjectType>& Room::MeleeAttackableObjectTypes() { return _meleeAttackableObjectTypes; }
 const vector<ObjectType>& Room::HookAbleableObjectTypes() { return _hookAbleableObjectTypes; }
 const vector<ObjectType>& Room::HookingCanclerObjectTypes() { return _hookingCanclerObjectTypes; }
+const vector<ObjectType>& Room::KnifeInteractableObjectTypes() { return _knifeInteractable; }
 
 void Room::SetRoom(const Vector2i& roomPosition) {
 	this->roomPosition = roomPosition;
@@ -43,8 +47,8 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 			case ObjectType::Null:break;
 			case  ObjectType::ChargeSoul:
 			{
-				SpriteOffsetData spriteOffset(Vector2i(32, 23), Vector2i(123, 123), Vector2f(100, 40), Vector2f(0, 40), Vector2f(0, -5), float(0.8));
-				Objects[ChargeSoul].push_back(Instantiate<ChargeSoulClass>("Block"));
+				SpriteOffsetData spriteOffset(Vector2i(32, 23), Vector2i(123, 123), Vector2f(60, 40), Vector2f(0, 40), Vector2f(0, -5), float(0.8));
+				Objects[ChargeSoul].push_back(Instantiate<ChargeSoulClass>("ChargeSoul"));
 				Objects[ChargeSoul][Objects[ChargeSoul].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
 					, RenderPriorityType::PlayerAndObject);
 				Objects[ChargeSoul][Objects[ChargeSoul].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::ChargeSoul)]);
@@ -55,8 +59,8 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 			case  Bell:
 			{
 				Vector2f v(-70, 0);
-				SpriteOffsetData spriteOffset(Vector2i(4, 25), Vector2i(182, 219), Vector2f(120, 50), Vector2f(0, 92), Vector2f(0, -34), float(0.7));
-				Objects[Bell].push_back(Instantiate<BellClass>("Block"));
+				SpriteOffsetData spriteOffset(Vector2i(4, 25), Vector2i(182, 219), Vector2f(120, 90), Vector2f(0, 64), Vector2f(0, -35), float(0.75));
+				Objects[Bell].push_back(Instantiate<BellClass>("Bell"));
 				Objects[Bell][Objects[Bell].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
 					, RenderPriorityType::PlayerAndObject);
 				Objects[Bell][Objects[Bell].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Bell)]);
@@ -67,8 +71,8 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 			}
 			case  Hook:
 			{
-				SpriteOffsetData spriteOffset(Vector2i(34, 29), Vector2i(125, 212), Vector2f(120, 60), Vector2f(0, 75), Vector2f(0, -30), float(0.70));
-				Objects[Hook].push_back(Instantiate<Area>("Block"));
+				SpriteOffsetData spriteOffset(Vector2i(34, 29), Vector2i(125, 212), Vector2f(70, 70), Vector2f(0, 70), Vector2f(0, -40), float(0.80));
+				Objects[Hook].push_back(Instantiate<Area>("Hook"));
 				Objects[Hook][Objects[Hook].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
 					, RenderPriorityType::PlayerAndObject);
 				Objects[Hook][Objects[Hook].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Hook)]);
@@ -78,13 +82,13 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 			}
 			case  Portal:
 			{
-				SpriteOffsetData spriteOffset(Vector2i(1, 21), Vector2i(188, 177), Vector2f(100, 50), Vector2f(0, 70), Vector2f(0, -20), float(0.8));
+				SpriteOffsetData spriteOffset(Vector2i(1, 21), Vector2i(188, 177), Vector2f(150, 80), Vector2f(0, 38), Vector2f(0, -20), float(0.85));
 				Objects[Portal].push_back(Instantiate<PortalClass>("Portal"));
 				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
 					, RenderPriorityType::PlayerAndObject);
 				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Portal)]);
 				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->SetSize(Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->pseudoRenderBox.getSize()-Vector2f(30,30),PseudoRenderBox);
+				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->SetSize(Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->pseudoRenderBox.getSize() - Vector2f(15, 15), PseudoRenderBox);
 				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
 				if (Portals[roomData.objects[i][j] % 10].expired())
 					Portals[roomData.objects[i][j] % 10] = dynamic_pointer_cast<PortalClass>(Objects[Portal][Objects[Portal].size() - 1].lock());
@@ -97,7 +101,7 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 			}
 			case  Strawberry:
 			{
-				SpriteOffsetData spriteOffset(Vector2i(22, 9), Vector2i(154, 205), Vector2f(120, 40), Vector2f(0, 85), Vector2f(0, -20), float(0.7));
+				SpriteOffsetData spriteOffset(Vector2i(22, 9), Vector2i(154, 205), Vector2f(120, 60), Vector2f(0, 70), Vector2f(0, -32), float(0.75));
 				Objects[Strawberry].push_back(Instantiate<StrawberryClass>("Strawberry"));
 				Objects[Strawberry][Objects[Strawberry].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
 					, RenderPriorityType::PlayerAndObject);
@@ -132,12 +136,56 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 			{
 				break;
 			}
-			case  ObjectType::Stone:
+			case  ObjectType::NormalBlock:
 			{
+				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
+				Objects[NormalBlock].push_back(Instantiate<NormalBlockClass>("NormalBlock"));
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+					, RenderPriorityType::PlayerAndObject);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::NormalBlock)]);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset,Vector2f(190./140,1));
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
 				break;
 			}
-			case  ObjectType::Gate:
+			case  ObjectType::DeleteBlock:
 			{
+				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
+				Objects[DeleteBlock].push_back(Instantiate<DeleteBlockClass>("DeleteBlock"));
+				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+					, RenderPriorityType::PlayerAndObject);
+				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::DeleteBlock)]);
+				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
+				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
+				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
+				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				break;
+			}
+			case  ObjectType::SignalBlock:
+			{
+				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
+				Objects[NormalBlock].push_back(Instantiate<NormalBlockClass>("SignalBlock"));
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+					, RenderPriorityType::PlayerAndObject);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::SignalBlock)]);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				break;
+			}
+			case  ObjectType::MoveableBlock:
+			{
+				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
+				Objects[NormalBlock].push_back(Instantiate<NormalBlockClass>("NormalBlock"));
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+					, RenderPriorityType::PlayerAndObject);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::MoveableBlock)]);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
 				break;
 			}
 			}
@@ -183,15 +231,18 @@ void Room::CheckCollisionInRoom() {
 	CheckCollisionBetweenPlayerAndRoomEdge();
 	CheckCollisionBetweenPlayerAndObject();
 	CheckCollisionBetweenPlayerAndWall();
+	CheckCollisionOfKnife();
 	if (WControl::player().lock()->isHooking)
 		CheckCollisionBetweenPlayerAndHookingCancler();
 }
 void Room::CheckCollisionBetweenPlayerAndWall() {
-	for (size_t i = 0; i < Walls.size(); i++) {
-		Vector2f result;
-		if (Collision::findShortestCollisionDistance(result, WControl::player().lock()->transform->hitBox, Walls[i].lock()->GetTransform()->renderBox)) {
-			WControl::player().lock()->lastFrameHitBox.move(result);
-			WControl::player().lock()->transform->Move(Vector2f(result.x, result.y));
+	for (int j = 0; j < 4; j++) {
+		for (size_t i = 0; i < Walls[j].size(); i++) {
+			Vector2f result;
+			if (Collision::findShortestCollisionDistance(result, WControl::player().lock()->transform->hitBox, Walls[j][i].lock()->GetTransform()->renderBox)) {
+				WControl::player().lock()->lastFrameHitBox.move(result);
+				WControl::player().lock()->transform->Move(Vector2f(result.x, result.y));
+			}
 		}
 	}
 }
@@ -263,12 +314,12 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 void Room::CheckCollisionBetweenPlayerAndObject() {
 	{
 		for (int i = 0; i < WalkableObjectTypes().size(); i++) {
-			ObjectType obj= WalkableObjectTypes()[i];
+			ObjectType obj = WalkableObjectTypes()[i];
 			vector<weak_ptr<Area> > v;
 			for (size_t j = 0; j < Objects[obj].size(); j++)
 			{
 				if (!Objects[obj][j].expired()) {
-					if (Collision::isCollision(WControl::player().lock()->transform->pseudoRenderBox, Objects[obj][j].lock()->GetTransform()->pseudoRenderBox)) {
+					if (Collision::isCollision(WControl::player().lock()->transform->hitBox, Objects[obj][j].lock()->GetTransform()->hitBox)) {
 						weak_ptr<Walkable> wp = dynamic_pointer_cast<Walkable>(Objects[obj][j].lock());
 						if (!wp.expired()) {
 							wp.lock()->WalkThroughActivate();
@@ -280,7 +331,7 @@ void Room::CheckCollisionBetweenPlayerAndObject() {
 			Objects[obj] = v;
 		}
 	}
-	if(!WControl::player().lock()->isHooking){
+	if (!WControl::player().lock()->isHooking) {
 		WControl::player().lock()->lastFrameHitBox = WControl::player().lock()->transform->hitBox;
 		for (int i = 0; i < UnwalkableObjectTypes().size(); i++) {
 			ObjectType obj = UnwalkableObjectTypes()[i];
@@ -288,10 +339,10 @@ void Room::CheckCollisionBetweenPlayerAndObject() {
 			for (size_t j = 0; j < Objects[obj].size(); j++)
 			{
 				if (!Objects[obj][j].expired()) {
-					Vector2f result;	
+					Vector2f result;
 					if (Collision::findShortestCollisionDistance(result, WControl::player().lock()->lastFrameHitBox, Objects[obj][j].lock()->GetTransform()->hitBox)) {
 						WControl::player().lock()->lastFrameHitBox.move(result);
-						WControl::player().lock()->transform->Move(Vector2f(result.x , result.y));
+						WControl::player().lock()->transform->Move(Vector2f(result.x, result.y));
 					}
 					v.push_back(Objects[obj][j]);
 				}
@@ -350,22 +401,36 @@ void Room::CheckCollisionBetweenAttackHitBoxAndObject() {
 	}
 }
 void Room::CheckNearestObjectHooking() {
-	float nearestDistance=FLT_MAX;
+	float nearestDistance = FLT_MAX;
 	vector<RectangleShape> rects;
 	for (int i = 0; i < HookAbleableObjectTypes().size(); i++) {
 		ObjectType obj = HookAbleableObjectTypes()[i];
 		vector<weak_ptr<Area> > v;
 		for (size_t j = 0; j < Objects[obj].size(); j++)
 		{
-			if (!Objects[obj][j].expired()){
+			if (!Objects[obj][j].expired()) {
 				rects.push_back(Objects[obj][j].lock()->GetTransform()->pseudoRenderBox);
 				v.push_back(Objects[obj][j]);
 			}
 		}
 		Objects[obj] = v;
 	}
-	Vector2f result =WControl::player().lock()->GetRealThrowingPosition();
-	if (!Collision::findShortestCollisionOfPointAtDirection(result,result, rects, WControl::player().lock()->HoldingDirection)) {
+	{
+		queue<weak_ptr<Knife>> knifes = WControl::player().lock()->knifes;
+		queue<weak_ptr<Knife>> newKnifes;
+		while (!knifes.empty())
+		{
+			weak_ptr<Knife> knife = knifes.front();
+			knifes.pop();
+			if (!knife.expired()) {
+				newKnifes.push(knife);
+				rects.push_back(knife.lock()->transform->pseudoRenderBox);
+			}
+		}
+		WControl::player().lock()->knifes = newKnifes;
+	}
+	Vector2f result = WControl::player().lock()->GetRealThrowingPosition();
+	if (!Collision::findShortestCollisionOfPointAtDirection(result, result, rects, WControl::player().lock()->HoldingDirection)) {
 		switch (WControl::player().lock()->HoldingDirection)
 		{
 		case Right:
@@ -385,13 +450,14 @@ void Room::CheckNearestObjectHooking() {
 	}
 	else {
 		WControl::player().lock()->canHook = true;
-		WControl::player().lock()->LastPosition() = result;
+		WControl::player().lock()->EndPosition() = result;
+		WControl::player().lock()->StartPosition() = WControl::player().lock()->GetRealThrowingPosition();
 	}
 	Vector2f distanceVec = result - WControl::player().lock()->GetRealThrowingPosition();
-	float distance = sqrt(pow(distanceVec.x, 2)+ pow(distanceVec.y, 2));
+	float distance = sqrt(pow(distanceVec.x, 2) + pow(distanceVec.y, 2));
 	WControl::player().lock()->hookGuideLine.setSize(Vector2f(distance, GUIDELINE_THICKNESS));
-	WControl::player().lock()->hookGuideLine.setOrigin(Multiple(WControl::player().lock()->hookGuideLine.getSize(),Vector2f(0.5,0.5)));
-	WControl::player().lock()->hookGuideLine.setPosition(Multiple(result + WControl::player().lock()->GetRealThrowingPosition(),Vector2f(0.5,0.5)) );
+	WControl::player().lock()->hookGuideLine.setOrigin(Multiple(WControl::player().lock()->hookGuideLine.getSize(), Vector2f(0.5, 0.5)));
+	WControl::player().lock()->hookGuideLine.setPosition(Multiple(result + WControl::player().lock()->GetRealThrowingPosition(), Vector2f(0.5, 0.5)));
 }
 void Room::CheckCollisionBetweenPlayerAndHookingCancler() {
 	for (int i = 0; i < HookingCanclerObjectTypes().size(); i++) {
@@ -400,13 +466,45 @@ void Room::CheckCollisionBetweenPlayerAndHookingCancler() {
 		for (size_t j = 0; j < Objects[obj].size(); j++)
 		{
 			if (!Objects[obj][j].expired()) {
-				if (Collision::isCollision(WControl::player().lock()->transform->hitBox, Objects[obj][j].lock()->GetTransform()->pseudoRenderBox)) {
+				if (Collision::isCollision(WControl::player().lock()->transform->hitBox, Objects[obj][j].lock()->GetTransform()->hitBox)) {
 					WControl::player().lock()->CancleHooking();
 				}
 				v.push_back(Objects[obj][j]);
 			}
 		}
 		Objects[obj] = v;
+	}
+}
+void Room::CheckCollisionOfKnife() {
+	for (int i = 0; i < KnifeInteractableObjectTypes().size(); i++) {
+		ObjectType obj = KnifeInteractableObjectTypes()[i];
+		vector<weak_ptr<Area> > v;
+		for (size_t j = 0; j < Objects[obj].size(); j++)
+		{
+			if (!Objects[obj][j].expired()) {
+				queue<weak_ptr<Knife>> knifes = WControl::player().lock()->knifes;
+				queue<weak_ptr<Knife>> newKnifes;
+				while (!knifes.empty())
+				{
+					weak_ptr<Knife> knife = knifes.front();
+					knifes.pop();
+					if (!knife.expired()) {
+						newKnifes.push(knife);
+						if (!knife.lock()->GetIsStop()&&Collision::isCollision(knife.lock()->transform->pseudoRenderBox, Objects[obj][j].lock()->GetTransform()->hitBox)) {
+							weak_ptr<KnifeInteractable> wp = dynamic_pointer_cast<KnifeInteractable>(Objects[obj][j].lock());
+							if (!wp.expired()) {
+								wp.lock()->interacting(knife);
+							}
+						}
+					}
+				}
+				WControl::player().lock()->knifes = newKnifes;
+
+				v.push_back(Objects[obj][j]);
+			}
+		}
+		Objects[obj] = v;
+
 	}
 }
 
@@ -482,13 +580,15 @@ static std::string ObjectTypeString[30];
 void Room::SetObjectTypeString() {
 	ObjectTypeString[(int)ObjectType::Bell] = "Bell";
 	ObjectTypeString[ObjectType::ChargeSoul] = "ChargeSoul";
-	ObjectTypeString[ObjectType::Gate] = "Gate";
 	ObjectTypeString[ObjectType::Hook] = "Hook";
 	ObjectTypeString[ObjectType::Laser] = "Laser";
 	ObjectTypeString[ObjectType::MovingPlatform] = "MovingPlatform";
 	ObjectTypeString[ObjectType::PlacingSwitch] = "PlacingSwitch";
 	ObjectTypeString[ObjectType::Portal] = "Portal";
-	ObjectTypeString[ObjectType::Stone] = "Stone";
+	ObjectTypeString[ObjectType::NormalBlock] = "NormalBlock";
+	ObjectTypeString[ObjectType::DeleteBlock] = "DeleteBlock";
+	ObjectTypeString[ObjectType::SignalBlock] = "SignalBlock";
+	ObjectTypeString[ObjectType::MoveableBlock] = "MoveableBlock";
 	ObjectTypeString[ObjectType::Strawberry] = "Strawberry";
 	ObjectTypeString[ObjectType::Switch] = "Switch";
 	ObjectTypeString[ObjectType::Null] = "";

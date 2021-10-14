@@ -24,6 +24,9 @@ map< RoomType, vector< RoomData > >& WorldControl::usedRoomPrefabs() { return _u
 map<std::string, Texture> _objectsPrefab;
 map<std::string, Texture>& WorldControl::objectsPrefab() { return _objectsPrefab; };
 
+map<std::string, Texture> _otherPrefab;
+map<std::string, Texture>& WorldControl::otherPrefab() { return _otherPrefab; };
+
 weak_ptr<GameSprite> _notRenderSprite = Instantiate<GameSprite>("NotRenderSprite");
 weak_ptr<GameSprite> WorldControl::NotrenderSprite() { return _notRenderSprite; }
 
@@ -60,10 +63,17 @@ View& WorldControl::view() { return _view; }
 Texture _playerPrefab;
 Texture* WorldControl::playerPrefab() { return &_playerPrefab; }
 void WorldControl::LoadData() {
+	LoadOtherPrefab();
 	LoadPlayerPerfab();
 	LoadAllObjectPrefab();
 	LoadAllRoomPrefab();
 	
+}
+void WorldControl::LoadOtherPrefab() {
+	Texture texture;
+	texture.loadFromFile("Sprites\\Knife.png", IntRect(0, 0, 280, 70));
+	texture.setSmooth(true);
+	otherPrefab()["Knife"] = texture;
 }
 void WorldControl::LoadPlayerPerfab() {
 	if (!_playerPrefab.loadFromFile("Sprites\\Player.png", IntRect(0, 0, 150, 250))) {
@@ -73,7 +83,7 @@ void WorldControl::LoadPlayerPerfab() {
 	Vector2f scale(0.8, 0.8);
 	_playerPrefab.setSmooth(true);
 	WControl::player().lock()->transform->renderBox.setTexture(playerPrefab());
-	SpriteOffsetData spriteOffset(Vector2i(26, 26), Vector2i(98, 193), Vector2f(80, 50), Vector2f(0, 85), Vector2f(0, 0), float(0.75));
+	SpriteOffsetData spriteOffset(Vector2i(26, 26), Vector2i(98, 193), Vector2f(80, 65), Vector2f(0, 65), Vector2f(0, 0), float(0.75));
 	player().lock()->transform->SetAllSpriteOffset(spriteOffset);
 	player().lock()->transform->SetSize(player().lock()->transform->pseudoRenderBox.getSize()-Vector2f(20,0), PseudoRenderBox);
 }
@@ -91,15 +101,12 @@ void WorldControl::LoadAllObjectPrefab() {
 		sf::Texture texture;
 		if (!texture.loadFromFile("Sprites\\"+name+".png", IntRect(0, 0, 190, 250))) {
 			cout << "can't load " << name << " objects"<<endl;
-			printf("123\n");
 			continue;
 		}
 		else {
 			texture.setSmooth(true);
-			cout << "321 " << name<<endl;
 			objectsPrefab()[name] = texture;
 		}
-			
 	}
 	t_objectsPrefab.close();
 }
@@ -206,9 +213,6 @@ weak_ptr<GameSprite>GameRenderer::Hierachy() { return _hierarchy; }
 weak_ptr<Tile> Tilemap::TilemapTransform::NotrenderTile() { return _notRenderTile; }
 weak_ptr<Tilemap> Area::AreaTransform::NotrenderTilemap() { return _notRenderTilemap; }
 weak_ptr<WorldControl> WorldControlInstant = Instantiate<WorldControl>();
-/*bool& Room::isGamePlaying() { return _isGamePlaying; };
-Dungeon& Room::getMainDungeon() { return *_MainDungeon; }
-Vector2i& Room::GetCurrentRoom() { return _currentRoom; }*/
 
 Vector2f Multiple(const Vector2f& a, const Vector2f& b) { return Vector2f(a.x * b.x, a.y * b.y); }
 Vector2f Multiple(const Vector2f& a, const Vector2f& b, const Vector2f& c) { return Vector2f(a.x * b.x * c.x, a.y * b.y * c.y); }

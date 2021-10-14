@@ -63,8 +63,10 @@ void GameRenderer::RenderFloorAt(weak_ptr<Room> renderRoom) {
 	}
 }
 void GameRenderer::RenderWallAt(weak_ptr<Room> renderRoom) {
-	for (int i = 0; i < renderRoom.lock()->Walls.size(); i++) {
-		window().draw(renderRoom.lock()->Walls[i].lock()->GetTransform()->renderBox);
+	for (int j = 0; j < 4; j++) {
+		for (int i = 0; i < renderRoom.lock()->Walls[j].size(); i++) {
+			window().draw(renderRoom.lock()->Walls[j][i].lock()->GetTransform()->renderBox);
+		}
 	}
 }
 void GameRenderer::RenderKnife() {}
@@ -73,7 +75,17 @@ void GameRenderer::RenderPlayerAndObject()
 	vector<weak_ptr<GameSprite> > v;
 	vector<pair<float, int > > v1;
 	FindPlayerAndObject(Hierachy(), v, v1);
-	sort(v1.begin(), v1.end());
+	{
+		std::queue<weak_ptr<Knife> > knifes = WControl::player().lock()->knifes;
+		while (!knifes.empty()) {
+			if (!knifes.front().expired()) {
+				v.push_back(knifes.front());
+				v1.push_back({ knifes.front().lock()->transform->pseudoRenderBox.getPosition().y-18,v1.size() });
+			}
+			knifes.pop();
+		}
+	}
+	std::sort(v1.begin(), v1.end());
 	for (int i = 0; i < v.size(); i++)
 	{
 		window().draw(v[v1[i].second].lock()->transform->pseudoRenderBox);

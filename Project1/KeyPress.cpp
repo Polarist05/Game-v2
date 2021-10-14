@@ -2,6 +2,7 @@
 #include "WorldControl.h"
 #include "Player.h"
 #include<iostream>
+#include "Knife.h"
 View& view();
 void KeyHold() {
     float speed=2.0;
@@ -54,6 +55,18 @@ void KeyHold() {
             }
             WControl::player().lock()->isHoldHookButton = false;
             WControl::player().lock()->hookGuideLine.setFillColor(Color::Transparent);
+        }
+        static bool holdThrowingButton;
+        if (Keyboard::isKeyPressed(Keyboard::C)) {
+            
+            if (!holdThrowingButton) {
+                WControl::player().lock()->knifes.push(Instantiate<Knife>());
+                holdThrowingButton = true;
+            }
+        }
+        else
+        {
+            holdThrowingButton = false;
         }
     }
 }

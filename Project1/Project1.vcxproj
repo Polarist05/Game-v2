@@ -149,11 +149,14 @@
   <ItemGroup>
     <ClCompile Include="BellClass.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="DeleteBlockClass.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="GameBaseClass.cpp" />
     <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="GameSprite.cpp" />
     <ClCompile Include="KeyPress.cpp" />
+    <ClCompile Include="Knife.cpp" />
+    <ClCompile Include="NormalBlockClass.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PortalClass.cpp" />
     <ClCompile Include="Room.cpp" />
@@ -165,12 +168,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BellClass.h" />
+    <ClInclude Include="DeleteBlockClass.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="GameBaseClass.h" />
     <ClInclude Include="GameRenderer.h" />
     <ClInclude Include="GameSprite.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Knife.h" />
+    <ClInclude Include="KnifeInteractable.h" />
     <ClInclude Include="MeleeAttackable.h" />
+    <ClInclude Include="NormalBlockClass.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PortalClass.h" />
     <ClInclude Include="Room.h" />
