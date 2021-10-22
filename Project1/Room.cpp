@@ -234,6 +234,7 @@ void Room::CheckCollisionInRoom() {
 	CheckCollisionOfKnife();
 	if (WControl::player().lock()->isHooking)
 		CheckCollisionBetweenPlayerAndHookingCancler();
+	CheckUICollision();
 }
 
 void Room::CheckCollisionBetweenPlayerAndWall() {
@@ -553,6 +554,30 @@ void Room::LoadNearbyRoom() {
 	}
 	if (y - 1 >= 0 && !WControl::getMainDungeon().havePast[y - 1][x] && WControl::getMainDungeon().bHorizonEdge[y][x]) {
 		WControl::getMainDungeon().Rooms[y - 1][x].lock()->SetAllObjectsInRoom(WControl::usedRoomPrefabs()[GetRoomType(Align::Verticle, Vector2i(x, y - 1))][0]);
+	}
+}
+
+void Room::CheckUICollision()
+{
+	Vector2f cursurPos = WControl::view().getCenter() - Multiple(WControl::view().getSize(), Vector2f(0.5, 0.5));
+	cursurPos += Multiple(Vector2f(1/WControl::WorldScale(), 1/WControl::WorldScale()), (Vector2f)Mouse::getPosition(WControl::window()));
+	if (!WControl::clickableSpriteAtCursor().expired()) {
+		if (!Collision::isCollision(WControl::clickableSpriteAtCursor().lock()->transform->hitBox, cursurPos)&&!Mouse::isButtonPressed(Mouse::Button::Left)){
+			WControl::clickableSpriteAtCursor().reset();
+		}
+		else
+			return;
+	}
+	if (!WControl::UIStack().empty()) {
+		for(auto wp : WControl::AllUI()[WControl::UIStack().top()].clickableSprites) {
+			if (Collision::isCollision(wp.lock()->transform->hitBox, cursurPos)) {
+				WControl::clickableSpriteAtCursor() = wp;
+				wp.lock()->transform->renderBox.setFillColor(Color::Yellow);
+			}
+			else {
+				wp.lock()->transform->renderBox.setFillColor(Color::White);
+			}
+		}
 	}
 }
 

@@ -69,4 +69,16 @@ void KeyHold() {
             holdThrowingButton = false;
         }
     }
+    static bool isLeftMouseHold;
+    if (Mouse::isButtonPressed(Mouse::Button::Left)) {
+        if (!isLeftMouseHold)
+            isLeftMouseHold = true;
+    }
+    else if (isLeftMouseHold) {
+        isLeftMouseHold = false;
+        if (!WControl::clickableSpriteAtCursor().expired()) {
+            WControl::clickableSpriteAtCursor().lock()->Activate();
+        }
+    }
+
 }

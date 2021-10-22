@@ -6,4 +6,5 @@ void ToolkitButton::CheckClick()
 
 void ToolkitButton::Activate()
 {
+	printf("Toolkit\n");
 }

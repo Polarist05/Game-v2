@@ -22,20 +22,28 @@ public:
 	//local variable
 	static RenderWindow& window();
 	static float WorldScale();
+	
 	static weak_ptr<GameSprite> NotrenderSprite();
 	static weak_ptr<Tilemap> NotrenderTilemap();
 	static weak_ptr<Tile> MainTile();
+	static weak_ptr<Tile> NotrenderTile();
+
 	static weak_ptr<GameSprite> Hierarchy();
 	static weak_ptr<GameSprite> UIHierarchy();
-	static weak_ptr<Tile> NotrenderTile();
+	
 	static weak_ptr<Player> player();
-	static map<std::string, pair<pair<bool, bool>,vector< RoomData > > >& allRoomPrefabs();
-	static map< RoomType, vector< RoomData > >& usedRoomPrefabs();
+	static weak_ptr<ClickableSprite>& clickableSpriteAtCursor();
+	
+	static map<std::string, pair<pair<bool, bool>,vector< RoomData > > >& allRoomPrefabs();	
 	static map<std::string, Texture>& objectsPrefab();
 	static map<std::string, Texture>& otherPrefab();
+	static Texture* playerPrefab();
+
+	static map< RoomType, vector< RoomData > >& usedRoomPrefabs();
+	
 	static Dungeon& getMainDungeon();
 	static bool& isGamePlaying();
-	static Texture* playerPrefab();
+	
 	static std::stack<UIType>& UIStack();
 	static map<UIType, UI>& AllUI();
 	
@@ -58,5 +66,6 @@ public:
 		MainTile().lock()->transform->position = Vector2f(0, 0);
 		MainTile().lock()->SetAreaSize(Vector2f(AREA_SIZEX, AREA_SIZEY));
 		Room::SetObjectTypeString();
+		UIStack().push(UIType::StartUI);
 	}
 };

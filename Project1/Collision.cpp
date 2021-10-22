@@ -51,6 +51,15 @@ bool Collision::isCollision(const RectangleShape& rect,const Line& line)
 	}
 	return false;
 }
+bool Collision::isCollision(const RectangleShape& rect, const Vector2f& point)
+{
+	Vector2f minRect = rect.getPosition() - rect.getOrigin();
+	Vector2f maxRect = minRect + rect.getSize();
+	if (inBetween(minRect.x, point.x, maxRect.x) && inBetween(minRect.y, point.y, maxRect.y))
+		return true;
+	else
+		return false;
+}
 bool Collision::isCollision(const Line& line1, const Line& line2)
 {
 	float x1 = line1.point[0].x, x2 = line1.point[1].x, y1 = line1.point[0].y, y2 = line1.point[1].y;

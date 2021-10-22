@@ -95,10 +95,11 @@ void GameRenderer::RenderPlayerAndObject()
 	window().draw(WControl::player().lock()->hookGuideLine);
 }
 void GameRenderer::RenderUI() {
-	int size = WControl::AllUI()[UIType::StartUI].clickableSprites.size();
-	for (int i = 0; i < size ; i++) {
-		window().draw(WControl::AllUI()[UIType::StartUI].clickableSprites[i].lock()->transform->hitBox);
-		window().draw(WControl::AllUI()[UIType::StartUI].clickableSprites[i].lock()->transform->renderBox);
+	if (!WControl::UIStack().empty()) {
+		for (auto wp : WControl::AllUI()[WControl::UIStack().top()].clickableSprites) {
+			window().draw(wp.lock()->transform->hitBox);
+			window().draw(wp.lock()->transform->renderBox);
+		}
 	}
 }
 void GameRenderer::RenderSettingView() {}

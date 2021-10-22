@@ -19,6 +19,7 @@ public:
 	static bool isCollision(const RectangleShape& rect1, const RectangleShape& rect2);
 	static bool isCollision(const RectangleShape& rect1, const Range2f& RangeX2, const Range2f& RangeY2);
 	static bool isCollision(const RectangleShape& rect, const Line& line);
+	static bool isCollision(const RectangleShape& rect, const Vector2f& point);
 	static bool isCollision(const Line& line1, const Line& line2);
 	static bool isIntercept(const Range2f& range1, const Range2f& range2);
 	static bool findShortestCollisionDistance(Vector2f& result, const RectangleShape& rect1, const RectangleShape& rect2);

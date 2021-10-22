@@ -52,6 +52,8 @@ Dungeon& WorldControl::getMainDungeon() { return *_MainDungeon; }
 
 weak_ptr<Player> _player=Instantiate<Player>("player");
 weak_ptr<Player> WorldControl::player() { return _player; }
+weak_ptr<ClickableSprite> _clickableSpriteAtCursor;
+weak_ptr<ClickableSprite>& WControl::clickableSpriteAtCursor() { return _clickableSpriteAtCursor; };
 
 bool _isGamePlaying = false;
 bool& WorldControl::isGamePlaying() { return _isGamePlaying; };

@@ -90,10 +90,15 @@ public:
 private:
 	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
 	static RoomType GetRoomType(const Align& align, const int& xSum, const int& ySum);
+	
 	void CheckCollisionInRoom();
+	
 	void CheckCollisionBetweenPlayerAndWall();
 	void CheckCollisionBetweenPlayerAndObject();
 	void CheckCollisionBetweenPlayerAndRoomEdge();
+	
 	void CheckCollisionBetweenPlayerAndHookingCancler();
 	void CheckCollisionOfKnife();
+
+	void CheckUICollision();
 };

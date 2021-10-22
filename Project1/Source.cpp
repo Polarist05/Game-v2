@@ -43,9 +43,10 @@ int main() {
 		}
 		WorldControl::window().setView(WControl::view());
 		MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0), Vector2f(1, 1));
+		KeyHold();
 		ActivateUpdate();
 		gameRenderer.RenderAll();
-		KeyHold();
+		
 		
 		WorldControl::window().display();
 		
