@@ -54,8 +54,8 @@ struct RoomData
 class Room:public Tilemap
 {
 	RoomData rooomData;
-	map<ObjectType,vector<weak_ptr<Area> > > Objects;
 	Vector2i roomPosition;
+	map<ObjectType, vector<weak_ptr<Area> > > Objects;
 public:
 	weak_ptr<Area> areas[RSIZEY][RSIZEX];
 	vector<weak_ptr<Area> > Walls[4];
@@ -77,6 +77,9 @@ public:
 	void LoadNearbyRoom();
 	void Update() override;
 	void UnLoadNearbyRoom();
+
+	void DestroyAllEdge();
+	void DestroyAllObjects();
 	
 	Vector2f MiddlePositionOfRoom();
 	

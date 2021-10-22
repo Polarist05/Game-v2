@@ -34,7 +34,6 @@ const vector<ObjectType>& Room::KnifeInteractableObjectTypes() { return _knifeIn
 void Room::SetRoom(const Vector2i& roomPosition) {
 	this->roomPosition = roomPosition;
 	SetFloor();
-
 }
 void Room::SetAllObjectsInRoom(RoomData roomData) {
 	this->rooomData = roomData;
@@ -193,14 +192,16 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 	}
 }
 void Room::ResetRoom() {
-	for (auto it = Objects.begin(); it != Objects.end(); it++) {
-		for (size_t i = 0; i < Objects.size(); i++)
+	for (auto& Object :Objects) {
+		for (weak_ptr<Area> wp :Object.second)
 		{
-			type_index typeindex = it->second[i].lock()->GetTransform()->typeIndex;
-			Destroy(it->second[i], typeindex);
+			if (!wp.expired()) {
+				type_index typeindex = wp.lock()->GetTransform()->typeIndex;
+				Destroy(wp, typeindex);
+			}
 		}
+		Object.second.clear();
 	}
-	Objects.clear();
 }
 void Room::SetFloor()
 {
@@ -208,7 +209,7 @@ void Room::SetFloor()
 	{
 		for (int j = 0; j < RSIZEX; j++)
 		{
-			areas[i][j] = Instantiate<Area>("123");
+			areas[i][j] = Instantiate<Area>("Floor");
 			if ((i + j) % 2)
 				areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
 					, RenderPriorityType::Floor, Color::Magenta);
@@ -224,6 +225,31 @@ void Room::Update() {
 	{
 		CheckCollisionInRoom();
 	}
+	CheckUICollision();
+}
+
+void Room::DestroyAllEdge()
+{
+	for (auto& wall : Walls) {
+		for (auto wp : wall) {
+			weak_ptr<GameSprite> wp2 = wp.lock()->transform->wp;
+			type_index typeI = wp.lock()->transform->typeIndex;
+			Destroy(wp2, typeI);
+		}
+		wall.clear();
+	}
+}
+void Room::DestroyAllObjects()
+{
+	for (auto& ObjectsByType : Objects) {
+		for (auto object:ObjectsByType.second)
+		{
+			weak_ptr<GameSprite> wp = object.lock()->transform->wp;
+			type_index typeI = object.lock()->transform->typeIndex;
+			Destroy(wp,typeI);
+		}
+		ObjectsByType.second.clear();
+	}
 }
 
 void Room::CheckCollisionInRoom() {
@@ -234,7 +260,6 @@ void Room::CheckCollisionInRoom() {
 	CheckCollisionOfKnife();
 	if (WControl::player().lock()->isHooking)
 		CheckCollisionBetweenPlayerAndHookingCancler();
-	CheckUICollision();
 }
 
 void Room::CheckCollisionBetweenPlayerAndWall() {
@@ -496,7 +521,7 @@ void Room::CheckCollisionOfKnife() {
 					knifes.pop();
 					if (!knife.expired()) {
 						newKnifes.push(knife);
-						if (!knife.lock()->GetIsStop()&&Collision::isCollision(knife.lock()->transform->pseudoRenderBox, Objects[obj][j].lock()->GetTransform()->hitBox)) {
+						if (!knife.lock()->GetIsStop()&&Collision::isCollision(knife.lock()->transform->hitBox, Objects[obj][j].lock()->GetTransform()->hitBox)) {
 							weak_ptr<KnifeInteractable> wp = dynamic_pointer_cast<KnifeInteractable>(Objects[obj][j].lock());
 							if (!wp.expired()) {
 								wp.lock()->interacting(knife);
@@ -627,3 +652,4 @@ void Room::SetObjectTypeString() {
 std::string Room::ObjectTypeToString(const ObjectType& objectType) {
 	return ObjectTypeString[objectType];
 }
+

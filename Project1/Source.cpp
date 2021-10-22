@@ -12,6 +12,7 @@ using namespace sf;
 using namespace std;
 void ActivateUpdate();
 void KeyHold();
+void CheckAllSpriteName(weak_ptr<GameSprite> a, int b);
 class a1 :public GameSprite {
 public:
 	a1(std::string s) :GameSprite(s) {}
@@ -26,13 +27,14 @@ int main() {
 	}
 	Dungeon dungeon;
 	GameRenderer gameRenderer;
-	WorldControl::isGamePlaying() = true;
 	WorldControl::window().setFramerateLimit(60);
 	WorldControl::window().setKeyRepeatEnabled(false);
 	while (WorldControl::window().isOpen())
 	{
-		if (Keyboard::isKeyPressed(Keyboard::J))
-			std::cout << seed <<" " << endl;
+		if (Keyboard::isKeyPressed(Keyboard::J)) {
+			std::cout << seed << " " << endl;
+			CheckAllSpriteName(WControl::Hierarchy(),0);
+		}
 		WorldControl::window().clear(sf::Color::Red);
 		sf::Event event;
 		while (WorldControl::window().pollEvent(event))
@@ -43,8 +45,8 @@ int main() {
 		}
 		WorldControl::window().setView(WControl::view());
 		MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0), Vector2f(1, 1));
-		KeyHold();
 		ActivateUpdate();
+		KeyHold();
 		gameRenderer.RenderAll();
 		
 		

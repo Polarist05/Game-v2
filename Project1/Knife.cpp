@@ -43,7 +43,7 @@ void Knife::Start()
 		break;
 	case Right:
 		transform->SetSize(transform->pseudoRenderBox.getSize(), HitBox);
-		transform->MoveOffset(-WControl::player().lock()->OffsetThrowingKnife -Vector2f(0,WControl::player().lock()->transform->hitBox.getSize().y / 2), PseudoRenderBox);
+		transform->MoveOffset(-WControl::player().lock()->OffsetThrowingKnife -Vector2f(0,WControl::player().lock()->transform->hitBox.getSize().y / 2), HitBox);
 		
 		transform->hitBox.setOrigin(Vector2f(30, transform->pseudoRenderBox.getOrigin().y));
 		transform->renderBox.setOrigin(Vector2f(30, transform->renderBox.getOrigin().y));
@@ -54,7 +54,7 @@ void Knife::Start()
 		break;
 	case Left:
 		transform->SetSize(transform->pseudoRenderBox.getSize(), HitBox);
-		transform->MoveOffset(-WControl::player().lock()->OffsetThrowingKnife - Vector2f(0, WControl::player().lock()->transform->hitBox.getSize().y / 2), PseudoRenderBox);
+		transform->MoveOffset(-WControl::player().lock()->OffsetThrowingKnife - Vector2f(0, WControl::player().lock()->transform->hitBox.getSize().y / 2), HitBox);
 		
 		transform->renderBox.setRotation(180);
 		

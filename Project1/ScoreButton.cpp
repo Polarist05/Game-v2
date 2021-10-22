@@ -1,10 +1,8 @@
 #include "ScoreButton.h"
-
-void ScoreButton::CheckClick()
-{
-}
-
+#include "WorldControl.h"
 void ScoreButton::Activate()
 {
-	printf("SAve\n");
+	WControl::getMainDungeon().ResetDungeon();
+	WControl::isGamePlaying() = false;
+	printf("Score\n");
 }

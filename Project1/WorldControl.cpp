@@ -243,6 +243,14 @@ void WorldControl::LoadAllUI() {
 			wp.lock()->transform->SetPosition(Vector2f(0, 300));
 			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
 		}
+		{
+			weak_ptr<GameSprite> wp = Instantiate<GameSprite>();
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetSize(Vector2f(1920,1080),RenderBox);
+			wp.lock()->transform->renderBox.setFillColor(Color::Black) ;
+			_AllUI[UIType::StartUI].NormalSprites.push_back(wp);
+		}
 	}
 }
 

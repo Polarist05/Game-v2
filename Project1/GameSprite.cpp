@@ -319,8 +319,11 @@ void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f realWorldPosition, V
 	sp->transform->childs = v;
 }
 void CheckAllSpriteName(weak_ptr<GameSprite> a, int b) {
-	for (int i = 0; i < b; i++) { printf("\t"); }
-	cout << a.lock()->name << endl;
+	
+	if (a.lock()->name != "Floor") {
+		for (int i = 0; i < b; i++) { printf("\t"); }
+		cout << a.lock()->name << endl;
+	}
 	vector< weak_ptr<GameSprite> > v;
 	shared_ptr<GameSprite> sp = a.lock();
 	for (int i = 0; i < sp->transform->childs.size(); i++) {

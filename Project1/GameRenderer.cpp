@@ -15,9 +15,10 @@ void GameRenderer::FindPlayerAndObject(weak_ptr<GameSprite> a, vector<weak_ptr<G
 }
 void GameRenderer::RenderAll() {
 	window().draw(WControl::GetCurrentRoom().lock()->GetTransform()->renderBox);
-	RenderWallAndFloor();
-	//RenderKnife();
-	RenderPlayerAndObject();
+	if (WControl::isGamePlaying) {
+		RenderWallAndFloor();
+		RenderPlayerAndObject();
+	}
 	RenderUI();
 	//RenderSettingView();
 
@@ -96,6 +97,10 @@ void GameRenderer::RenderPlayerAndObject()
 }
 void GameRenderer::RenderUI() {
 	if (!WControl::UIStack().empty()) {
+		for (auto wp : WControl::AllUI()[WControl::UIStack().top()].NormalSprites) {
+			window().draw(wp.lock()->transform->hitBox);
+			window().draw(wp.lock()->transform->renderBox);
+		}
 		for (auto wp : WControl::AllUI()[WControl::UIStack().top()].clickableSprites) {
 			window().draw(wp.lock()->transform->hitBox);
 			window().draw(wp.lock()->transform->renderBox);

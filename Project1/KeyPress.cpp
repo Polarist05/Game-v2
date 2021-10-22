@@ -7,9 +7,7 @@ View& view();
 void KeyHold() {
     float speed=2.0;
     shared_ptr<Player> player = WorldControl::player().lock();
-    if (Keyboard::isKeyPressed(Keyboard::Escape))
-        WorldControl::window().close();
-    if (!player->isAttacking&&!player->isHooking) {
+    if (!player->isAttacking&&!player->isHooking&&WControl::isGamePlaying) {
         if (Keyboard::isKeyPressed(Keyboard::A)) {
             player->transform->Move(Vector2f(-2 * speed, 0));
             player->SetPlayerDirection(Direction::Left);
@@ -55,6 +53,9 @@ void KeyHold() {
             }
             WControl::player().lock()->isHoldHookButton = false;
             WControl::player().lock()->hookGuideLine.setFillColor(Color::Transparent);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Escape) && WControl::UIStack().empty()) {
+            WControl::UIStack().push(UIType::StartUI);
         }
         static bool holdThrowingButton;
         if (Keyboard::isKeyPressed(Keyboard::C)) {

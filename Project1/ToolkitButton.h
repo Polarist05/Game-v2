@@ -3,7 +3,6 @@
 class ToolkitButton:public ClickableSprite
 {
 public:
-	void CheckClick() override;
 	void Activate() override;
 };
 
