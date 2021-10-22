@@ -1,5 +1,6 @@
 #include "WorldControl.h"
 #include "GameRenderer.h"
+#include "AllButton.h"
 #include <fstream>
 #include<map>
 #include<vector>
@@ -39,6 +40,9 @@ weak_ptr<Tilemap> WorldControl::NotrenderTilemap() { return _notRenderTilemap; }
 weak_ptr<GameSprite> _hierarchy = Instantiate<GameSprite>("hierarchy");
 weak_ptr<GameSprite> WorldControl::Hierarchy() { return _hierarchy; }
 
+weak_ptr<GameSprite> _UIhierarchy = Instantiate<GameSprite>("UIHierarchy");
+weak_ptr<GameSprite> WorldControl::UIHierarchy() { return _UIhierarchy; }
+
 weak_ptr<Tile> _RenderTile = Instantiate<Tile>("MainTile");
 weak_ptr<Tile> WorldControl::MainTile() { return _RenderTile; }
 
@@ -52,24 +56,40 @@ weak_ptr<Player> WorldControl::player() { return _player; }
 bool _isGamePlaying = false;
 bool& WorldControl::isGamePlaying() { return _isGamePlaying; };
 
+std::stack<UIType> _UIStack;
+std::stack<UIType>& WorldControl::UIStack() { return _UIStack; }
+
+map<UIType, UI> _AllUI;
+map<UIType, UI>& WorldControl::AllUI() { return _AllUI; }
+
+weak_ptr<ClickableSprite> _HoldItem;
+weak_ptr<ClickableSprite> WorldControl::HoldItem() { return _HoldItem; }
+
 Vector2i _currentRoom;
 weak_ptr<Room> WorldControl::GetCurrentRoom() { return getMainDungeon().Rooms[GetCurrentRoomPosition().y][GetCurrentRoomPosition().x]; }
 Vector2i& WorldControl::GetCurrentRoomPosition() { return _currentRoom; }
-void WorldControl::SetCurrentRoomPositon(const Vector2i& currentRoom) { _currentRoom = currentRoom; }
+void WorldControl::SetCurrentRoomPositon(const Vector2i& currentRoom) { 
+	_currentRoom = currentRoom; 
+	SetViewPosition(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom());
+}
 
 View _view(Vector2f(AREA_SIZEX*(RSIZEX+2)*(2.5), AREA_SIZEY* (RSIZEY + 2) * 2.5)-Vector2f(AREA_SIZEX/2.,AREA_SIZEY/2.), Vector2f(1920*viewSize.x , 1080*viewSize.y ));
-View& WorldControl::view() { return _view; }
+View& WControl::view() { return _view; }
+void WControl::SetViewPosition(Vector2f pos) { 
+	WControl::view().setCenter(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom()); 
+	WControl::UIHierarchy().lock()->transform->SetPosition(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom());
+}
 
 Texture _playerPrefab;
-Texture* WorldControl::playerPrefab() { return &_playerPrefab; }
-void WorldControl::LoadData() {
+Texture* WControl::playerPrefab() { return &_playerPrefab; }
+void WControl::LoadData() {
 	LoadOtherPrefab();
 	LoadPlayerPerfab();
 	LoadAllObjectPrefab();
 	LoadAllRoomPrefab();
-	
+	LoadAllUI();
 }
-void WorldControl::LoadOtherPrefab() {
+void WControl::LoadOtherPrefab() {
 	Texture texture;
 	texture.loadFromFile("Sprites\\Knife.png", IntRect(0, 0, 280, 70));
 	texture.setSmooth(true);
@@ -156,6 +176,74 @@ void WorldControl::LoadAllRoomPrefab() {
 	}
 	t_roomsPrefab.close();
 }
+void WorldControl::LoadAllUI() {
+	sf::Texture texture;
+	{
+		_AllUI[UIType::StartUI];
+		std::string path="Sprites\\UI\\StartUI\\";
+		if (texture.loadFromFile(path + "Play" + ".png", IntRect(0, 0, 250, 65))) {
+			Texture* newTexture= new Texture(texture);
+			SpriteOffsetData spriteOffsetData(Vector2i(0,0),Vector2i(250,65),Vector2f(250,65),Vector2f(0,0),Vector2f(0,0),viewSize.x);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<PlayButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, -100));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "Score" + ".png", IntRect(0, 0, 250, 65))) {
+			Texture* newTexture = new Texture(texture);
+			SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(250, 65), Vector2f(250, 65), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<ScoreButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, 0));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "Toolkit" + ".png", IntRect(0, 0, 250, 65))) {
+			Texture* newTexture = new Texture(texture);
+			SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(250, 65), Vector2f(250, 65), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<ToolkitButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, 100));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "Setting" + ".png", IntRect(0, 0, 250, 65))) {
+			Texture* newTexture = new Texture(texture);
+			SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(250, 65), Vector2f(250, 65), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<SettingButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, 200));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "Exit" + ".png", IntRect(0, 0, 250, 65))) {
+			Texture* newTexture = new Texture(texture);
+			SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(250, 65), Vector2f(250, 65), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<ExitButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, 300));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+	}
+}
+
 void WorldControl::SaveAllRoomPrefab() {
 	std::ofstream save("Rooms\\RoomPrefab.txt");
 	save << WorldControl::allRoomPrefabs().size() << endl;
@@ -204,6 +292,7 @@ void WorldControl::SetUsedRoomPrefab() {
 		std::shuffle(WorldControl::usedRoomPrefabs()[(RoomType)i].begin(), WorldControl::usedRoomPrefabs()[(RoomType)i].end(), rng);
 	}
 }
+
 //for.h file
 RenderWindow& Player::window() { return _window; }
 RenderWindow& GameRenderer::window() { return _window; }

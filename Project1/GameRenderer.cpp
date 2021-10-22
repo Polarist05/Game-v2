@@ -18,7 +18,7 @@ void GameRenderer::RenderAll() {
 	RenderWallAndFloor();
 	//RenderKnife();
 	RenderPlayerAndObject();
-	//RenderUI();
+	RenderUI();
 	//RenderSettingView();
 
 }
@@ -94,5 +94,11 @@ void GameRenderer::RenderPlayerAndObject()
 	}
 	window().draw(WControl::player().lock()->hookGuideLine);
 }
-void GameRenderer::RenderUI() {}
+void GameRenderer::RenderUI() {
+	int size = WControl::AllUI()[UIType::StartUI].clickableSprites.size();
+	for (int i = 0; i < size ; i++) {
+		window().draw(WControl::AllUI()[UIType::StartUI].clickableSprites[i].lock()->transform->hitBox);
+		window().draw(WControl::AllUI()[UIType::StartUI].clickableSprites[i].lock()->transform->renderBox);
+	}
+}
 void GameRenderer::RenderSettingView() {}

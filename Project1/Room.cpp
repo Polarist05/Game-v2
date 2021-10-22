@@ -235,6 +235,7 @@ void Room::CheckCollisionInRoom() {
 	if (WControl::player().lock()->isHooking)
 		CheckCollisionBetweenPlayerAndHookingCancler();
 }
+
 void Room::CheckCollisionBetweenPlayerAndWall() {
 	for (int j = 0; j < 4; j++) {
 		for (size_t i = 0; i < Walls[j].size(); i++) {
@@ -354,6 +355,7 @@ void Room::CheckCollisionBetweenPlayerAndObject() {
 		//printf("In");
 	}
 }
+
 void Room::CheckCollisionRingHitBoxAndMeleeAttackableObject(weak_ptr<GameSprite> wp) {
 	weak_ptr<BellClass> bell = dynamic_pointer_cast<BellClass>(wp.lock());
 	if (!bell.expired()) {
@@ -381,6 +383,7 @@ void Room::CheckCollisionRingHitBoxAndMeleeAttackableObject(weak_ptr<GameSprite>
 		printf("You can't check this collision as this is not BellClass\n");
 	}
 }
+
 void Room::CheckCollisionBetweenAttackHitBoxAndObject() {
 	for (int i = 0; i < MeleeAttackableObjectTypes().size(); i++) {
 		ObjectType obj = MeleeAttackableObjectTypes()[i];
@@ -400,6 +403,7 @@ void Room::CheckCollisionBetweenAttackHitBoxAndObject() {
 		Objects[obj] = v;
 	}
 }
+
 void Room::CheckNearestObjectHooking() {
 	float nearestDistance = FLT_MAX;
 	vector<RectangleShape> rects;
@@ -475,6 +479,7 @@ void Room::CheckCollisionBetweenPlayerAndHookingCancler() {
 		Objects[obj] = v;
 	}
 }
+
 void Room::CheckCollisionOfKnife() {
 	for (int i = 0; i < KnifeInteractableObjectTypes().size(); i++) {
 		ObjectType obj = KnifeInteractableObjectTypes()[i];
@@ -557,6 +562,7 @@ void Room::getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y) {
 	xSum = (int)WControl::getMainDungeon().bVerticleEdge[y][x] + WControl::getMainDungeon().bVerticleEdge[y][x + 1];
 	ySum = (int)WControl::getMainDungeon().bHorizonEdge[y][x] + WControl::getMainDungeon().bHorizonEdge[y + 1][x];
 }
+
 RoomType Room::GetRoomType(const Align& align, const int& xSum, const int& ySum) {
 	switch (ySum * 3 + xSum)
 	{

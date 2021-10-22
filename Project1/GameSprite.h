@@ -27,7 +27,7 @@ enum AnchorType
 enum RenderPriorityType
 {
 	Setting,
-	UI,
+	UIPriority,
 	PlayerAndObject,
 	KnifeType,
 	Floor

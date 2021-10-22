@@ -41,8 +41,6 @@ int main() {
 			if (event.type == Event::Closed)
 				WorldControl::window().close();
 		}
-		WControl::view().setCenter(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom());
-		//WControl::view().setCenter(WorldControl::player().lock()->transform->renderBox.getPosition());
 		WorldControl::window().setView(WControl::view());
 		MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0), Vector2f(1, 1));
 		ActivateUpdate();

@@ -6,6 +6,8 @@
 #include "Tile.h"
 #include "Player.h"
 #include "Dungeon.h"
+#include <stack>
+#include "UI.h"
 #define WControl WorldControl
 #define AREA_SIZEX 190
 #define AREA_SIZEY 140
@@ -15,6 +17,7 @@ class WorldControl:public GameBaseClass {
 	static void LoadAllObjectPrefab();
 	static void LoadPlayerPerfab();
 	static void LoadOtherPrefab();
+	static void LoadAllUI();
 public:
 	//local variable
 	static RenderWindow& window();
@@ -23,6 +26,7 @@ public:
 	static weak_ptr<Tilemap> NotrenderTilemap();
 	static weak_ptr<Tile> MainTile();
 	static weak_ptr<GameSprite> Hierarchy();
+	static weak_ptr<GameSprite> UIHierarchy();
 	static weak_ptr<Tile> NotrenderTile();
 	static weak_ptr<Player> player();
 	static map<std::string, pair<pair<bool, bool>,vector< RoomData > > >& allRoomPrefabs();
@@ -32,6 +36,8 @@ public:
 	static Dungeon& getMainDungeon();
 	static bool& isGamePlaying();
 	static Texture* playerPrefab();
+	static std::stack<UIType>& UIStack();
+	static map<UIType, UI>& AllUI();
 	
 	static weak_ptr<Room> GetCurrentRoom();
 	static Vector2i& GetCurrentRoomPosition();
@@ -40,8 +46,12 @@ public:
 	static void SetMainDungeon(Dungeon* MainDungeon);
 	static void SaveAllRoomPrefab();
 	static void SetUsedRoomPrefab();
+
+	static weak_ptr<ClickableSprite> HoldItem();
 	
 	static View& view();
+	static void SetViewPosition(Vector2f pos);
+
 	WorldControl() {
 		LoadData();
 		NotrenderTile().lock()->transform->SetParent(NotrenderSprite());

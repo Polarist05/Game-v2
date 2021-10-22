@@ -148,42 +148,57 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BellClass.cpp" />
+    <ClCompile Include="ClickableSprite.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DeleteBlockClass.cpp" />
     <ClCompile Include="Dungeon.cpp" />
+    <ClCompile Include="ExitButton.cpp" />
     <ClCompile Include="GameBaseClass.cpp" />
     <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="GameSprite.cpp" />
     <ClCompile Include="KeyPress.cpp" />
     <ClCompile Include="Knife.cpp" />
     <ClCompile Include="NormalBlockClass.cpp" />
+    <ClCompile Include="PlayButton.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PortalClass.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="ChargeSoulClass.cpp" />
+    <ClCompile Include="ScoreButton.cpp" />
+    <ClCompile Include="SettingButton.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="StrawberryClass.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="ToolkitButton.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="WorldControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BellClass.h" />
+    <ClInclude Include="ClickableSprite.h" />
     <ClInclude Include="DeleteBlockClass.h" />
     <ClInclude Include="Dungeon.h" />
+    <ClInclude Include="ExitButton.h" />
     <ClInclude Include="GameBaseClass.h" />
     <ClInclude Include="GameRenderer.h" />
     <ClInclude Include="GameSprite.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="AllButton.h" />
     <ClInclude Include="Knife.h" />
     <ClInclude Include="KnifeInteractable.h" />
     <ClInclude Include="MeleeAttackable.h" />
     <ClInclude Include="NormalBlockClass.h" />
+    <ClInclude Include="PlayButton.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PortalClass.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="ChargeSoulClass.h" />
+    <ClInclude Include="ScoreButton.h" />
+    <ClInclude Include="SettingButton.h" />
     <ClInclude Include="StrawberryClass.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="ToolkitButton.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="Walkable.h" />
     <ClInclude Include="WorldControl.h" />
     <ClInclude Include="SFML.h" />
