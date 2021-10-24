@@ -7,6 +7,9 @@ class Knife:public GameSprite
 	Direction direction;
 	bool isStop = false;
 public:
+	Knife();
+	Knife(std::string s);
+	const Direction& GetDirection();
 	clock_t startCollisionTimeWithPortal = 0;
 	
 	void Start() override;

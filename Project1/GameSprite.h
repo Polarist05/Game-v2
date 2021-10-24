@@ -28,6 +28,7 @@ enum RenderPriorityType
 {
 	Setting,
 	UIPriority,
+	UXPriority,
 	PlayerAndObject,
 	KnifeType,
 	Floor

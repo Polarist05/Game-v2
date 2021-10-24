@@ -1,5 +1,8 @@
 #include "Knife.h"
 #include "WorldControl.h"
+Knife::Knife(){}
+Knife::Knife(std::string s):GameSprite(s){}
+const Direction& Knife::GetDirection(){return direction;}
 void Knife::Start()
 {
 	direction = WControl::player().lock()->GetPlayerDirection();

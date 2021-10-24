@@ -14,12 +14,12 @@
 #include <time.h>
 #include <stdio.h>
 
-vector<ObjectType> _walkableObjectTypes({ Strawberry, Portal ,SignalBlock});
+vector<ObjectType> _walkableObjectTypes({ Strawberry, Portal ,SignalBlock });
 vector<ObjectType> _unwalkableObjectTypes({ Bell,ChargeSoul,Hook,Switch,NormalBlock,DeleteBlock,MoveableBlock });
 vector<ObjectType> _meleeAttackableObjectTypes({ ChargeSoul ,Bell });
 vector<ObjectType> _hookAbleableObjectTypes({ Hook });
-vector<ObjectType> _hookingCanclerObjectTypes({ Hook,Bell,Portal,ChargeSoul ,NormalBlock,DeleteBlock,MoveableBlock});
-vector<ObjectType> _knifeInteractable({Portal,Bell,DeleteBlock,NormalBlock,SignalBlock});
+vector<ObjectType> _hookingCanclerObjectTypes({ Hook,Bell,Portal,ChargeSoul ,NormalBlock,DeleteBlock,MoveableBlock });
+vector<ObjectType> _knifeInteractable({ Portal,Bell,DeleteBlock,NormalBlock,SignalBlock });
 
 Room::Room() {}
 Room::Room(std::string s) :Tilemap(s) {}
@@ -142,7 +142,7 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
 					, RenderPriorityType::PlayerAndObject);
 				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::NormalBlock)]);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset,Vector2f(190./140,1));
+				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
 				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
 				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
 				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
@@ -192,8 +192,8 @@ void Room::SetAllObjectsInRoom(RoomData roomData) {
 	}
 }
 void Room::ResetRoom() {
-	for (auto& Object :Objects) {
-		for (weak_ptr<Area> wp :Object.second)
+	for (auto& Object : Objects) {
+		for (weak_ptr<Area> wp : Object.second)
 		{
 			if (!wp.expired()) {
 				type_index typeindex = wp.lock()->GetTransform()->typeIndex;
@@ -242,11 +242,11 @@ void Room::DestroyAllEdge()
 void Room::DestroyAllObjects()
 {
 	for (auto& ObjectsByType : Objects) {
-		for (auto object:ObjectsByType.second)
+		for (auto object : ObjectsByType.second)
 		{
 			weak_ptr<GameSprite> wp = object.lock()->transform->wp;
 			type_index typeI = object.lock()->transform->typeIndex;
-			Destroy(wp,typeI);
+			Destroy(wp, typeI);
 		}
 		ObjectsByType.second.clear();
 	}
@@ -335,6 +335,7 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 		WControl::getMainDungeon().havePast[y][x] = true;
 		Room::UnLoadNearbyRoom();
 		WControl::getMainDungeon().Rooms[y][x].lock()->LoadNearbyRoom();
+		WControl::player().lock()->ResetSoul();
 		//WControl::view().setCenter(WControl::getMainDungeon().Rooms[y][x].lock()->GetTransform()->renderBox.getPosition());
 	}
 }
@@ -507,36 +508,43 @@ void Room::CheckCollisionBetweenPlayerAndHookingCancler() {
 }
 
 void Room::CheckCollisionOfKnife() {
-	for (int i = 0; i < KnifeInteractableObjectTypes().size(); i++) {
-		ObjectType obj = KnifeInteractableObjectTypes()[i];
-		vector<weak_ptr<Area> > v;
-		for (size_t j = 0; j < Objects[obj].size(); j++)
-		{
-			if (!Objects[obj][j].expired()) {
-				queue<weak_ptr<Knife>> knifes = WControl::player().lock()->knifes;
-				queue<weak_ptr<Knife>> newKnifes;
-				while (!knifes.empty())
+
+	queue<weak_ptr<Knife>> knifes = WControl::player().lock()->knifes;
+	queue<weak_ptr<Knife>> newKnifes;
+	while (!knifes.empty())
+	{
+		weak_ptr<Knife> knife = knifes.front();
+		knifes.pop();
+		if (!knife.expired()) {
+			Direction direction = knife.lock()->GetDirection();
+			newKnifes.push(knife);
+			for (ObjectType obj : KnifeInteractableObjectTypes()) {
+				vector<weak_ptr<Area> > v;
+				for (auto& object : Objects[obj])
 				{
-					weak_ptr<Knife> knife = knifes.front();
-					knifes.pop();
-					if (!knife.expired()) {
-						newKnifes.push(knife);
-						if (!knife.lock()->GetIsStop()&&Collision::isCollision(knife.lock()->transform->hitBox, Objects[obj][j].lock()->GetTransform()->hitBox)) {
-							weak_ptr<KnifeInteractable> wp = dynamic_pointer_cast<KnifeInteractable>(Objects[obj][j].lock());
+					if (!object.expired()) {
+						if (!knife.expired()&&!knife.lock()->GetIsStop() && Collision::isCollision(knife.lock()->transform->hitBox, object.lock()->transform->hitBox)) {
+							weak_ptr<KnifeInteractable> wp = dynamic_pointer_cast<KnifeInteractable>(object.lock());
 							if (!wp.expired()) {
 								wp.lock()->interacting(knife);
 							}
 						}
+						v.push_back(object);
 					}
 				}
-				WControl::player().lock()->knifes = newKnifes;
-
-				v.push_back(Objects[obj][j]);
+				Objects[obj] = v;
+			}
+		
+			for (auto& wall : Walls[direction]) {
+				if (!knife.expired()&&!knife.lock()->GetIsStop() && Collision::isCollision(knife.lock()->transform->hitBox, wall.lock()->GetTransform()->renderBox)) {
+					auto wp = knife.lock()->transform->wp;
+					auto index = knife.lock()->transform->typeIndex;
+					Destroy(wp,index);
+				}
 			}
 		}
-		Objects[obj] = v;
-
 	}
+	WControl::player().lock()->knifes = newKnifes;
 }
 
 Vector2f Room::MiddlePositionOfRoom() {
@@ -585,16 +593,16 @@ void Room::LoadNearbyRoom() {
 void Room::CheckUICollision()
 {
 	Vector2f cursurPos = WControl::view().getCenter() - Multiple(WControl::view().getSize(), Vector2f(0.5, 0.5));
-	cursurPos += Multiple(Vector2f(1/WControl::WorldScale(), 1/WControl::WorldScale()), (Vector2f)Mouse::getPosition(WControl::window()));
+	cursurPos += Multiple(Vector2f(1 / WControl::WorldScale(), 1 / WControl::WorldScale()), (Vector2f)Mouse::getPosition(WControl::window()));
 	if (!WControl::clickableSpriteAtCursor().expired()) {
-		if (!Collision::isCollision(WControl::clickableSpriteAtCursor().lock()->transform->hitBox, cursurPos)&&!Mouse::isButtonPressed(Mouse::Button::Left)){
+		if (!Collision::isCollision(WControl::clickableSpriteAtCursor().lock()->transform->hitBox, cursurPos) && !Mouse::isButtonPressed(Mouse::Button::Left)) {
 			WControl::clickableSpriteAtCursor().reset();
 		}
 		else
 			return;
 	}
 	if (!WControl::UIStack().empty()) {
-		for(auto wp : WControl::AllUI()[WControl::UIStack().top()].clickableSprites) {
+		for (auto wp : WControl::AllUI()[WControl::UIStack().top()].clickableSprites) {
 			if (Collision::isCollision(wp.lock()->transform->hitBox, cursurPos)) {
 				WControl::clickableSpriteAtCursor() = wp;
 				wp.lock()->transform->renderBox.setFillColor(Color::Yellow);

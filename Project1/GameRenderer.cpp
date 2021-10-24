@@ -18,6 +18,7 @@ void GameRenderer::RenderAll() {
 	if (WControl::isGamePlaying) {
 		RenderWallAndFloor();
 		RenderPlayerAndObject();
+		RenderUX();
 	}
 	RenderUI();
 	//RenderSettingView();
@@ -81,7 +82,7 @@ void GameRenderer::RenderPlayerAndObject()
 		while (!knifes.empty()) {
 			if (!knifes.front().expired()) {
 				v.push_back(knifes.front());
-				v1.push_back({ knifes.front().lock()->transform->pseudoRenderBox.getPosition().y-18,v1.size() });
+				v1.push_back({ knifes.front().lock()->transform->hitBox.getPosition().y - 18 ,v1.size() });//
 			}
 			knifes.pop();
 		}
@@ -94,6 +95,14 @@ void GameRenderer::RenderPlayerAndObject()
 		window().draw(v[v1[i].second].lock()->transform->renderBox);
 	}
 	window().draw(WControl::player().lock()->hookGuideLine);
+}
+void GameRenderer::RenderUX() {
+	for (auto wp : WControl::GetUX().keys) {
+		window().draw(wp.lock()->transform->renderBox);
+	}
+	for (auto wp : WControl::GetUX().souls) {
+		window().draw(wp.lock()->transform->renderBox);
+	}
 }
 void GameRenderer::RenderUI() {
 	if (!WControl::UIStack().empty()) {

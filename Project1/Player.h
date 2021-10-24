@@ -5,7 +5,6 @@
 #include "Knife.h"
 #include <queue>
 #define ATTACK_DURATION 800
-#define MAX_SOUL 4
 #define THROWING_LEVEL 85
 #define GUIDELINE_THICKNESS 10
 #define HOOKIN_MOVEMENT_X_PER_FRAME 20
@@ -38,10 +37,11 @@ public:
 	
 	Vector2f GetRealThrowingPosition();
 	
-	
+	void ResetSoul();
 	void IncreaseSoul(int a);
 	void LostSoul(int a);
-	int HaveSoul(int a);
+	bool HaveSoul(int a);
+	
 	
 	int GetScore();
 	void IncreaseScore(int a);

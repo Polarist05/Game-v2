@@ -12,8 +12,9 @@ public:
 	void RenderAll();
 	void RenderWallAndFloor();
 	void RenderKnife();
-	void RenderPlayerAndObject();
+	void RenderPlayerAndObject();	
 	void RenderUI();
+	void RenderUX();
 	void RenderSettingView();
 	
 

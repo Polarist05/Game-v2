@@ -46,6 +46,9 @@
     <Filter Include="Header Files\UI\StartUI">
       <UniqueIdentifier>{22805372-e717-4e78-a579-bea8dd8b04fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\UX">
+      <UniqueIdentifier>{caed36b1-e909-4189-abe5-e57b895490cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -122,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="ClickableSprite.cpp">
       <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UX.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +214,9 @@
     </ClInclude>
     <ClInclude Include="AllButton.h">
       <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UX.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -8,9 +8,12 @@
 #include "Dungeon.h"
 #include <stack>
 #include "UI.h"
+#include "UX.h"
 #define WControl WorldControl
 #define AREA_SIZEX 190
 #define AREA_SIZEY 140
+#define SOUL_AMOUNT 4
+#define KEY_AMOUNT 3
 class WorldControl:public GameBaseClass {
 	static void LoadData();
 	static void LoadAllRoomPrefab();
@@ -31,6 +34,7 @@ public:
 	static weak_ptr<GameSprite> Hierarchy();
 	static weak_ptr<GameSprite> UIHierarchy();
 	
+	static UX& GetUX();
 	static weak_ptr<Player> player();
 	static weak_ptr<ClickableSprite>& clickableSpriteAtCursor();
 	

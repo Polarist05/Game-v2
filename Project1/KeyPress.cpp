@@ -60,9 +60,10 @@ void KeyHold() {
         static bool holdThrowingButton;
         if (Keyboard::isKeyPressed(Keyboard::C)) {
             
-            if (!holdThrowingButton) {
-                WControl::player().lock()->knifes.push(Instantiate<Knife>());
+            if (!holdThrowingButton&&WControl::player().lock()->HaveSoul(1)) {
+                WControl::player().lock()->knifes.push(Instantiate<Knife>("knife"));
                 holdThrowingButton = true;
+                WControl::player().lock()->LostSoul(1);
             }
         }
         else

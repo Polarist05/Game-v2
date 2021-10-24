@@ -13,6 +13,10 @@ float worldScale = (float)0.7;
 float WorldControl::WorldScale() { return worldScale; };
 RenderWindow _window(VideoMode((int)(1920. * WorldControl::WorldScale()), (int)(1080. * WorldControl::WorldScale())), "My window");
 RenderWindow& WorldControl::window() { return _window; }
+
+View _view(Vector2f(AREA_SIZEX* (RSIZEX + 2)* (2.5), AREA_SIZEY* (RSIZEY + 2) * 2.5) - Vector2f(AREA_SIZEX / 2., AREA_SIZEY / 2.), Vector2f(1920 * viewSize.x, 1080 * viewSize.y));
+View& WControl::view() { return _view; }
+
 map<type_index, vector<shared_ptr<GameBaseClass> > > AllEntities;
 map<type_index, vector<shared_ptr<GameBaseClass> > >& GetAllEntities() { return AllEntities; }
 
@@ -50,6 +54,9 @@ Dungeon* _MainDungeon;
 void WorldControl::SetMainDungeon(Dungeon* MainDungeon) { _MainDungeon = MainDungeon; }
 Dungeon& WorldControl::getMainDungeon() { return *_MainDungeon; }
 
+UX _UX(KEY_AMOUNT,SOUL_AMOUNT);
+UX& WControl::GetUX() { return _UX; }
+
 weak_ptr<Player> _player=Instantiate<Player>("player");
 weak_ptr<Player> WorldControl::player() { return _player; }
 weak_ptr<ClickableSprite> _clickableSpriteAtCursor;
@@ -75,8 +82,6 @@ void WorldControl::SetCurrentRoomPositon(const Vector2i& currentRoom) {
 	SetViewPosition(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom());
 }
 
-View _view(Vector2f(AREA_SIZEX*(RSIZEX+2)*(2.5), AREA_SIZEY* (RSIZEY + 2) * 2.5)-Vector2f(AREA_SIZEX/2.,AREA_SIZEY/2.), Vector2f(1920*viewSize.x , 1080*viewSize.y ));
-View& WControl::view() { return _view; }
 void WControl::SetViewPosition(Vector2f pos) { 
 	WControl::view().setCenter(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom()); 
 	WControl::UIHierarchy().lock()->transform->SetPosition(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom());
