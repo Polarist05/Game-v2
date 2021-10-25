@@ -2,7 +2,7 @@
 #include "ClickableSprite.h"
 enum UIType
 {
-	StartUI,
+	StartUI,ToolkitUI
 };
 class UI
 {

@@ -53,12 +53,19 @@ struct RoomData
 };
 class Room:public Tilemap
 {
-	RoomData rooomData;
+	RoomData originalRoomData;
+	RoomData roomData;
 	Vector2i roomPosition;
 	map<ObjectType, vector<weak_ptr<Area> > > Objects;
+	
+
+	void SetAllObjectsInRoom();
+	void SetFloor();
 public:
+	Vector2f startRoomPosition;
 	weak_ptr<Area> areas[RSIZEY][RSIZEX];
 	vector<weak_ptr<Area> > Walls[4];
+	vector<weak_ptr<Area> > cliffs;
 	static const vector<ObjectType>& WalkableObjectTypes();
 	static const vector<ObjectType>& UnwalkableObjectTypes();
 	static const vector<ObjectType>& MeleeAttackableObjectTypes();
@@ -70,10 +77,10 @@ public:
 	Room(std::string s);
 	
 	void SetRoom(const Vector2i& roomPosition);
-	void SetAllObjectsInRoom(RoomData roomData);
-	void SetFloor();
+	void SetRoomSeed(RoomData& roomData,const bool& isFlipX,const bool& isFlipY);
 
 	void ResetRoom();
+	void RestartRoom();
 	void LoadNearbyRoom();
 	void Update() override;
 	void UnLoadNearbyRoom();
@@ -83,7 +90,7 @@ public:
 	
 	Vector2f MiddlePositionOfRoom();
 	
-	static RoomType GetRoomType(const Align& align, Vector2i roomPosition);
+	static RoomType GetRoomType(const Direction& direction, Vector2i roomPosition, bool* FlipX, bool* FlipY);
 	static void SetObjectTypeString();
 	static std::string ObjectTypeToString(const ObjectType& objectType);
 	
@@ -92,13 +99,14 @@ public:
 	void CheckNearestObjectHooking();
 private:
 	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
-	static RoomType GetRoomType(const Align& align, const int& xSum, const int& ySum);
+	static RoomType GetRoomType(const Direction& direction, const int& xSum, const int& ySum);
 	
 	void CheckCollisionInRoom();
 	
 	void CheckCollisionBetweenPlayerAndWall();
 	void CheckCollisionBetweenPlayerAndObject();
 	void CheckCollisionBetweenPlayerAndRoomEdge();
+	void CheckCollisionBetweenPlayerAndCliff();
 	
 	void CheckCollisionBetweenPlayerAndHookingCancler();
 	void CheckCollisionOfKnife();

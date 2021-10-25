@@ -10,7 +10,7 @@ void Knife::Start()
 	
 	transform->renderBox.setTexture(&WControl::otherPrefab()["Knife"]);
 	transform->SetAllSpriteOffset(spriteOffset);
-	transform-> SetAnchorType(AnchorType::MiddleCentor, HitBox, FIX_ALL_RECT_POSITION);
+	transform->		SetAnchorType(AnchorType::MiddleCentor, HitBox, FIX_ALL_RECT_POSITION);
 	transform->SetSize(transform->pseudoRenderBox.getSize() + Vector2f(-60, 0), PseudoRenderBox);
 	transform->pseudoRenderBox.setFillColor(Color::Yellow);
 	transform->RenderPriority = RenderPriorityType::KnifeType;

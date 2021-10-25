@@ -19,7 +19,7 @@ public:
 };
 int main() {
 	auto seed = time(NULL);
-	srand(1633453637);
+	srand(seed);
 	WControl::SetUsedRoomPrefab();
 	for (map<std::string, Texture>::iterator it = WControl::objectsPrefab().begin(); it != WControl::objectsPrefab().end(); it++)
 	{

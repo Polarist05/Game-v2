@@ -161,9 +161,13 @@ void WorldControl::LoadAllRoomPrefab() {
 			//floor
 			for (int k = 0; k < RSIZEY; k++) {
 				for (int l = 0; l < RSIZEX; l++) {
-					bool b;
+					int b;
 					t_room >> b;
-					roomData.floor[k][l] = b;
+					if (b) {
+						roomData.floor[k][l] = true;
+					}
+					else
+						roomData.floor[k][l] = false;
 				}
 			}
 			//object
@@ -186,7 +190,7 @@ void WorldControl::LoadAllRoomPrefab() {
 void WorldControl::LoadAllUI() {
 	sf::Texture texture;
 	{
-		_AllUI[UIType::StartUI];
+		auto& UI=_AllUI[UIType::StartUI];
 		std::string path="Sprites\\UI\\StartUI\\";
 		if (texture.loadFromFile(path + "Play" + ".png", IntRect(0, 0, 250, 65))) {
 			Texture* newTexture= new Texture(texture);
@@ -198,7 +202,7 @@ void WorldControl::LoadAllUI() {
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(UIHierarchy());
 			wp.lock()->transform->SetPosition(Vector2f(0, -100));
-			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+			UI.clickableSprites.push_back(wp);
 		}
 		if (texture.loadFromFile(path + "Score" + ".png", IntRect(0, 0, 250, 65))) {
 			Texture* newTexture = new Texture(texture);
@@ -210,7 +214,7 @@ void WorldControl::LoadAllUI() {
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(UIHierarchy());
 			wp.lock()->transform->SetPosition(Vector2f(0, 0));
-			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+			UI.clickableSprites.push_back(wp);
 		}
 		if (texture.loadFromFile(path + "Toolkit" + ".png", IntRect(0, 0, 250, 65))) {
 			Texture* newTexture = new Texture(texture);
@@ -222,7 +226,7 @@ void WorldControl::LoadAllUI() {
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(UIHierarchy());
 			wp.lock()->transform->SetPosition(Vector2f(0, 100));
-			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+			UI.clickableSprites.push_back(wp);
 		}
 		if (texture.loadFromFile(path + "Setting" + ".png", IntRect(0, 0, 250, 65))) {
 			Texture* newTexture = new Texture(texture);
@@ -234,7 +238,7 @@ void WorldControl::LoadAllUI() {
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(UIHierarchy());
 			wp.lock()->transform->SetPosition(Vector2f(0, 200));
-			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+			UI.clickableSprites.push_back(wp);
 		}
 		if (texture.loadFromFile(path + "Exit" + ".png", IntRect(0, 0, 250, 65))) {
 			Texture* newTexture = new Texture(texture);
@@ -246,7 +250,7 @@ void WorldControl::LoadAllUI() {
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(UIHierarchy());
 			wp.lock()->transform->SetPosition(Vector2f(0, 300));
-			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+			UI.clickableSprites.push_back(wp);
 		}
 		{
 			weak_ptr<GameSprite> wp = Instantiate<GameSprite>();
@@ -254,9 +258,91 @@ void WorldControl::LoadAllUI() {
 			wp.lock()->transform->SetParent(UIHierarchy());
 			wp.lock()->transform->SetSize(Vector2f(1920,1080),RenderBox);
 			wp.lock()->transform->renderBox.setFillColor(Color::Black) ;
-			_AllUI[UIType::StartUI].NormalSprites.push_back(wp);
+			UI.NormalSprites.push_back(wp);
 		}
 	}
+	{
+		_AllUI[UIType::ToolkitUI];
+		std::string path = "Sprites\\UI\\Toolkit\\";
+		{
+			weak_ptr<GameSprite> wp = Instantiate<GameSprite>();
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetSize(Vector2f(380, 1080), RenderBox);
+			wp.lock()->transform->renderBox.setFillColor(Color::Black);
+			wp.lock()->transform->SetPosition(Vector2f((1920-wp.lock()->transform->hitBox.getSize().x)/2., 0));
+			_AllUI[UIType::StartUI].NormalSprites.push_back(wp);
+		}
+		SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(295, 65), Vector2f(295, 65), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
+		if (texture.loadFromFile(path + "CreateNewSet" + ".png", IntRect(0, 0, 295, 45))) {
+			Texture* newTexture = new Texture(texture);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<ScoreButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(-400, 0));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "CreateNewRoom" + ".png", IntRect(0, 0, 295, 45))) {
+			Texture* newTexture = new Texture(texture);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<PlayButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, -300));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "DeleteSet" + ".png", IntRect(0, 0, 295, 45))) {
+			Texture* newTexture = new Texture(texture);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<SettingButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, -200));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "DeleteRoom" + ".png", IntRect(0, 0, 295, 45))) {
+			Texture* newTexture = new Texture(texture);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<ToolkitButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, -100));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "Edit" + ".png", IntRect(0, 0, 295, 45))) {
+			Texture* newTexture = new Texture(texture);			
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<ExitButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, 0));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		if (texture.loadFromFile(path + "Save" + ".png", IntRect(0, 0, 295, 45))) {
+			Texture* newTexture = new Texture(texture);
+			texture.setSmooth(true);
+			weak_ptr<ClickableSprite> wp = Instantiate<ExitButton>();
+			wp.lock()->transform->renderBox.setTexture(newTexture);
+			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Vector2f(0, 100));
+			_AllUI[UIType::StartUI].clickableSprites.push_back(wp);
+		}
+		
+	}
+
 }
 
 void WorldControl::SaveAllRoomPrefab() {

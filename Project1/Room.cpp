@@ -33,10 +33,32 @@ const vector<ObjectType>& Room::KnifeInteractableObjectTypes() { return _knifeIn
 
 void Room::SetRoom(const Vector2i& roomPosition) {
 	this->roomPosition = roomPosition;
-	SetFloor();
 }
-void Room::SetAllObjectsInRoom(RoomData roomData) {
-	this->rooomData = roomData;
+void Room::SetRoomSeed(RoomData& roomData,const bool& isFlipX,const bool& isFlipY)
+{
+	originalRoomData = roomData;
+	if (isFlipX) {
+		for (auto& wp: originalRoomData.floor) {
+			std::reverse(wp.begin(),wp.end());
+		}
+		for (auto& wp: originalRoomData.objects) {
+			std::reverse(wp.begin(),wp.end());
+		}
+		for (auto& wp: originalRoomData.track) {
+			std::reverse(wp.begin(), wp.end());
+		}
+	}
+	if (isFlipY) {
+		std::reverse(originalRoomData.floor.begin(), originalRoomData.floor.end());
+		std::reverse(originalRoomData.objects.begin(), originalRoomData.objects.end());
+		std::reverse(originalRoomData.track.begin(), originalRoomData.track.end());
+	}
+	this->roomData = originalRoomData;
+	ResetRoom();
+	SetFloor();
+	SetAllObjectsInRoom();
+}
+void Room::SetAllObjectsInRoom() {
 	vector<weak_ptr<PortalClass>> Portals(10, weak_ptr<PortalClass>());
 	for (size_t i = 0; i < roomData.objects.size(); i++)
 	{
@@ -202,6 +224,22 @@ void Room::ResetRoom() {
 		}
 		Object.second.clear();
 	}
+	for (auto& areaRow : areas) {
+		for (auto& area : areaRow) {
+			if (!area.expired()) {
+				auto wp = area.lock()->GetTransform()->wp;
+				auto typeIndex = area.lock()->GetTransform()->typeIndex;
+				Destroy(wp, typeIndex);
+			}
+		}
+	}
+	cliffs.clear();
+}
+void Room::RestartRoom()
+{
+	ResetRoom();
+	SetRoomSeed(originalRoomData,false,false);
+	WControl::player().lock()->transform->position = startRoomPosition;
 }
 void Room::SetFloor()
 {
@@ -209,13 +247,21 @@ void Room::SetFloor()
 	{
 		for (int j = 0; j < RSIZEX; j++)
 		{
-			areas[i][j] = Instantiate<Area>("Floor");
-			if ((i + j) % 2)
+			if (roomData.floor[i][j] == false) {
+				areas[i][j] = Instantiate<Area>("Floor");
+				if ((i + j) % 2)
+					areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+						, RenderPriorityType::Floor, Color::Magenta);
+				else
+					areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+						, RenderPriorityType::Floor, Color::Black);
+			}
+			else {
+				areas[i][j] = Instantiate<Area>("Floor");
+				cliffs.push_back(areas[i][j]);
 				areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::Floor, Color::Magenta);
-			else
-				areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::Floor, Color::Black);
+					, RenderPriorityType::Floor, Color::Blue);
+			}
 		}
 	}
 }
@@ -254,12 +300,16 @@ void Room::DestroyAllObjects()
 
 void Room::CheckCollisionInRoom() {
 	WControl::player().lock()->lastFrameHitBox = WControl::player().lock()->transform->hitBox;
+	CheckCollisionBetweenPlayerAndCliff();
 	CheckCollisionBetweenPlayerAndRoomEdge();
 	CheckCollisionBetweenPlayerAndObject();
 	CheckCollisionBetweenPlayerAndWall();
+	
 	CheckCollisionOfKnife();
 	if (WControl::player().lock()->isHooking)
 		CheckCollisionBetweenPlayerAndHookingCancler();
+	
+	
 }
 
 void Room::CheckCollisionBetweenPlayerAndWall() {
@@ -274,9 +324,11 @@ void Room::CheckCollisionBetweenPlayerAndWall() {
 	}
 }
 void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
+	
 	static clock_t startTime(0);
 	static clock_t delay = 0.05 * CLOCKS_PER_SEC;
 	if (!Collision::isCollision(GetTransform()->renderBox, WControl::player().lock()->transform->hitBox) && clock() - startTime >= delay) {
+		//RestartRoom();
 		startTime = clock();
 		Vector2f distance = WControl::player().lock()->transform->position - MiddlePositionOfRoom();
 		int x = roomPosition.x, y = roomPosition.y;
@@ -285,7 +337,7 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 				if (x + 1 < 5) {
 					WControl::SetCurrentRoomPositon(Vector2i(++x, y));
 					WControl::player().lock()->transform->position =
-						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(1, RSIZEY / 2 + 0.5));
+						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(1, RSIZEY / 2 ));
 					printf("%d %d Right\n", roomPosition.x, roomPosition.y);
 				}
 				else {
@@ -297,7 +349,7 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 				if (x - 1 >= 0) {
 					WControl::SetCurrentRoomPositon(Vector2i(--x, y));
 					WControl::player().lock()->transform->position =
-						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX, RSIZEY / 2 + 0.5));
+						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX, RSIZEY / 2 ));
 					printf("%d %d Left\n", roomPosition.x, roomPosition.y);
 				}
 				else {
@@ -311,7 +363,7 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 				if (y + 1 < 5) {
 					WControl::SetCurrentRoomPositon(Vector2i(x, ++y));
 					WControl::player().lock()->transform->position =
-						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX / 2 + 0.5, 1));
+						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX / 2+0.5 , 0.5));
 					printf("%d %d Down\n", roomPosition.x, roomPosition.y);
 				}
 				else {
@@ -323,7 +375,7 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 				if (y - 1 >= 0) {
 					WControl::SetCurrentRoomPositon(Vector2i(x, --y));
 					WControl::player().lock()->transform->position =
-						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX / 2 + 0.5, RSIZEY));
+						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX / 2 +0.5, RSIZEY-0.5));
 					printf("%d %d Up\n", roomPosition.x, roomPosition.y);
 				}
 				else {
@@ -332,11 +384,13 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 				}
 			}
 		}
-		WControl::getMainDungeon().havePast[y][x] = true;
+		if (!WControl::getMainDungeon().havePast[y][x]) {
+			WControl::getMainDungeon().havePast[y][x] = true;
+			WControl::GetCurrentRoom().lock()->startRoomPosition = WControl::player().lock()->transform->position;
+		}
 		Room::UnLoadNearbyRoom();
 		WControl::getMainDungeon().Rooms[y][x].lock()->LoadNearbyRoom();
 		WControl::player().lock()->ResetSoul();
-		//WControl::view().setCenter(WControl::getMainDungeon().Rooms[y][x].lock()->GetTransform()->renderBox.getPosition());
 	}
 }
 void Room::CheckCollisionBetweenPlayerAndObject() {
@@ -360,7 +414,7 @@ void Room::CheckCollisionBetweenPlayerAndObject() {
 		}
 	}
 	if (!WControl::player().lock()->isHooking) {
-		WControl::player().lock()->lastFrameHitBox = WControl::player().lock()->transform->hitBox;
+
 		for (int i = 0; i < UnwalkableObjectTypes().size(); i++) {
 			ObjectType obj = UnwalkableObjectTypes()[i];
 			vector<weak_ptr<Area> > v;
@@ -378,8 +432,26 @@ void Room::CheckCollisionBetweenPlayerAndObject() {
 			Objects[obj] = v;
 		}
 	}
-	else {
-		//printf("In");
+}
+void Room::CheckCollisionBetweenPlayerAndCliff() {
+	WControl::player().lock()->lastFrameHitBox = WControl::player().lock()->transform->hitBox;
+	if (!WControl::player().lock()->isHooking) {
+		for (auto& cliff : cliffs) {
+			if (!cliff.expired()) {
+				Vector2f result;
+				if (Collision::findShortestCollisionDistance(result, WControl::player().lock()->lastFrameHitBox, cliff.lock()->GetTransform()->pseudoRenderBox)) {
+					Vector2f point = WControl::player().lock()->lastFrameHitBox.getPosition() - Vector2f(0, WControl::player().lock()->transform->hitBox.getSize().y / 2);
+					WControl::player().lock()->lastFrameHitBox.move(result);
+					WControl::player().lock()->transform->Move(Vector2f(result.x, result.y));
+					if (Collision::isCollision(cliff.lock()->GetTransform()->pseudoRenderBox, point)) {
+						RestartRoom();
+					}
+				}
+			}
+			else {
+				printf("Cliff is Expire\n");
+			}
+		}
 	}
 }
 
@@ -523,7 +595,7 @@ void Room::CheckCollisionOfKnife() {
 				for (auto& object : Objects[obj])
 				{
 					if (!object.expired()) {
-						if (!knife.expired()&&!knife.lock()->GetIsStop() && Collision::isCollision(knife.lock()->transform->hitBox, object.lock()->transform->hitBox)) {
+						if (!knife.expired() && !knife.lock()->GetIsStop() && Collision::isCollision(knife.lock()->transform->hitBox, object.lock()->transform->hitBox)) {
 							weak_ptr<KnifeInteractable> wp = dynamic_pointer_cast<KnifeInteractable>(object.lock());
 							if (!wp.expired()) {
 								wp.lock()->interacting(knife);
@@ -534,12 +606,12 @@ void Room::CheckCollisionOfKnife() {
 				}
 				Objects[obj] = v;
 			}
-		
+
 			for (auto& wall : Walls[direction]) {
-				if (!knife.expired()&&!knife.lock()->GetIsStop() && Collision::isCollision(knife.lock()->transform->hitBox, wall.lock()->GetTransform()->renderBox)) {
+				if (!knife.expired() && !knife.lock()->GetIsStop() && Collision::isCollision(knife.lock()->transform->hitBox, wall.lock()->GetTransform()->renderBox)) {
 					auto wp = knife.lock()->transform->wp;
 					auto index = knife.lock()->transform->typeIndex;
-					Destroy(wp,index);
+					Destroy(wp, index);
 				}
 			}
 		}
@@ -577,16 +649,24 @@ void Room::UnLoadNearbyRoom() {
 void Room::LoadNearbyRoom() {
 	int x = roomPosition.x, y = roomPosition.y;
 	if (x + 1 < 5 && !WControl::getMainDungeon().havePast[y][x + 1] && WControl::getMainDungeon().bVerticleEdge[y][x + 1]) {
-		WControl::getMainDungeon().Rooms[y][x + 1].lock()->SetAllObjectsInRoom(WControl::usedRoomPrefabs()[GetRoomType(Align::HoriZontal, Vector2i(x + 1, y))][0]);
+		bool flipX = false, flipY = false;
+		RoomType roomType = GetRoomType(Direction::Left, Vector2i(x + 1, y),&flipX,&flipY);
+		WControl::getMainDungeon().Rooms[y][x + 1].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][0],flipX,flipY);
 	}
 	if (x - 1 >= 0 && !WControl::getMainDungeon().havePast[y][x - 1] && WControl::getMainDungeon().bVerticleEdge[y][x]) {
-		WControl::getMainDungeon().Rooms[y][x - 1].lock()->SetAllObjectsInRoom(WControl::usedRoomPrefabs()[GetRoomType(Align::HoriZontal, Vector2i(x - 1, y))][0]);
+		bool flipX = false, flipY = false;
+		RoomType roomType = GetRoomType(Direction::Right, Vector2i(x-1, y), &flipX, &flipY);
+		WControl::getMainDungeon().Rooms[y][x - 1].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][0], flipX, flipY);
 	}
 	if (y + 1 < 5 && !WControl::getMainDungeon().havePast[y + 1][x] && WControl::getMainDungeon().bHorizonEdge[y + 1][x]) {
-		WControl::getMainDungeon().Rooms[y + 1][x].lock()->SetAllObjectsInRoom(WControl::usedRoomPrefabs()[GetRoomType(Align::Verticle, Vector2i(x, y + 1))][0]);
+		bool flipX = false, flipY = false;
+		RoomType roomType = GetRoomType(Direction::Up, Vector2i(x , y+1), &flipX, &flipY);
+		WControl::getMainDungeon().Rooms[y+1][x].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][0], flipX, flipY);
 	}
 	if (y - 1 >= 0 && !WControl::getMainDungeon().havePast[y - 1][x] && WControl::getMainDungeon().bHorizonEdge[y][x]) {
-		WControl::getMainDungeon().Rooms[y - 1][x].lock()->SetAllObjectsInRoom(WControl::usedRoomPrefabs()[GetRoomType(Align::Verticle, Vector2i(x, y - 1))][0]);
+		bool flipX = false, flipY = false;
+		RoomType roomType = GetRoomType(Direction::Down, Vector2i(x, y-1), &flipX, &flipY);
+		WControl::getMainDungeon().Rooms[y-1][x].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][0], flipX, flipY);
 	}
 }
 
@@ -621,24 +701,28 @@ void Room::getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y) {
 	ySum = (int)WControl::getMainDungeon().bHorizonEdge[y][x] + WControl::getMainDungeon().bHorizonEdge[y + 1][x];
 }
 
-RoomType Room::GetRoomType(const Align& align, const int& xSum, const int& ySum) {
+RoomType Room::GetRoomType(const Direction& direction, const int& xSum, const int& ySum) {
 	switch (ySum * 3 + xSum)
 	{
 	case 0:return RoomType::Type00;
 	case 1:return RoomType::Type01;
 	case 2:return RoomType::Type02;
 	case 3:return RoomType::Type10;
-	case 4:if (align == Align::Verticle) return RoomType::Type11_Verticle; else return RoomType::Type11_Horizon;
-	case 5:if (align == Align::Verticle) return RoomType::Type12_Verticle; else return RoomType::Type12_Horizon;
+	case 4:if (direction < 2) return RoomType::Type11_Verticle; else return RoomType::Type11_Horizon;
+	case 5:if (direction < 2) return RoomType::Type12_Verticle; else return RoomType::Type12_Horizon;
 	case 6:return RoomType::Type20;
-	case 7:if (align == Align::Verticle) return RoomType::Type21_Verticle; else return RoomType::Type21_Horizon;
-	case 8:if (align == Align::Verticle) return RoomType::Type22_Verticle; else return RoomType::Type22_Horizon;
+	case 7:if (direction < 2) return RoomType::Type21_Verticle; else return RoomType::Type21_Horizon;
+	case 8:if (direction < 2) return RoomType::Type22_Verticle; else return RoomType::Type22_Horizon;
 	}
 }
-RoomType Room::GetRoomType(const Align& align, Vector2i roomPosition) {
-	int xSum, ySum;
-	getSumOfAlignEdge(xSum, ySum, roomPosition.x, roomPosition.y);
-	return GetRoomType(align, xSum, ySum);
+RoomType Room::GetRoomType(const Direction& direction, Vector2i roomPosition,bool* FlipX,bool* FlipY) {
+	bool bUp = WControl::getMainDungeon().bHorizonEdge[roomPosition.y][roomPosition.x],
+		bDown = WControl::getMainDungeon().bHorizonEdge[roomPosition.y + 1][roomPosition.x],
+		bLeft = WControl::getMainDungeon().bVerticleEdge[roomPosition.y][roomPosition.x],
+		bRight = WControl::getMainDungeon().bVerticleEdge[roomPosition.y][roomPosition.x + 1];
+	*FlipY = (direction == Down||(!bUp && bDown)) ? true : false;
+	*FlipX = (direction == Right || (!bLeft && bRight)) ? true : false;
+	return GetRoomType(direction, (int)bLeft+bRight, (int)bUp + bDown );
 }
 static std::string ObjectTypeString[30];
 void Room::SetObjectTypeString() {

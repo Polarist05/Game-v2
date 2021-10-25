@@ -31,19 +31,15 @@ void GameRenderer::RenderWallAndFloor()
 		RenderWallAt(WControl::GetCurrentRoom());
 		int y = WControl::GetCurrentRoomPosition().y, x = WControl::GetCurrentRoomPosition().x;
 		if (y + 1 < 5) {
-			RenderFloorAt(WControl::getMainDungeon().Rooms[y + 1][x]);
 			RenderWallAt(WControl::getMainDungeon().Rooms[y + 1][x]);
 		}
 		if (y - 1 >= 0) {
-			RenderFloorAt(WControl::getMainDungeon().Rooms[y - 1][x]);
 			RenderWallAt(WControl::getMainDungeon().Rooms[y - 1][x]);
 		}
 		if (x + 1 < 5) {
-			RenderFloorAt(WControl::getMainDungeon().Rooms[y][x + 1]);
 			RenderWallAt(WControl::getMainDungeon().Rooms[y][x+1]);
 		}
 		if (x - 1 >= 0) {
-			RenderFloorAt(WControl::getMainDungeon().Rooms[y][x - 1]);
 			RenderWallAt(WControl::getMainDungeon().Rooms[y ][x-1]);
 		}
 		RenderEdge();
