@@ -20,6 +20,7 @@ class WorldControl:public GameBaseClass {
 	static void LoadAllObjectPrefab();
 	static void LoadPlayerPerfab();
 	static void LoadOtherPrefab();
+	static void LoadAllASCII();
 	static void LoadAllUI();
 public:
 	//local variable
@@ -39,6 +40,7 @@ public:
 	static weak_ptr<ClickableSprite>& clickableSpriteAtCursor();
 	
 	static map<std::string, pair<pair<bool, bool>,vector< RoomData > > >& allRoomPrefabs();	
+	static map<char, Texture>& ASCIIPrefab();
 	static map<std::string, Texture>& objectsPrefab();
 	static map<std::string, Texture>& otherPrefab();
 	static Texture* playerPrefab();
@@ -49,7 +51,7 @@ public:
 	static bool& isGamePlaying();
 	
 	static std::stack<UIType>& UIStack();
-	static map<UIType, UI>& AllUI();
+	static map<UIType, UI*>& AllUI();
 	
 	static weak_ptr<Room> GetCurrentRoom();
 	static Vector2i& GetCurrentRoomPosition();
@@ -58,6 +60,7 @@ public:
 	static void SetMainDungeon(Dungeon* MainDungeon);
 	static void SaveAllRoomPrefab();
 	static void SetUsedRoomPrefab();
+	static void RefreshRoomPrefrab();
 
 	static weak_ptr<ClickableSprite> HoldItem();
 	
@@ -70,6 +73,6 @@ public:
 		MainTile().lock()->transform->position = Vector2f(0, 0);
 		MainTile().lock()->SetAreaSize(Vector2f(AREA_SIZEX, AREA_SIZEY));
 		Room::SetObjectTypeString();
-		UIStack().push(UIType::StartUI);
+		UIStack().push(UIType::StartPage);
 	}
 };

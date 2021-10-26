@@ -49,6 +49,12 @@
     <Filter Include="Source Files\UX">
       <UniqueIdentifier>{caed36b1-e909-4189-abe5-e57b895490cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\UI\ToolkitUI">
+      <UniqueIdentifier>{daabfda8-b5ce-4556-a142-bcb4b5b8b797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\ToolkitUI">
+      <UniqueIdentifier>{0010ce15-ceed-48d3-ad67-0e52b8bbb99e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -128,6 +134,36 @@
     </ClCompile>
     <ClCompile Include="UX.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolkitUI.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateNewRoomButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateNewSetButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteRoomButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="DeleteSetButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EditButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomDropDown.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SetDropDownButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SetDropDownListButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +253,36 @@
     </ClInclude>
     <ClInclude Include="UX.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolkitUI.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateNewRoomButton.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateNewSetButton.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteRoomButton.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="DeleteSetButton.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EditButton.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveButton.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomDropDown.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SetDropDownButton.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SetDropDownListButton.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

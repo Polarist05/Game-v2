@@ -43,6 +43,7 @@ enum RoomType {
 };
 struct RoomData
 {
+	RoomData(std::string s) :name(s), floor(RSIZEY, vector<bool>(RSIZEX, false)), objects(RSIZEY, vector<int>(RSIZEX, 0)), track(RSIZEY, vector<int>(RSIZEX, 0)) {}
 	RoomData() :floor(RSIZEY, vector<bool>(RSIZEX, false)), objects(RSIZEY, vector<int>(RSIZEX, 0)), track(RSIZEY, vector<int>(RSIZEX, 0)) {}
 	std::string name = "null";
 	RoomType roomType = RoomType::Type00;
@@ -58,7 +59,6 @@ class Room:public Tilemap
 	Vector2i roomPosition;
 	map<ObjectType, vector<weak_ptr<Area> > > Objects;
 	
-
 	void SetAllObjectsInRoom();
 	void SetFloor();
 public:
@@ -77,7 +77,7 @@ public:
 	Room(std::string s);
 	
 	void SetRoom(const Vector2i& roomPosition);
-	void SetRoomSeed(RoomData& roomData,const bool& isFlipX,const bool& isFlipY);
+	void SetRoomSeed(const RoomData& roomData,const bool& isFlipX,const bool& isFlipY);
 
 	void ResetRoom();
 	void RestartRoom();

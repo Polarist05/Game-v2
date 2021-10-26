@@ -55,7 +55,7 @@ void KeyHold() {
             WControl::player().lock()->hookGuideLine.setFillColor(Color::Transparent);
         }
         if (Keyboard::isKeyPressed(Keyboard::Escape) && WControl::UIStack().empty()) {
-            WControl::UIStack().push(UIType::StartUI);
+            WControl::UIStack().push(UIType::StartPage);
         }
         static bool holdThrowingButton;
         if (Keyboard::isKeyPressed(Keyboard::C)) {

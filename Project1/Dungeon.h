@@ -14,6 +14,7 @@ public:
 	vector<weak_ptr<Area> > EdgeFloors;
 	void PrintDungeon();
 	void GenerateDungeon();
+	void GenerateToolkitMode();
 	void ResetDungeon();
 	Dungeon();
 private:

@@ -34,7 +34,7 @@ const vector<ObjectType>& Room::KnifeInteractableObjectTypes() { return _knifeIn
 void Room::SetRoom(const Vector2i& roomPosition) {
 	this->roomPosition = roomPosition;
 }
-void Room::SetRoomSeed(RoomData& roomData,const bool& isFlipX,const bool& isFlipY)
+void Room::SetRoomSeed(const RoomData& roomData,const bool& isFlipX,const bool& isFlipY)
 {
 	originalRoomData = roomData;
 	if (isFlipX) {
@@ -682,13 +682,15 @@ void Room::CheckUICollision()
 			return;
 	}
 	if (!WControl::UIStack().empty()) {
-		for (auto wp : WControl::AllUI()[WControl::UIStack().top()].clickableSprites) {
-			if (Collision::isCollision(wp.lock()->transform->hitBox, cursurPos)) {
-				WControl::clickableSpriteAtCursor() = wp;
-				wp.lock()->transform->renderBox.setFillColor(Color::Yellow);
-			}
-			else {
-				wp.lock()->transform->renderBox.setFillColor(Color::White);
+		for (auto wp : WControl::AllUI()[WControl::UIStack().top()]->clickableTextureSprites) {
+			if (wp.lock()->transform->renderBox.getFillColor()!=Color::Transparent) {
+				if (Collision::isCollision(wp.lock()->transform->hitBox, cursurPos)) {
+					WControl::clickableSpriteAtCursor() = wp;
+					wp.lock()->transform->renderBox.setFillColor(Color::Yellow);
+				}
+				else {
+					wp.lock()->transform->renderBox.setFillColor(Color::White);
+				}
 			}
 		}
 	}

@@ -102,13 +102,23 @@ void GameRenderer::RenderUX() {
 }
 void GameRenderer::RenderUI() {
 	if (!WControl::UIStack().empty()) {
-		for (auto wp : WControl::AllUI()[WControl::UIStack().top()].NormalSprites) {
-			window().draw(wp.lock()->transform->hitBox);
-			window().draw(wp.lock()->transform->renderBox);
+		for (auto wp : WControl::AllUI()[WControl::UIStack().top()]->NormalSprites) {
+			if (wp.lock()->transform->renderBox.getFillColor()!=Color::Transparent) {
+				//window().draw(wp.lock()->transform->hitBox);
+				window().draw(wp.lock()->transform->renderBox);
+			}
 		}
-		for (auto wp : WControl::AllUI()[WControl::UIStack().top()].clickableSprites) {
-			window().draw(wp.lock()->transform->hitBox);
-			window().draw(wp.lock()->transform->renderBox);
+		for (auto wp : WControl::AllUI()[WControl::UIStack().top()]->clickableTextureSprites) {
+			if (wp.lock()->transform->renderBox.getFillColor() != Color::Transparent) {
+				window().draw(wp.lock()->transform->hitBox);
+				window().draw(wp.lock()->transform->renderBox);
+			}
+		}
+		for (auto wp : WControl::AllUI()[WControl::UIStack().top()]->NormalSprites2) {
+			if (wp.lock()->transform->renderBox.getFillColor() != Color::Transparent) {
+				//window().draw(wp.lock()->transform->hitBox);
+				window().draw(wp.lock()->transform->renderBox);
+			}
 		}
 	}
 }
