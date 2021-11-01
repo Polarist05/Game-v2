@@ -6,11 +6,12 @@
 
 void CreateNewRoomButton::Activate()
 {
-	ToolkitUI& toolkitUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
 	RoomData roomData("newRoom");
-	WorldControl::allRoomPrefabs()[toolkitUI.choosingSet].second.push_back(roomData);
+	WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.push_back(roomData);
 	WControl::RefreshRoomPrefrab();
-	std::ofstream rooomSave("Rooms\\" + toolkitUI.choosingSet + '\\' + to_string(WorldControl::allRoomPrefabs()[toolkitUI.choosingSet].second.size()-1));
+	thisUI.choosingRoomIndex = WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.size() - 1;
+	std::ofstream rooomSave("Rooms\\" + thisUI.choosingSet + '\\' + to_string(thisUI.choosingRoomIndex));
 	rooomSave << roomData.name << " " << roomData.roomType << endl;
 	for (int j = 0; j < RSIZEY; j++) {
 		for (int k = 0; k < RSIZEX; k++) {
@@ -33,4 +34,7 @@ void CreateNewRoomButton::Activate()
 		rooomSave << endl;
 	}
 	rooomSave.close();
+	thisUI.updateText();
+	WControl::GetCurrentRoom().lock()->ResetRoom();
+	WControl::GetCurrentRoom().lock()->SetRoomSeed(WControl::allRoomPrefabs()[thisUI.choosingSet].second[thisUI.choosingRoomIndex], false, false);
 }

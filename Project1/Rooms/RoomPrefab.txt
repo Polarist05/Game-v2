@@ -1,8 +1,5 @@
-7
-NewSet1 0 0
+4
+NewSet1 9 0
 NewSet2 0 0
-NewSet3 3 0
-NewSet4 0 0
-NewSet5 0 0
-abc 13 0
-startRoom 13 1
+NewSet3 0 0
+startRoom 13 0

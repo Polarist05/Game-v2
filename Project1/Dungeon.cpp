@@ -64,7 +64,7 @@ void Dungeon::ResetDungeon()
 }
 
 Dungeon::Dungeon() {
-	WorldControl::SetMainDungeon(this);
+	WControl::setMainDungeon(this);
 	InstantRoom();
 	WControl::SetCurrentRoomPositon(Vector2i(0, 0));
 }

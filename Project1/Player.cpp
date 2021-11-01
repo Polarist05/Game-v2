@@ -120,7 +120,7 @@ Vector2f Player::GetRealThrowingPosition()
 	return transform->hitBox.getPosition()+OffsetThrowingKnife;
 }
 
-void Player::ResetSoul() { soul = SOUL_AMOUNT; WControl::GetUX().SetSoul(soul);}
+void Player::ResetSoul() { soul = SOUL_AMOUNT; WControl::GetUX().SetSoul(soul);	}
 void Player::IncreaseSoul(int a) { soul += a; if (a > SOUL_AMOUNT) soul = SOUL_AMOUNT; WControl::GetUX().SetSoul(soul);}
 void Player::LostSoul(int a) { soul -= a; WControl::GetUX().SetSoul(soul); }
 bool Player::HaveSoul(int a) {

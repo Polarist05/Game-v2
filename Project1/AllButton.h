@@ -14,3 +14,6 @@
 #include "ToolkitUI.h"
 #include "SetDropDownButton.h"
 #include "SetDropDownListButton.h"
+#include "RoomDropDownButton.h"
+#include "RoomDropDownList.h"
+#include "ItemIcomButton.h"

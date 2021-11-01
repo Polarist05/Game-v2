@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BellClass.cpp" />
+    <ClCompile Include="ChoosingEdge.cpp" />
     <ClCompile Include="ClickableSprite.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CreateNewRoomButton.cpp" />
@@ -161,15 +162,20 @@
     <ClCompile Include="GameBaseClass.cpp" />
     <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="GameSprite.cpp" />
+    <ClCompile Include="ItemIcomButton.cpp" />
     <ClCompile Include="KeyPress.cpp" />
     <ClCompile Include="Knife.cpp" />
+    <ClCompile Include="NextRoomButton.cpp" />
     <ClCompile Include="NormalBlockClass.cpp" />
+    <ClCompile Include="ObjectDropDown.cpp" />
     <ClCompile Include="PlayButton.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PortalClass.cpp" />
+    <ClCompile Include="PreviousRoomButton.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="ChargeSoulClass.cpp" />
-    <ClCompile Include="RoomDropDown.cpp" />
+    <ClCompile Include="RoomDropDownButton.cpp" />
+    <ClCompile Include="RoomDropDownList.cpp" />
     <ClCompile Include="SaveButton.cpp" />
     <ClCompile Include="ScoreButton.cpp" />
     <ClCompile Include="SetDropDownButton.cpp" />
@@ -186,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BellClass.h" />
+    <ClInclude Include="ChoosingEdge.h" />
     <ClInclude Include="ClickableSprite.h" />
     <ClInclude Include="CreateNewRoomButton.h" />
     <ClInclude Include="CreateNewSetButton.h" />
@@ -200,16 +207,21 @@
     <ClInclude Include="GameSprite.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="AllButton.h" />
+    <ClInclude Include="ItemIcomButton.h" />
     <ClInclude Include="Knife.h" />
     <ClInclude Include="KnifeInteractable.h" />
     <ClInclude Include="MeleeAttackable.h" />
+    <ClInclude Include="NextRoomButton.h" />
     <ClInclude Include="NormalBlockClass.h" />
+    <ClInclude Include="ObjectDropDown.h" />
     <ClInclude Include="PlayButton.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PortalClass.h" />
+    <ClInclude Include="PreviousRoomButton.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="ChargeSoulClass.h" />
-    <ClInclude Include="RoomDropDown.h" />
+    <ClInclude Include="RoomDropDownButton.h" />
+    <ClInclude Include="RoomDropDownList.h" />
     <ClInclude Include="SaveButton.h" />
     <ClInclude Include="ScoreButton.h" />
     <ClInclude Include="SetDropDownButton.h" />

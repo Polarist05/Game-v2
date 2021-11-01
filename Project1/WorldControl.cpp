@@ -22,6 +22,8 @@ map<type_index, vector<shared_ptr<GameBaseClass> > >& GetAllEntities() { return 
 
 map<std::string, pair<pair<bool, bool>, vector< RoomData > > > _allRoomPrefabs;
 map<std::string, pair<pair<bool, bool>, vector< RoomData > > >& WorldControl::allRoomPrefabs() { return _allRoomPrefabs; }
+RoomData  _emptyRoom;
+RoomData& WorldControl::emptyRoom() { return _emptyRoom; }
 
 map< RoomType, vector< RoomData > > _usedRoomPrefabs;
 map< RoomType, vector< RoomData > >& WorldControl::usedRoomPrefabs() { return _usedRoomPrefabs; };
@@ -34,6 +36,11 @@ map<std::string, Texture>& WorldControl::objectsPrefab() { return _objectsPrefab
 
 map<std::string, Texture> _otherPrefab;
 map<std::string, Texture>& WorldControl::otherPrefab() { return _otherPrefab; };
+
+SpriteOffsetData _normalButtonOffsetData(Vector2i(0, 0), Vector2i(295, 45), Vector2f(295, 45), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
+SpriteOffsetData& WorldControl::NormalButtonOffsetData() { return _normalButtonOffsetData; }
+SpriteOffsetData _textOffsetData(Vector2i(0, 0), Vector2i(20, 45), Vector2f(20, 45), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
+SpriteOffsetData& WorldControl::TextOffsetData() { return _textOffsetData; }
 
 weak_ptr<GameSprite> _notRenderSprite = Instantiate<GameSprite>("NotRenderSprite");
 weak_ptr<GameSprite> WorldControl::NotrenderSprite() { return _notRenderSprite; }
@@ -54,7 +61,7 @@ weak_ptr<Tile> _RenderTile = Instantiate<Tile>("MainTile");
 weak_ptr<Tile> WorldControl::MainTile() { return _RenderTile; }
 
 Dungeon* _MainDungeon;
-void WorldControl::SetMainDungeon(Dungeon* MainDungeon) { _MainDungeon = MainDungeon; }
+void WorldControl::setMainDungeon(Dungeon* dungeon) { _MainDungeon = dungeon; }
 Dungeon& WorldControl::getMainDungeon() { return *_MainDungeon; }
 
 UX _UX(KEY_AMOUNT, SOUL_AMOUNT);
@@ -65,8 +72,11 @@ weak_ptr<Player> WorldControl::player() { return _player; }
 weak_ptr<ClickableSprite> _clickableSpriteAtCursor;
 weak_ptr<ClickableSprite>& WControl::clickableSpriteAtCursor() { return _clickableSpriteAtCursor; };
 
-bool _isGamePlaying = false;
-bool& WorldControl::isGamePlaying() { return _isGamePlaying; };
+/*bool _isGamePlaying = false;
+bool& WorldControl::isGamePlaying() { return _isGamePlaying; };*/
+GameMode gameMode = StartPageMode;
+GameMode& getGameMode() { return gameMode; }
+
 
 std::stack<UIType> _UIStack;
 std::stack<UIType>& WorldControl::UIStack() { return _UIStack; }
@@ -93,18 +103,37 @@ void WControl::SetViewPosition(Vector2f pos) {
 Texture _playerPrefab;
 Texture* WControl::playerPrefab() { return &_playerPrefab; }
 void WControl::LoadData() {
-	LoadOtherPrefab();
+	LoadAllOtherPrefab();
 	LoadAllASCII();
 	LoadPlayerPerfab();
 	LoadAllObjectPrefab();
 	LoadAllRoomPrefab();
 	LoadAllUI();
 }
-void WControl::LoadOtherPrefab() {
+void WControl::LoadAllOtherPrefab() {
+	LoadOtherPrefab("Knife","Sprites", IntRect(0, 0, 280, 70));
+	{
+		std::string path = "Sprites\\UI\\Toolkit";
+		LoadOtherPrefab("TaskBar", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("CreateNewSet", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("CreateNewRoom", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("CreateNewSet", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("DeleteSet", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("DeleteRoom", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("Edit", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("Save", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("CreateNewSet", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("TaskBar", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("Next", path, IntRect(0, 0, 295, 45));
+		LoadOtherPrefab("Previous", path, IntRect(0, 0, 295, 45));
+
+	}
+}
+void WControl::LoadOtherPrefab(const string& name, const string& path,const IntRect& intRect) {
 	Texture texture;
-	texture.loadFromFile("Sprites\\Knife.png", IntRect(0, 0, 280, 70));
+	texture.loadFromFile(path+"\\"+name+".png", intRect);
 	texture.setSmooth(true);
-	otherPrefab()["Knife"] = texture;
+	otherPrefab()[name] = texture;
 }
 void WorldControl::LoadAllASCII() {
 	for (string c = "A"; c[0] <= 'Z'; c[0]++) {
@@ -212,9 +241,19 @@ void WorldControl::LoadAllRoomPrefab() {
 			t_room.close();
 		}
 	}
+	{
+		std::ifstream t_room("Rooms\\EmptyRoom");
+		RoomData& roomData = *(&emptyRoom());
+		t_room >> roomData.name;
+	}
 	t_roomsPrefab.close();
 }
+
 void WorldControl::LoadAllUI() {
+	LoadStartUI();
+	LoadToolkitUI();
+}
+void WorldControl::LoadStartUI() {
 	sf::Texture texture;
 	{
 		_AllUI[UIType::StartPage] = new UI;
@@ -289,168 +328,124 @@ void WorldControl::LoadAllUI() {
 			thisUI.NormalSprites.push_back(wp);
 		}
 	}
+}
+void WorldControl::LoadToolkitUI() {
+	sf::Texture texture;
 	{
 		_AllUI[UIType::ToolkitPage] = new ToolkitUI;
 		ToolkitUI& thisUI = *((ToolkitUI*)_AllUI[UIType::ToolkitPage]);
-		std::string path = "Sprites\\UI\\Toolkit\\";
+
 		{
-			weak_ptr<GameSprite> wp = Instantiate<GameSprite>();
+			thisUI.taskbar = Instantiate<GameSprite>();
+			weak_ptr<GameSprite> wp = thisUI.taskbar;
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(UIHierarchy());
 			wp.lock()->transform->SetSize(Vector2f(380, 1080), RenderBox);
 			wp.lock()->transform->renderBox.setFillColor(Color::Black);
 			wp.lock()->transform->SetPosition(Vector2f((1920 - wp.lock()->transform->renderBox.getSize().x) / 2., 0));
 			thisUI.NormalSprites.push_back(wp);
-			thisUI.taskbar = wp;
 		}
-		SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(295, 45), Vector2f(295, 45), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
-		SpriteOffsetData spriteOffsetData1(Vector2i(0, 0), Vector2i(20, 45), Vector2f(20, 45), Vector2f(0, 0), Vector2f(0, 0), viewSize.x);
-		if (texture.loadFromFile(path + "TaskBar" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			weak_ptr<ClickableSprite> wp = Instantiate<SetDropDownButton>();
-			wp.lock()->transform->renderBox.setTexture(newTexture);
-			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		{
+			thisUI.dropDown1 = Instantiate<SetDropDownButton>("SetDropDown");
+			weak_ptr<ClickableSprite> wp = thisUI.dropDown1;
+			wp.lock()->transform->renderBox.setTexture(&otherPrefab()["TaskBar"]);
+			wp.lock()->transform->SetAllSpriteOffset(NormalButtonOffsetData());
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(thisUI.taskbar);
 			wp.lock()->transform->SetPosition(Vector2f(0, -400));
 			thisUI.clickableTextureSprites.push_back(wp);
-			thisUI.dropDown1 = wp;
+			thisUI.dropDown1.lock()->InstantList();
 		}
-		if (texture.loadFromFile(path + "CreateNewSet" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			weak_ptr<ClickableSprite> wp = Instantiate<CreateNewSetButton>();
-			wp.lock()->transform->renderBox.setTexture(newTexture);
-			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		{
+			thisUI.newSetButton = Instantiate<CreateNewSetButton>();
+			weak_ptr<ClickableSprite> wp = thisUI.newSetButton;
+			wp.lock()->transform->renderBox.setTexture(&otherPrefab()["CreateNewSet"]);
+			wp.lock()->transform->SetAllSpriteOffset(NormalButtonOffsetData());
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(thisUI.taskbar);
 			wp.lock()->transform->SetPosition(Vector2f(0, -300));
 			thisUI.clickableTextureSprites.push_back(wp);
 			thisUI.taskbarSprites.push_back(wp);
+			
 		}
-		if (texture.loadFromFile(path + "TaskBar" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			weak_ptr<ClickableSprite> wp = Instantiate<ClickableSprite>();
-			wp.lock()->transform->renderBox.setTexture(newTexture);
-			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		{
+			thisUI.dropDown2 = Instantiate<RoomDropDownButton>("RoomDropDown");
+			weak_ptr<ClickableSprite> wp = thisUI.dropDown2;
+			wp.lock()->transform->renderBox.setTexture(&otherPrefab()["TaskBar"]);
+			wp.lock()->transform->SetAllSpriteOffset(NormalButtonOffsetData());
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(thisUI.taskbar);
 			wp.lock()->transform->SetPosition(Vector2f(0, -200));
 			thisUI.clickableTextureSprites.push_back(wp);
-			thisUI.dropDown2 = wp;
+			thisUI.dropDown2.lock()->InstantList();
 		}
-		if (texture.loadFromFile(path + "CreateNewRoom" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			weak_ptr<ClickableSprite> wp = Instantiate<CreateNewRoomButton>();
-			wp.lock()->transform->renderBox.setTexture(newTexture);
-			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		{
+			thisUI.newRoomButton  = Instantiate<CreateNewRoomButton>();
+			weak_ptr<ClickableSprite> wp = thisUI.newRoomButton;
+			wp.lock()->transform->renderBox.setTexture(&otherPrefab()["CreateNewRoom"]);
+			wp.lock()->transform->SetAllSpriteOffset(NormalButtonOffsetData());
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(thisUI.taskbar);
 			wp.lock()->transform->SetPosition(Vector2f(0, -100));
 			thisUI.clickableTextureSprites.push_back(wp);
 			thisUI.taskbarSprites.push_back(wp);
 		}
-		if (texture.loadFromFile(path + "DeleteSet" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			weak_ptr<ClickableSprite> wp = Instantiate<DeleteSetButton>();
-			wp.lock()->transform->renderBox.setTexture(newTexture);
-			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		{
+			thisUI.deleteSetButton = Instantiate<DeleteSetButton>();
+			weak_ptr<ClickableSprite> wp = thisUI.deleteSetButton;
+			wp.lock()->transform->renderBox.setTexture(&otherPrefab()["DeleteSet"]);
+			wp.lock()->transform->SetAllSpriteOffset(NormalButtonOffsetData());
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(thisUI.taskbar);
 			wp.lock()->transform->SetPosition(Vector2f(0, 0));
 			thisUI.clickableTextureSprites.push_back(wp);
 			thisUI.taskbarSprites.push_back(wp);
 		}
-		if (texture.loadFromFile(path + "DeleteRoom" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			weak_ptr<ClickableSprite> wp = Instantiate<DeleteRoomButton>();
-			wp.lock()->transform->renderBox.setTexture(newTexture);
-			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		{
+			thisUI.deleteRoomButton = Instantiate<DeleteRoomButton>();
+			weak_ptr<ClickableSprite> wp = thisUI.deleteRoomButton;
+			wp.lock()->transform->renderBox.setTexture(&otherPrefab()["DeleteRoom"]);
+			wp.lock()->transform->SetAllSpriteOffset(NormalButtonOffsetData());
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(thisUI.taskbar);
 			wp.lock()->transform->SetPosition(Vector2f(0, 100));
 			thisUI.clickableTextureSprites.push_back(wp);
 			thisUI.taskbarSprites.push_back(wp);
 		}
-		if (texture.loadFromFile(path + "Edit" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			weak_ptr<ClickableSprite> wp = Instantiate<EditButton>();
-			wp.lock()->transform->renderBox.setTexture(newTexture);
-			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		{
+			thisUI.editButton = Instantiate<EditButton>();
+			weak_ptr<ClickableSprite> wp = thisUI.editButton;
+			wp.lock()->transform->renderBox.setTexture(&otherPrefab()["Edit"]);
+			wp.lock()->transform->SetAllSpriteOffset(NormalButtonOffsetData());
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(thisUI.taskbar);
 			wp.lock()->transform->SetPosition(Vector2f(0, 200));
 			thisUI.clickableTextureSprites.push_back(wp);
 			thisUI.taskbarSprites.push_back(wp);
 		}
-		if (texture.loadFromFile(path + "Save" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			weak_ptr<ClickableSprite> wp = Instantiate<SaveButton>();
-			wp.lock()->transform->renderBox.setTexture(newTexture);
-			wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		{
+			thisUI.saveButton = Instantiate<SaveButton>();
+			weak_ptr<ClickableSprite> wp = thisUI.saveButton;
+			wp.lock()->transform->renderBox.setTexture(&otherPrefab()["Save"]);
+			wp.lock()->transform->SetAllSpriteOffset(NormalButtonOffsetData());
 			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 			wp.lock()->transform->SetParent(thisUI.taskbar);
 			wp.lock()->transform->SetPosition(Vector2f(0, 300));
 			thisUI.clickableTextureSprites.push_back(wp);
 			thisUI.taskbarSprites.push_back(wp);
 		}
-		if (texture.loadFromFile(path + "TaskBar" + ".png", IntRect(0, 0, 295, 45))) {
-			Texture* newTexture = new Texture(texture);
-			texture.setSmooth(true);
-			for (int i = 0; i < 10; i++) {
-				weak_ptr<SetDropDownListButton> wp = Instantiate<SetDropDownListButton>();
-				wp.lock()->index = i;
-				wp.lock()->transform->renderBox.setTexture(newTexture);
-				wp.lock()->transform->renderBox.setFillColor(Color::Transparent);
-				wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
-				wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
-				wp.lock()->transform->SetParent(thisUI.dropDown1);
-				wp.lock()->transform->SetPosition(Vector2f(0, 45 * (i + 1)));
-				thisUI.clickableTextureSprites.push_back(wp);
-				thisUI.dropDownList1.push_back(wp);
-				thisUI.textDropDown1.push_back(vector<weak_ptr<GameSprite>>());
-				for (int j = 0; j < 10; j++) {
-					weak_ptr<GameSprite> wp1 = Instantiate<GameSprite>();
-					wp1.lock()->transform->renderBox.setFillColor(Color::Transparent);
-					wp1.lock()->transform->renderBox.setTexture(&WControl::ASCIIPrefab()[' ']);
-					wp1.lock()->transform->SetAllSpriteOffset(spriteOffsetData1);
-					wp1.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
-					wp1.lock()->transform->SetParent(wp);
-					wp1.lock()->transform->SetPosition(Vector2f(-wp.lock()->transform->renderBox.getSize().x / 2 + wp1.lock()->transform->renderBox.getSize().x * (j + 1.5), 0));
-					thisUI.NormalSprites2.push_back(wp1);
-					thisUI.textDropDown1[i].push_back(wp1);
-				}
-			}
-		}
-		int i = 0;
-		for (auto& wp : WControl::allRoomPrefabs()) {
-			int j = 0;
-			std::string s = wp.first;
-			thisUI.listName[i] = s;
-			for (; j < s.size(); j++) {
-				if (s[j] >= 'a' && s[j] <= 'z')
-					s[j] = s[j] - 'a' + 'A';
-				thisUI.textDropDown1[i][j].lock()->transform->renderBox.setTexture(&WControl::ASCIIPrefab()[s[j]]);
-			}
-			for (; j < 10; j++) {
-				thisUI.textDropDown1[i][j].lock()->transform->renderBox.setTexture(&WControl::ASCIIPrefab()[' ']);
-			}
-			i++;
-		}
-		for (; i < 10; i++) {
-			for (int j=0; j < 10; j++) {
-				thisUI.textDropDown1[i][j].lock()->transform->renderBox.setTexture(&WControl::ASCIIPrefab()[' ']);
-			}
+		{
+			/*Vector2f areaSize(AREA_SIZEX,AREA_SIZEY);
+			thisUI.choosingEdges[0] = Instantiate<ChoosingEdge>();
+			weak_ptr<ChoosingEdge> wp = thisUI.choosingEdges[0];
+			wp.lock()->SetColor(Color::Cyan);
+			wp.lock()->transform->SetSize(Multiple(areaSize,Vector2f(2,1)) ,RenderBox);
+			wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+			wp.lock()->transform->SetParent(UIHierarchy());
+			wp.lock()->transform->SetPosition(Multiple(areaSize, Vector2f(0, -3.5)));
+			thisUI.clickableTextureSprites.push_back(wp);*/
 		}
 	}
-
 }
 
 void WorldControl::SaveAllRoomPrefab() {

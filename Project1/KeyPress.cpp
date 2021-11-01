@@ -27,6 +27,10 @@ void KeyHold() {
         if (Keyboard::isKeyPressed(Keyboard::R)) {
             player->MeleeAttack();
         }
+        if (Keyboard::isKeyPressed(Keyboard::Y)) {
+            cout << WControl::allRoomPrefabs().size();
+            cout << endl;
+        }
         if (Keyboard::isKeyPressed(Keyboard::F)) {
             if (!WControl::player().lock()->isHoldHookButton) {
                 WControl::player().lock()->isHoldHookButton = true;

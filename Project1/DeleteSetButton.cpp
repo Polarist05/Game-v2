@@ -6,8 +6,12 @@
 
 void DeleteSetButton::Activate()
 {
-	ToolkitUI& toolkitUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
-	WControl::allRoomPrefabs().erase(toolkitUI.choosingSet);
-	WControl::RefreshRoomPrefrab();
-	std::filesystem::remove_all("Rooms\\" + toolkitUI.choosingSet);
+	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	if (WControl::allRoomPrefabs().size() > 1) {
+		WControl::allRoomPrefabs().erase(thisUI.choosingSet);
+		WControl::RefreshRoomPrefrab();
+		std::filesystem::remove_all("Rooms\\" + thisUI.choosingSet);
+		thisUI.ChangeSet(WControl::allRoomPrefabs().begin()->first);
+		thisUI.updateText();
+	}
 }

@@ -14,18 +14,32 @@
 #define AREA_SIZEY 140
 #define SOUL_AMOUNT 4
 #define KEY_AMOUNT 3
+#define VIEW_SIZE 1
+enum GameMode {
+	ToolkitEditMode,
+	ToolkitPlayMode,
+	PlayMode,
+	PauceGamemode,
+	StartPageMode
+};
 class WorldControl:public GameBaseClass {
 	static void LoadData();
 	static void LoadAllRoomPrefab();
 	static void LoadAllObjectPrefab();
 	static void LoadPlayerPerfab();
-	static void LoadOtherPrefab();
+	static void LoadAllOtherPrefab();
+	static void LoadOtherPrefab(const string& name,const string& path, const IntRect& intRect);
 	static void LoadAllASCII();
 	static void LoadAllUI();
+	static void LoadStartUI();
+	static void LoadToolkitUI();
 public:
 	//local variable
 	static RenderWindow& window();
 	static float WorldScale();
+
+	static SpriteOffsetData& NormalButtonOffsetData();
+	static SpriteOffsetData& TextOffsetData();
 	
 	static weak_ptr<GameSprite> NotrenderSprite();
 	static weak_ptr<Tilemap> NotrenderTilemap();
@@ -40,6 +54,7 @@ public:
 	static weak_ptr<ClickableSprite>& clickableSpriteAtCursor();
 	
 	static map<std::string, pair<pair<bool, bool>,vector< RoomData > > >& allRoomPrefabs();	
+	static RoomData& emptyRoom();
 	static map<char, Texture>& ASCIIPrefab();
 	static map<std::string, Texture>& objectsPrefab();
 	static map<std::string, Texture>& otherPrefab();
@@ -47,6 +62,7 @@ public:
 
 	static map< RoomType, vector< RoomData > >& usedRoomPrefabs();
 	
+	static void setMainDungeon(Dungeon* dungeon);
 	static Dungeon& getMainDungeon();
 	static bool& isGamePlaying();
 	
@@ -57,7 +73,6 @@ public:
 	static Vector2i& GetCurrentRoomPosition();
 	static void SetCurrentRoomPositon(const Vector2i& currentRoom);
 	
-	static void SetMainDungeon(Dungeon* MainDungeon);
 	static void SaveAllRoomPrefab();
 	static void SetUsedRoomPrefab();
 	static void RefreshRoomPrefrab();

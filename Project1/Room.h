@@ -101,6 +101,9 @@ private:
 	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
 	static RoomType GetRoomType(const Direction& direction, const int& xSum, const int& ySum);
 	
+	void CheckCllisionInToolkitMode();
+	void CheckCllisionInPlayMode();
+	
 	void CheckCollisionInRoom();
 	
 	void CheckCollisionBetweenPlayerAndWall();

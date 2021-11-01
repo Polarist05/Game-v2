@@ -6,7 +6,7 @@
 
 void CreateNewSetButton::Activate()
 {
-	ToolkitUI& toolkitUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]) ;
+	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
 	{
 		int i = 1;
 		for (; 1; i++) {
@@ -17,5 +17,7 @@ void CreateNewSetButton::Activate()
 		}
 		WControl::RefreshRoomPrefrab();
 		std::filesystem::create_directory("Rooms\\NewSet" + to_string(i));
+		thisUI.ChangeSet("NewSet" + to_string(i));
 	}
+	thisUI.updateText();
 }
