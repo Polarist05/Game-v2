@@ -27,8 +27,10 @@ void Dungeon::GenerateDungeon()
 void Dungeon::GenerateToolkitMode()
 {
 	InstantEdge();
+	WControl::SetCurrentRoomPositon(Vector2i(0, 0));
+	WControl::player().lock()->transform->position = WControl::GetCurrentRoom().lock()->transform->position + 
+		Multiple(WControl::MainTile().lock()->GetAreaSize(),Vector2f(2,2));
 	WControl::GetCurrentRoom().lock()->SetRoomSeed(RoomData(), false, false);
-	
 }
 void Dungeon::ResetDungeon()
 {
@@ -250,10 +252,11 @@ void Dungeon::InstantRoom() {
 			Rooms[i][j].lock()->GetTransform()->SetParent(WorldControl::MainTile(), Vector2i((RSIZEX + 2) * j, (RSIZEY + 2) * i));
 
 			//extension
-			Vector2f boxSize = Multiple(Rooms[i][j].lock()->GetTransform()->GetTile().lock()->GetRealRoomSize() - Rooms[i][j].lock()->GetTransform()->GetAreaSize(), Vector2f(1, 1));
+			Vector2f boxSize = Rooms[i][j].lock()->GetTransform()->GetTile().lock()->GetRealRoomSize() - Rooms[i][j].lock()->GetTransform()->GetAreaSize();
 			Rooms[i][j].lock()->GetTransform()->renderBox.setFillColor(Color::White);
 			Rooms[i][j].lock()->GetTransform()->SetSize(boxSize, BoxType::RenderBox);
-			Rooms[i][j].lock()->GetTransform()->SetPositionOffset(Rooms[i][j].lock()->MiddlePositionOfRoom() - Rooms[i][j].lock()->GetTransform()->position, BoxType::RenderBox);
+			//
+			Rooms[i][j].lock()->GetTransform()->SetPositionOffset(Multiple(boxSize,Vector2f(0.5,0.5)), BoxType::RenderBox);
 		}
 	}
 }

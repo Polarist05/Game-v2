@@ -12,8 +12,7 @@ Tile::Tile(std::string s) :GameSprite(s)
 	transform = &m_transform;
 }
 Tile::TileTransform* Tile::GetTransform() { return &m_transform; }
-Vector2f Tile::GetAreaSize() { return AreaSize; }
-void Tile::SetAreaSize(Vector2f v) {AreaSize = v; printf("AreaSize:%f\t%f\n",AreaSize.x,AreaSize.y); }
+const Vector2f& Tile::GetAreaSize() { return Vector2f(AREA_SIZEX,AREA_SIZEY); }
 Vector2f Tile::GetRealRoomSize() {
 	return Multiple(Vector2f((RSIZEX + 2), (RSIZEY + 2)), GetAreaSize());
 }
@@ -26,6 +25,18 @@ Vector2f Tile::GetRealPositionAt(const Vector2i& RoomPosition, const Vector2f& A
 
 //--------------------------------------------------------------------------------------
 //TilemapTransform
+const Vector2i Tilemap::TilemapTransform::GetPositionInTileAt(const Vector2f& pos)
+{
+	Vector2f v = pos - (GetRealposition() + Multiple(GetAreaSize(), Vector2f(-0.5, -0.5)));
+	v.x /= AREA_SIZEX; v.y /= AREA_SIZEY;
+	return (Vector2i)v;
+}
+const Vector2f Tilemap::TilemapTransform::GetRealPositionAt(const Vector2i& pos)
+{
+	Vector2f v = GetRealposition()+Multiple(GetAreaSize(),(Vector2f)pos);
+	//printf("%f %f\n", v.x,v.y);
+	return v;
+}
 void Tilemap::TilemapTransform::SetParent(weak_ptr<GameSprite> tileParent)
 {
 	weak_ptr<Tile> wp = dynamic_pointer_cast<Tile>(tileParent.lock());
@@ -144,26 +155,26 @@ void Area::AreaTransform::SetPosition(Vector2f v)
 	cout << "Area can't set position" << endl;
 }
 
-void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile,RenderPriorityType RenderPriority) {
+void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent,const Vector2i& positionInTile,RenderPriorityType RenderPriority) {
 	SetParent(tileParent, positionInTile);
 	this->RenderPriority = RenderPriority;
 	SetSize(GetAreaSize(), BoxType::RenderBox);
 	SetSize(GetAreaSize(), BoxType::PseudoRenderBox);
 }
-void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, RenderPriorityType RenderPriority,Color color) {
+void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent,const Vector2i& positionInTile, RenderPriorityType RenderPriority,Color color) {
 	SetParent(tileParent, positionInTile);
 	this->RenderPriority = RenderPriority;
 	renderBox.setFillColor(color);
 	SetSize(GetAreaSize(), BoxType::RenderBox);
 	SetSize(GetAreaSize(), BoxType::PseudoRenderBox);
 }
-void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile,Vector2f renderSize, RenderPriorityType RenderPriority) {
+void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent,const Vector2i& positionInTile,Vector2f renderSize, RenderPriorityType RenderPriority) {
 	SetParent(tileParent, positionInTile);
 	this->RenderPriority = RenderPriority;
 	SetSize(renderSize, BoxType::RenderBox);
 	SetSize(GetAreaSize(), BoxType::PseudoRenderBox);
 }
-void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority, Color color) {
+void Area::AreaTransform::SetAll(weak_ptr<Tilemap> tileParent,const Vector2i& positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority, Color color) {
 	SetParent(tileParent, positionInTile);
 	this->RenderPriority = RenderPriority;
 	renderBox.setFillColor(color);

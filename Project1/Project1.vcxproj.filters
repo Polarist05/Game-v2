@@ -207,6 +207,15 @@
     <ClCompile Include="ChoosingEdge.cpp">
       <Filter>Source Files\UI\ToolkitUI\Edit</Filter>
     </ClCompile>
+    <ClCompile Include="Load.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CliffButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="FloorButton.cpp">
+      <Filter>Source Files\UI\ToolkitUI\Edit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SFML.h">
@@ -342,6 +351,15 @@
       <Filter>Header Files\UI\ToolkitUI\Room</Filter>
     </ClInclude>
     <ClInclude Include="ChoosingEdge.h">
+      <Filter>Header Files\UI\ToolkitUI\Edit</Filter>
+    </ClInclude>
+    <ClInclude Include="Load.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CliffButton.h">
+      <Filter>Header Files\UI\ToolkitUI\Edit</Filter>
+    </ClInclude>
+    <ClInclude Include="FloorButton.h">
       <Filter>Header Files\UI\ToolkitUI\Edit</Filter>
     </ClInclude>
   </ItemGroup>

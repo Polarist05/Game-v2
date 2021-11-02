@@ -28,5 +28,6 @@ public:
 	static bool findShortestCollisionOfPointAtDirection(Vector2f& result, const Vector2f& point, const vector<RectangleShape>& Rects, const Direction& direction);
 	static bool inBetween(const float& left, const float& middle, const float& right);
 	static bool findIntercept(const Range2f& range1, const Range2f& range2,Range2f& result);
+	static float findDisTance(const Vector2f& pos1, const Vector2f& pos2);
 private:
 };

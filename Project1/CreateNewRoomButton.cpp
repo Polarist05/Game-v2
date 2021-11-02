@@ -3,14 +3,15 @@
 #include "WorldControl.h"
 #include <fstream>
 #include <filesystem>
+#include "Load.h"
 
 void CreateNewRoomButton::Activate()
 {
 	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
 	RoomData roomData("newRoom");
 	WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.push_back(roomData);
-	WControl::RefreshRoomPrefrab();
-	thisUI.choosingRoomIndex = WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.size() - 1;
+	Load::RefreshRoomPrefrab();
+	thisUI.choosingRoomIndex =(int) WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.size() - 1;
 	std::ofstream rooomSave("Rooms\\" + thisUI.choosingSet + '\\' + to_string(thisUI.choosingRoomIndex));
 	rooomSave << roomData.name << " " << roomData.roomType << endl;
 	for (int j = 0; j < RSIZEY; j++) {

@@ -19,6 +19,7 @@ public:
 	
 
 private:
+	void RenderAreaHilight();
 	void RenderEdge();
 	void RenderFloorAt(weak_ptr<Room> rederRoom);
 	void RenderWallAt(weak_ptr<Room> renderRoom);

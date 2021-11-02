@@ -9,10 +9,12 @@
 #include <stack>
 #include "UI.h"
 #include "UX.h"
+#include "Load.h"
+
 #define WControl WorldControl
 #define AREA_SIZEX 190
 #define AREA_SIZEY 140
-#define SOUL_AMOUNT 4
+#define SOUL_AMOUNT 3
 #define KEY_AMOUNT 3
 #define VIEW_SIZE 1
 enum GameMode {
@@ -23,16 +25,7 @@ enum GameMode {
 	StartPageMode
 };
 class WorldControl:public GameBaseClass {
-	static void LoadData();
-	static void LoadAllRoomPrefab();
-	static void LoadAllObjectPrefab();
-	static void LoadPlayerPerfab();
-	static void LoadAllOtherPrefab();
-	static void LoadOtherPrefab(const string& name,const string& path, const IntRect& intRect);
-	static void LoadAllASCII();
-	static void LoadAllUI();
-	static void LoadStartUI();
-	static void LoadToolkitUI();
+
 public:
 	//local variable
 	static RenderWindow& window();
@@ -64,7 +57,8 @@ public:
 	
 	static void setMainDungeon(Dungeon* dungeon);
 	static Dungeon& getMainDungeon();
-	static bool& isGamePlaying();
+	//static bool& isGamePlaying();
+	static GameMode& getGameMode();
 	
 	static std::stack<UIType>& UIStack();
 	static map<UIType, UI*>& AllUI();
@@ -73,21 +67,21 @@ public:
 	static Vector2i& GetCurrentRoomPosition();
 	static void SetCurrentRoomPositon(const Vector2i& currentRoom);
 	
-	static void SaveAllRoomPrefab();
 	static void SetUsedRoomPrefab();
-	static void RefreshRoomPrefrab();
 
 	static weak_ptr<ClickableSprite> HoldItem();
 	
 	static View& view();
 	static void SetViewPosition(Vector2f pos);
 
+	static const Vector2f& GetCursurPosition();
+	static map<int,set<int>>& GetChosedAreaPosition();
+
 	WorldControl() {
-		LoadData();
+		Room::SetObjectTypeString();
+		Load::LoadData();
 		NotrenderTile().lock()->transform->SetParent(NotrenderSprite());
 		MainTile().lock()->transform->position = Vector2f(0, 0);
-		MainTile().lock()->SetAreaSize(Vector2f(AREA_SIZEX, AREA_SIZEY));
-		Room::SetObjectTypeString();
 		UIStack().push(UIType::StartPage);
 	}
 };

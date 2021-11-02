@@ -1,22 +1,24 @@
 #include "ChoosingEdge.h"
-
-const Color ChoosingEdge::GetColor(){return color;}
-void ChoosingEdge::SetColor(const Color& color){
-	this->color = color;
-	transform->renderBox.setFillColor(color);
-}
-
+#include "WorldControl.h"
 void ChoosingEdge::Activate()
 {
 	if (direction == Direction::Up|| direction == Direction::Left) {
-		if (transform->renderBox.getFillColor()==Color::Cyan) {
-			SetColor(Color::Green);
+		if (transform->renderBox.getTexture()==&WControl::otherPrefab()["Wall"]) {
+			transform->renderBox.setTexture(&WControl::otherPrefab()["In"]);
 		}
-		if (transform->renderBox.getFillColor() == Color::Green) {
-			SetColor(Color(32, 32, 32, 255));
+		else if (transform->renderBox.getTexture() == &WControl::otherPrefab()["In"]) {
+			transform->renderBox.setTexture(&WControl::otherPrefab()["Out"]);
 		}
-		if (transform->renderBox.getFillColor() == Color(32, 32, 32, 255)) {
-			SetColor(Color::Cyan);
+		else if (transform->renderBox.getTexture() == &WControl::otherPrefab()["Out"]) {
+			transform->renderBox.setTexture(&WControl::otherPrefab()["Wall"]);
+		}
+	}
+	if (direction == Direction::Down || direction == Direction::Right) {
+		if (transform->renderBox.getTexture() == &WControl::otherPrefab()["Wall"]) {
+			transform->renderBox.setTexture(&WControl::otherPrefab()["Out"]);
+		}
+		else if (transform->renderBox.getTexture() == &WControl::otherPrefab()["Out"]) {
+			transform->renderBox.setTexture(&WControl::otherPrefab()["Wall"]);
 		}
 	}
 }

@@ -7,23 +7,8 @@ View& view();
 void KeyHold() {
     float speed=2.0;
     shared_ptr<Player> player = WorldControl::player().lock();
-    if (!player->isAttacking&&!player->isHooking&&WControl::isGamePlaying) {
-        if (Keyboard::isKeyPressed(Keyboard::A)) {
-            player->transform->Move(Vector2f(-2 * speed, 0));
-            player->SetPlayerDirection(Direction::Left);
-        }
-        if (Keyboard::isKeyPressed(Keyboard::D)) {
-            player->transform->Move(Vector2f(2 * speed, 0));
-            player->SetPlayerDirection(Direction::Right);
-        }
-        if (Keyboard::isKeyPressed(Keyboard::W)) {
-            player->transform->Move(Vector2f(0, -2 * speed));
-            player->SetPlayerDirection(Direction::Up);
-        }
-        if (Keyboard::isKeyPressed(Keyboard::S)) {
-            player->transform->Move(Vector2f(0, 2 * speed));
-            player->SetPlayerDirection(Direction::Down);
-        }
+    if (!player->isAttacking&&!player->isHooking&& WControl::getGameMode() == GameMode::PlayMode) {
+        
         if (Keyboard::isKeyPressed(Keyboard::R)) {
             player->MeleeAttack();
         }
@@ -59,6 +44,7 @@ void KeyHold() {
             WControl::player().lock()->hookGuideLine.setFillColor(Color::Transparent);
         }
         if (Keyboard::isKeyPressed(Keyboard::Escape) && WControl::UIStack().empty()) {
+            WControl::getGameMode() = GameMode::StartPageMode;
             WControl::UIStack().push(UIType::StartPage);
         }
         static bool holdThrowingButton;
@@ -75,10 +61,37 @@ void KeyHold() {
             holdThrowingButton = false;
         }
     }
+    if (Keyboard::isKeyPressed(Keyboard::A)) {
+        player->transform->Move(Vector2f(-2 * speed, 0));
+        player->SetPlayerDirection(Direction::Left);
+    }
+    if (Keyboard::isKeyPressed(Keyboard::D)) {
+        player->transform->Move(Vector2f(2 * speed, 0));
+        player->SetPlayerDirection(Direction::Right);
+    }
+    if (Keyboard::isKeyPressed(Keyboard::W)) {
+        player->transform->Move(Vector2f(0, -2 * speed));
+        player->SetPlayerDirection(Direction::Up);
+    }
+    if (Keyboard::isKeyPressed(Keyboard::S)) {
+        player->transform->Move(Vector2f(0, 2 * speed));
+        player->SetPlayerDirection(Direction::Down);
+    }
     static bool isLeftMouseHold;
+    //printf("%d %d\n", WControl::GetCurrentRoom().lock()->GetTransform()->GetPositionInTileAt(WControl::GetCursurPosition()).x, WControl::GetCurrentRoom().lock()->GetTransform()->GetPositionInTileAt(WControl::GetCursurPosition()).y);
     if (Mouse::isButtonPressed(Mouse::Button::Left)) {
         if (!isLeftMouseHold)
             isLeftMouseHold = true;
+        Vector2i areaPosition = WControl::GetCurrentRoom().lock()->GetTransform()->GetPositionInTileAt(WControl::GetCursurPosition());
+        if (WControl::clickableSpriteAtCursor().expired()&&areaPosition.x < RSIZEX + 1 && areaPosition.y < RSIZEY + 1 && areaPosition.x>0 && areaPosition.y>0) {
+            if (!Keyboard::isKeyPressed(Keyboard::LShift)) {
+                WControl::GetChosedAreaPosition().clear();
+            }
+            WControl::GetChosedAreaPosition()[areaPosition.x].insert(areaPosition.y);
+        }
+        else {
+            //WControl::GetChosedAreaPosition().clear();
+        }
     }
     else if (isLeftMouseHold) {
         isLeftMouseHold = false;

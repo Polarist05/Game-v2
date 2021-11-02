@@ -15,7 +15,7 @@ void CreateNewSetButton::Activate()
 				break;
 			}
 		}
-		WControl::RefreshRoomPrefrab();
+		Load::RefreshRoomPrefrab();
 		std::filesystem::create_directory("Rooms\\NewSet" + to_string(i));
 		thisUI.ChangeSet("NewSet" + to_string(i));
 	}

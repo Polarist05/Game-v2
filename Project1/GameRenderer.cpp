@@ -15,18 +15,20 @@ void GameRenderer::FindPlayerAndObject(weak_ptr<GameSprite> a, vector<weak_ptr<G
 }
 void GameRenderer::RenderAll() {
 	window().draw(WControl::GetCurrentRoom().lock()->GetTransform()->renderBox);
-	if (WControl::isGamePlaying) {
+	if (WControl::getGameMode()==GameMode::PlayMode|| WControl::getGameMode() == GameMode::ToolkitEditMode) {
 		RenderWallAndFloor();
+		if (WControl::getGameMode() == GameMode::ToolkitEditMode) 
+			RenderAreaHilight();
 		RenderPlayerAndObject();
 		RenderUX();
 	}
 	RenderUI();
+	
 	//RenderSettingView();
 
 }
 void GameRenderer::RenderWallAndFloor()
 {
-	if (WorldControl::isGamePlaying()) {
 		RenderFloorAt(WControl::GetCurrentRoom());
 		RenderWallAt(WControl::GetCurrentRoom());
 		int y = WControl::GetCurrentRoomPosition().y, x = WControl::GetCurrentRoomPosition().x;
@@ -43,7 +45,6 @@ void GameRenderer::RenderWallAndFloor()
 			RenderWallAt(WControl::getMainDungeon().Rooms[y ][x-1]);
 		}
 		RenderEdge();
-	}
 }
 void GameRenderer::RenderEdge() {
 	for (size_t i = 0; i < WControl::getMainDungeon().EdgeFloors.size(); i++) {
@@ -102,8 +103,10 @@ void GameRenderer::RenderUX() {
 }
 void GameRenderer::RenderUI() {
 	if (!WControl::UIStack().empty()) {
+			
 		for (auto wp : WControl::AllUI()[WControl::UIStack().top()]->NormalSprites) {
 			if (wp.lock()->transform->renderBox.getFillColor()!=Color::Transparent) {
+				
 				//window().draw(wp.lock()->transform->hitBox);
 				window().draw(wp.lock()->transform->renderBox);
 			}
@@ -112,6 +115,7 @@ void GameRenderer::RenderUI() {
 			if (wp.lock()->transform->renderBox.getFillColor() != Color::Transparent) {
 				window().draw(wp.lock()->transform->hitBox);
 				window().draw(wp.lock()->transform->renderBox);
+				//window().draw(wp.lock()->transform->pseudoRenderBox);
 			}
 		}
 		for (auto wp : WControl::AllUI()[WControl::UIStack().top()]->NormalSprites2) {
@@ -119,6 +123,21 @@ void GameRenderer::RenderUI() {
 				//window().draw(wp.lock()->transform->hitBox);
 				window().draw(wp.lock()->transform->renderBox);
 			}
+		}
+	}
+}
+void GameRenderer::RenderAreaHilight() {
+	static RectangleShape hilightRect;
+	static Color color(Color(0, 255,0,150));
+	hilightRect.setFillColor(color);
+	hilightRect.setSize(WControl::MainTile().lock()->GetAreaSize());
+	hilightRect.setOrigin(Multiple(hilightRect.getSize(), Vector2f(0.5, 0.5)));
+	for (auto& X: WControl::GetChosedAreaPosition()) {
+		for (auto& pos:X.second) {
+			Vector2f v = WControl::GetCurrentRoom().lock()->GetTransform()->GetRealPositionAt(Vector2i(X.first, pos));
+			hilightRect.setPosition(v);
+			//printf("%d %d %f %f\n",X.first,pos,v.x,v.y);
+			WControl::window().draw(hilightRect);
 		}
 	}
 }

@@ -7,9 +7,9 @@
 void DeleteRoomButton::Activate()
 {
 	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
-	if (WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.size() > 0) {
+	if (WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.size() > 0&&!WorldControl::allRoomPrefabs()[thisUI.choosingSet].first.second) {
 		WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.erase(WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.begin() + thisUI.choosingRoomIndex);
-		WControl::RefreshRoomPrefrab();
+		Load::RefreshRoomPrefrab();
 		std::string path = "Rooms\\" + thisUI.choosingSet + "\\";
 		std::filesystem::remove(path + to_string(thisUI.choosingRoomIndex));
 		for (size_t i = thisUI.choosingRoomIndex; i < WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.size(); i++)

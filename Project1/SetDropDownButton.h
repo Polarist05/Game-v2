@@ -15,5 +15,6 @@ public:
 	void Close();
 	void UpdateText();
 	void Activate() override;
+	void SetAllVisible(const bool& b);
 };
 

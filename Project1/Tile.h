@@ -12,8 +12,7 @@ public:
 	Tile(std::string s);
 	Vector2f GetRealRoomSize();
 	TileTransform* GetTransform();
-	Vector2f GetAreaSize();
-	void SetAreaSize(Vector2f v);
+	static const Vector2f& GetAreaSize();
 	Vector2f GetRealPositionAt(const Vector2i& RoomPosition, const Vector2i& AreaPosition);
 	Vector2f GetRealPositionAt(const Vector2i& RoomPosition, const Vector2f& AreaPosition);
 };
@@ -23,8 +22,11 @@ class Tilemap :public GameSprite
 		weak_ptr<Tile> NotrenderTile();
 		Vector2i positionInTile;
 	public:
+		const Vector2i GetPositionInTileAt(const Vector2f& pos);
+		const Vector2f GetRealPositionAt(const Vector2i& pos);
 		void SetParent(weak_ptr<GameSprite> parent)override;
 		void SetParent(weak_ptr<Tile> parent, Vector2i positionInTile);
+		//void GetPosition()
 		void SetPosition(float x, float y)override;
 		void SetPosition(Vector2f v)override;
 		
@@ -54,10 +56,10 @@ class Area :public GameSprite {
 		void SetParent(weak_ptr<Tilemap> parent, Vector2i positionInTile);
 		void SetPosition(float x, float y)override;
 		void SetPosition(Vector2f v)override;
-		void SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, RenderPriorityType RenderPriority);
-		void SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, RenderPriorityType RenderPriority, Color color);
-		void SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority);
-		void SetAll(weak_ptr<Tilemap> tileParent, Vector2i positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority, Color color);
+		void SetAll(weak_ptr<Tilemap> tileParent,const Vector2i& positionInTile, RenderPriorityType RenderPriority);
+		void SetAll(weak_ptr<Tilemap> tileParent,const Vector2i& positionInTile, RenderPriorityType RenderPriority, Color color);
+		void SetAll(weak_ptr<Tilemap> tileParent,const Vector2i& positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority);
+		void SetAll(weak_ptr<Tilemap> tileParent,const Vector2i& positionInTile, Vector2f renderSize, RenderPriorityType RenderPriority, Color color);
 		void Move(Vector2f v)override;
 		void SetPositionInTilemap(Vector2i);
 		Vector2i GetPositionInTilemap();

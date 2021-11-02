@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 #include "Walkable.h"
+#include "PortalClass.h"
 #include <string>
 #define RSIZEX 8
 #define RSIZEY 6
@@ -54,6 +55,7 @@ struct RoomData
 };
 class Room:public Tilemap
 {
+	vector<weak_ptr<PortalClass>> Portals = vector<weak_ptr<PortalClass>>(10, weak_ptr<PortalClass>());
 	RoomData originalRoomData;
 	RoomData roomData;
 	Vector2i roomPosition;
@@ -62,6 +64,7 @@ class Room:public Tilemap
 	void SetAllObjectsInRoom();
 	void SetFloor();
 public:
+	vector<vector<weak_ptr<GameSprite>>> Space= vector<vector<weak_ptr<GameSprite>>>(RSIZEY,vector<weak_ptr<GameSprite>>(RSIZEX,weak_ptr<GameSprite>()));
 	Vector2f startRoomPosition;
 	weak_ptr<Area> areas[RSIZEY][RSIZEX];
 	vector<weak_ptr<Area> > Walls[4];
@@ -88,7 +91,8 @@ public:
 	void DestroyAllEdge();
 	void DestroyAllObjects();
 	
-	Vector2f MiddlePositionOfRoom();
+	const Vector2f& MiddlePositionOfRoom();
+	const Vector2f& TopLeftPositionOfRoom();
 	
 	static RoomType GetRoomType(const Direction& direction, Vector2i roomPosition, bool* FlipX, bool* FlipY);
 	static void SetObjectTypeString();
@@ -97,12 +101,26 @@ public:
 	void CheckCollisionBetweenAttackHitBoxAndObject();
 	void CheckCollisionRingHitBoxAndMeleeAttackableObject(weak_ptr<GameSprite> bell);
 	void CheckNearestObjectHooking();
+
+	void InstantChargeSoul(Vector2i pos);
+	void InstantBell(Vector2i pos);
+	void InstantHook(Vector2i pos);
+	void InstantPortal(Vector2i pos);
+	void InstantStrawberry(Vector2i pos);
+	void InstantMovingPlatform(Vector2i pos);
+	void InstantSwitch(Vector2i pos);
+	void InstantNormalBlock(Vector2i pos);
+	void InstantDeleteBlock(Vector2i pos);
+	void InstantSignalBlock(Vector2i pos);
+	void InstantMoveableBlock(Vector2i pos);
+	void InstantPlacingSwitch(Vector2i pos);
+	void InstantLaser(Vector2i pos);
 private:
 	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
 	static RoomType GetRoomType(const Direction& direction, const int& xSum, const int& ySum);
 	
-	void CheckCllisionInToolkitMode();
-	void CheckCllisionInPlayMode();
+	void CheckCollisionInToolkitMode();
+	//void CheckCllisionInPlayMode();
 	
 	void CheckCollisionInRoom();
 	

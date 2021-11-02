@@ -11,10 +11,12 @@
 #include "NextRoomButton.h"
 #include "PreviousRoomButton.h"
 #include "ChoosingEdge.h"
+#include "ItemIcomButton.h"
 class ToolkitUI:public UI
 {
 	static void setText(vector<weak_ptr<GameSprite>>& textSprites, const std::string& s);
 public:
+	RoomData newRoomData;
 	bool isOpendropDown2 = false;
 	weak_ptr<GameSprite> taskbar;
 	vector<weak_ptr<ClickableSprite>> taskbarSprites;
@@ -29,7 +31,8 @@ public:
 	weak_ptr < SaveButton> saveButton;
 	weak_ptr < NextRoomButton> nextRoomButton;
 	weak_ptr < PreviousRoomButton> previouseRoomButton;
-	weak_ptr <ChoosingEdge> choosingEdges[4];
+	weak_ptr < ChoosingEdge> choosingEdges[4];
+	weak_ptr < ItemIconButton>  itemIconButton;
 	
 	void ChangeSet(std::string setName);
 	void ChangeRoom(int index);

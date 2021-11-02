@@ -52,7 +52,7 @@ void Knife::Start()
 		transform->renderBox.setOrigin(Vector2f(30, transform->renderBox.getOrigin().y));
 		transform->pseudoRenderBox.setOrigin(Vector2f(30, transform->pseudoRenderBox.getOrigin().y));
 		
-		transform->Move(Vector2f(WControl::player().lock()->transform->renderBox.getSize().x / 2+30., 0));
+		transform->Move(Vector2f(WControl::player().lock()->transform->renderBox.getSize().x / 2+ (float)30., 0));
 		velocity = Vector2f( THROWING_SPEED,0);
 		break;
 	case Left:

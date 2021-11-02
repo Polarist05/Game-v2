@@ -3,7 +3,7 @@
 void PlayButton::Activate()
 {
 	WControl::getMainDungeon().GenerateDungeon();
-	WControl::isGamePlaying() = true;
+	WControl::getGameMode() = GameMode::PlayMode;
 	WControl::UIStack().pop();
 	printf("Play\n");
 }

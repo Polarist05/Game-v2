@@ -96,11 +96,11 @@ bool Collision::findShortestCollisionDistance(Vector2f& result,const RectangleSh
 	}
 	if (abs(mnDistance.x) < abs(mnDistance.y)) {
 		mnDistance.y = 0;
-		mnDistance.x *= 1.0001;
+		mnDistance.x *= (float)1.0001;
 	}
 	else {
 		mnDistance.x = 0;
-		mnDistance.y *= 1.0001;
+		mnDistance.y *= (float)1.0001;
 	}
 	result = -mnDistance;
 	return true;
@@ -253,4 +253,10 @@ bool Collision::findIntercept(const Range2f& range1, const Range2f& range2,Range
 		return true;
 	}
 	return false;
+}
+
+float Collision::findDisTance(const Vector2f& pos1, const Vector2f& pos2)
+{
+	Vector2f distance2=pos1-pos2;
+	return sqrt(pow(distance2.x,2)+ pow(distance2.y,2)) ;
 }

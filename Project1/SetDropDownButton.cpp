@@ -140,3 +140,26 @@ void SetDropDownButton::Activate() {
 			Close();
 	}
 }
+
+void SetDropDownButton::SetAllVisible(const bool& b)
+{
+	if (!b) {
+		transform->renderBox.setFillColor(Color::Transparent);
+		for (auto& a : dropDownList) {
+			a.lock()->transform->renderBox.setFillColor(Color::Transparent);
+		}
+		for (auto& a : textDropDown) {
+			for(auto& wp:a)
+				wp.lock()->transform->renderBox.setFillColor(Color::Transparent);
+		}
+		for (auto& a :choosedText) {
+			a.lock()->transform->renderBox.setFillColor(Color::Transparent);
+		}
+	}
+	else {
+		transform->renderBox.setFillColor(Color::White);
+		for (auto& a : choosedText) {
+			a.lock()->transform->renderBox.setFillColor(Color::White);
+		}
+	}
+}

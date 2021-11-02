@@ -150,6 +150,7 @@
     <ClCompile Include="BellClass.cpp" />
     <ClCompile Include="ChoosingEdge.cpp" />
     <ClCompile Include="ClickableSprite.cpp" />
+    <ClCompile Include="CliffButton.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CreateNewRoomButton.cpp" />
     <ClCompile Include="CreateNewSetButton.cpp" />
@@ -159,12 +160,14 @@
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="EditButton.cpp" />
     <ClCompile Include="ExitButton.cpp" />
+    <ClCompile Include="FloorButton.cpp" />
     <ClCompile Include="GameBaseClass.cpp" />
     <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="GameSprite.cpp" />
     <ClCompile Include="ItemIcomButton.cpp" />
     <ClCompile Include="KeyPress.cpp" />
     <ClCompile Include="Knife.cpp" />
+    <ClCompile Include="Load.cpp" />
     <ClCompile Include="NextRoomButton.cpp" />
     <ClCompile Include="NormalBlockClass.cpp" />
     <ClCompile Include="ObjectDropDown.cpp" />
@@ -194,6 +197,7 @@
     <ClInclude Include="BellClass.h" />
     <ClInclude Include="ChoosingEdge.h" />
     <ClInclude Include="ClickableSprite.h" />
+    <ClInclude Include="CliffButton.h" />
     <ClInclude Include="CreateNewRoomButton.h" />
     <ClInclude Include="CreateNewSetButton.h" />
     <ClInclude Include="DeleteBlockClass.h" />
@@ -202,6 +206,7 @@
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="EditButton.h" />
     <ClInclude Include="ExitButton.h" />
+    <ClInclude Include="FloorButton.h" />
     <ClInclude Include="GameBaseClass.h" />
     <ClInclude Include="GameRenderer.h" />
     <ClInclude Include="GameSprite.h" />
@@ -210,6 +215,7 @@
     <ClInclude Include="ItemIcomButton.h" />
     <ClInclude Include="Knife.h" />
     <ClInclude Include="KnifeInteractable.h" />
+    <ClInclude Include="Load.h" />
     <ClInclude Include="MeleeAttackable.h" />
     <ClInclude Include="NextRoomButton.h" />
     <ClInclude Include="NormalBlockClass.h" />

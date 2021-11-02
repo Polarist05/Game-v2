@@ -59,7 +59,6 @@ void Room::SetRoomSeed(const RoomData& roomData,const bool& isFlipX,const bool& 
 	SetAllObjectsInRoom();
 }
 void Room::SetAllObjectsInRoom() {
-	vector<weak_ptr<PortalClass>> Portals(10, weak_ptr<PortalClass>());
 	for (size_t i = 0; i < roomData.objects.size(); i++)
 	{
 		for (size_t j = 0; j < roomData.objects[i].size(); j++)
@@ -67,148 +66,41 @@ void Room::SetAllObjectsInRoom() {
 			switch (roomData.objects[i][j] / 10) {
 			case ObjectType::Null:break;
 			case  ObjectType::ChargeSoul:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(32, 23), Vector2i(123, 123), Vector2f(60, 40), Vector2f(0, 40), Vector2f(0, -5), float(0.8));
-				Objects[ChargeSoul].push_back(Instantiate<ChargeSoulClass>("ChargeSoul"));
-				Objects[ChargeSoul][Objects[ChargeSoul].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[ChargeSoul][Objects[ChargeSoul].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::ChargeSoul)]);
-				Objects[ChargeSoul][Objects[ChargeSoul].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-				Objects[ChargeSoul][Objects[ChargeSoul].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantChargeSoul(Vector2i(j+1,i+1));
 				break;
-			}
 			case  Bell:
-			{
-				Vector2f v(-70, 0);
-				SpriteOffsetData spriteOffset(Vector2i(4, 25), Vector2i(182, 219), Vector2f(120, 90), Vector2f(0, 64), Vector2f(0, -35), float(0.75));
-				Objects[Bell].push_back(Instantiate<BellClass>("Bell"));
-				Objects[Bell][Objects[Bell].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[Bell][Objects[Bell].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Bell)]);
-				Objects[Bell][Objects[Bell].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-				Objects[Bell][Objects[Bell].size() - 1].lock()->GetTransform()->SetSize(((Vector2f)spriteOffset.renderPixelSize + v) * spriteOffset.scale, PseudoRenderBox);
-				Objects[Bell][Objects[Bell].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantBell(Vector2i(j + 1, i + 1));	
 				break;
-			}
 			case  Hook:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(34, 29), Vector2i(125, 212), Vector2f(70, 70), Vector2f(0, 70), Vector2f(0, -40), float(0.80));
-				Objects[Hook].push_back(Instantiate<Area>("Hook"));
-				Objects[Hook][Objects[Hook].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[Hook][Objects[Hook].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Hook)]);
-				Objects[Hook][Objects[Hook].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-				Objects[Hook][Objects[Hook].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantHook(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  Portal:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(1, 21), Vector2i(188, 177), Vector2f(150, 80), Vector2f(0, 38), Vector2f(0, -20), float(0.85));
-				Objects[Portal].push_back(Instantiate<PortalClass>("Portal"));
-				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Portal)]);
-				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->SetSize(Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->pseudoRenderBox.getSize() - Vector2f(15, 15), PseudoRenderBox);
-				Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
-				if (Portals[roomData.objects[i][j] % 10].expired())
-					Portals[roomData.objects[i][j] % 10] = dynamic_pointer_cast<PortalClass>(Objects[Portal][Objects[Portal].size() - 1].lock());
-				else {
-					weak_ptr<PortalClass> wp = dynamic_pointer_cast<PortalClass>(Objects[Portal][Objects[Portal].size() - 1].lock());
-					Portals[roomData.objects[i][j] % 10].lock()->Linking(wp);
-					wp.lock()->Linking(Portals[roomData.objects[i][j] % 10]);
-				}
+				InstantPortal(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  Strawberry:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(22, 9), Vector2i(154, 205), Vector2f(120, 60), Vector2f(0, 70), Vector2f(0, -32), float(0.75));
-				Objects[Strawberry].push_back(Instantiate<StrawberryClass>("Strawberry"));
-				Objects[Strawberry][Objects[Strawberry].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[Strawberry][Objects[Strawberry].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Strawberry)]);
-				Objects[Strawberry][Objects[Strawberry].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-				Objects[Strawberry][Objects[Strawberry].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantStrawberry(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  MovingPlatform:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(190, 140), Vector2f(190, 140), Vector2f(0, 0), Vector2f(0, 0), float(1));
-				Objects[MovingPlatform].push_back(Instantiate<Area>("Block"));
-				Objects[MovingPlatform][Objects[MovingPlatform].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[MovingPlatform][Objects[MovingPlatform].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::MovingPlatform)]);
-				Objects[MovingPlatform][Objects[MovingPlatform].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-				Objects[MovingPlatform][Objects[MovingPlatform].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantMovingPlatform(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  Switch:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(10, 11), Vector2i(172, 147), Vector2f(155, 40), Vector2f(-8, 60), Vector2f(5, -40), float(0.85));
-				Objects[Switch].push_back(Instantiate<Area>("Block"));
-				Objects[Switch][Objects[Switch].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[Switch][Objects[Switch].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Switch)]);
-				Objects[Switch][Objects[Switch].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-				Objects[Switch][Objects[Switch].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantSwitch(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  ObjectType::PlacingSwitch:
-			{
+				InstantPlacingSwitch(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  ObjectType::NormalBlock:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
-				Objects[NormalBlock].push_back(Instantiate<NormalBlockClass>("NormalBlock"));
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::NormalBlock)]);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantNormalBlock(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  ObjectType::DeleteBlock:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
-				Objects[DeleteBlock].push_back(Instantiate<DeleteBlockClass>("DeleteBlock"));
-				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::DeleteBlock)]);
-				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
-				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
-				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
-				Objects[DeleteBlock][Objects[DeleteBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantDeleteBlock(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  ObjectType::SignalBlock:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
-				Objects[NormalBlock].push_back(Instantiate<NormalBlockClass>("SignalBlock"));
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::SignalBlock)]);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantSignalBlock(Vector2i(j + 1, i + 1));
 				break;
-			}
 			case  ObjectType::MoveableBlock:
-			{
-				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
-				Objects[NormalBlock].push_back(Instantiate<NormalBlockClass>("NormalBlock"));
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
-					, RenderPriorityType::PlayerAndObject);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::MoveableBlock)]);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
-				Objects[NormalBlock][Objects[NormalBlock].size() - 1].lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+				InstantMoveableBlock(Vector2i(j + 1, i + 1));
 				break;
-			}
 			}
 		}
 	}
@@ -241,6 +133,7 @@ void Room::RestartRoom()
 	SetRoomSeed(originalRoomData,false,false);
 	WControl::player().lock()->transform->position = startRoomPosition;
 }
+
 void Room::SetFloor()
 {
 	for (int i = 0; i < RSIZEY; i++)
@@ -250,16 +143,16 @@ void Room::SetFloor()
 			if (roomData.floor[i][j] == false) {
 				areas[i][j] = Instantiate<Area>("Floor");
 				if ((i + j) % 2)
-					areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+					areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1) 
 						, RenderPriorityType::Floor, Color::Magenta);
 				else
-					areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+					areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1) 
 						, RenderPriorityType::Floor, Color::Black);
 			}
 			else {
 				areas[i][j] = Instantiate<Area>("Floor");
 				cliffs.push_back(areas[i][j]);
-				areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1)
+				areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j+1, i + 1) 
 					, RenderPriorityType::Floor, Color::Blue);
 			}
 		}
@@ -267,11 +160,13 @@ void Room::SetFloor()
 }
 
 void Room::Update() {
-	if (WorldControl::isGamePlaying() && WControl::GetCurrentRoomPosition() == roomPosition)
+	if (WControl::getGameMode()==GameMode::PlayMode && WControl::GetCurrentRoomPosition() == roomPosition)
 	{
 		CheckCollisionInRoom();
 	}
 	CheckUICollision();
+	if (WControl::getGameMode() == ToolkitEditMode && WControl::GetCurrentRoomPosition() == roomPosition)
+		CheckCollisionInToolkitMode();
 }
 
 void Room::DestroyAllEdge()
@@ -455,6 +350,13 @@ void Room::CheckCollisionBetweenPlayerAndCliff() {
 	}
 }
 
+void Room::CheckCollisionInToolkitMode() {
+	if(WControl::clickableSpriteAtCursor().expired()){
+		Vector2i v = GetTransform()->GetPositionInTileAt(WControl::GetCursurPosition());
+		//printf("middleCenter: %d %d\n\n", v.x, v.y, WControl::player().lock()->transform->position.x, WControl::player().lock()->transform->position.y);
+	}
+}
+
 void Room::CheckCollisionRingHitBoxAndMeleeAttackableObject(weak_ptr<GameSprite> wp) {
 	weak_ptr<BellClass> bell = dynamic_pointer_cast<BellClass>(wp.lock());
 	if (!bell.expired()) {
@@ -619,8 +521,11 @@ void Room::CheckCollisionOfKnife() {
 	WControl::player().lock()->knifes = newKnifes;
 }
 
-Vector2f Room::MiddlePositionOfRoom() {
-	return GetTransform()->position + Multiple(GetTransform()->GetAreaSize(), Vector2f(RSIZEX / 2 + 0.5, RSIZEY / 2 + 0.5));
+const Vector2f& Room::MiddlePositionOfRoom() {
+	return GetTransform()->position  + Multiple(Tile::GetAreaSize(), Vector2f(RSIZEX / 2 + 0.5, RSIZEY / 2 + 0.5));
+}
+const Vector2f& Room::TopLeftPositionOfRoom() {
+	return GetTransform()->position + Multiple(Tile::GetAreaSize(), Vector2f(-0.5,-0.5));
 }
 
 void Room::UnLoadNearbyRoom() {
@@ -672,8 +577,7 @@ void Room::LoadNearbyRoom() {
 
 void Room::CheckUICollision()
 {
-	Vector2f cursurPos = WControl::view().getCenter() - Multiple(WControl::view().getSize(), Vector2f(0.5, 0.5));
-	cursurPos += Multiple(Vector2f(1 / WControl::WorldScale(), 1 / WControl::WorldScale()), (Vector2f)Mouse::getPosition(WControl::window()));
+	Vector2f cursurPos = WControl::GetCursurPosition();
 	if (!WControl::clickableSpriteAtCursor().expired()) {
 		if (!Collision::isCollision(WControl::clickableSpriteAtCursor().lock()->transform->hitBox, cursurPos) && !Mouse::isButtonPressed(Mouse::Button::Left)) {
 			WControl::clickableSpriteAtCursor().reset();
@@ -747,3 +651,144 @@ std::string Room::ObjectTypeToString(const ObjectType& objectType) {
 	return ObjectTypeString[objectType];
 }
 
+void Room::InstantChargeSoul(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(32, 23), Vector2i(123, 123), Vector2f(60, 40), Vector2f(0, 40), Vector2f(0, -5), float(0.8));
+	auto wp = Instantiate<ChargeSoulClass>("ChargeSoul");
+	Objects[ChargeSoul].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(pos.x, pos.y) 
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::ChargeSoul)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1]=wp;
+}
+void Room::InstantBell(Vector2i pos) {
+	Vector2f v(-70, 0);
+	SpriteOffsetData spriteOffset(Vector2i(4, 25), Vector2i(182, 219), Vector2f(120, 90), Vector2f(0, 64), Vector2f(0, -35), float(0.75));
+	auto wp = Instantiate<BellClass>("Bell");
+	Objects[Bell].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Bell)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
+	wp.lock()->GetTransform()->SetSize(((Vector2f)spriteOffset.renderPixelSize + v) * spriteOffset.scale, PseudoRenderBox);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantHook(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(34, 29), Vector2i(125, 212), Vector2f(70, 70), Vector2f(0, 70), Vector2f(0, -40), float(0.80));
+	auto wp = Instantiate<Area>("Hook");
+	Objects[Hook].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Hook)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantPortal(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(1, 21), Vector2i(188, 177), Vector2f(150, 80), Vector2f(0, 38), Vector2f(0, -20), float(0.85));
+	auto wp = Instantiate<PortalClass>("Portal");
+	Objects[Portal].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Portal)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
+	wp.lock()->GetTransform()->SetSize(Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->pseudoRenderBox.getSize() - Vector2f(15, 15), PseudoRenderBox);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	if (Portals[roomData.objects[pos.y-1][pos.x-1] % 10].expired())
+		Portals[roomData.objects[pos.y-1][pos.x-1] % 10] = dynamic_pointer_cast<PortalClass>(Objects[Portal][Objects[Portal].size() - 1].lock());
+	else {
+		weak_ptr<PortalClass> wp = dynamic_pointer_cast<PortalClass>(Objects[Portal][Objects[Portal].size() - 1].lock());
+		Portals[roomData.objects[pos.y-1][pos.x-1] % 10].lock()->Linking(wp);
+		wp.lock()->Linking(Portals[roomData.objects[pos.y-1][pos.x-1] % 10]);
+	}
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantStrawberry(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(22, 9), Vector2i(154, 205), Vector2f(120, 60), Vector2f(0, 70), Vector2f(0, -32), float(0.75));
+	auto wp = Instantiate<StrawberryClass>("Strawberry");
+	Objects[Strawberry].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Strawberry)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantMovingPlatform(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(190, 140), Vector2f(190, 140), Vector2f(0, 0), Vector2f(0, 0), float(1));
+	auto wp = Instantiate<Area>("Block");
+	Objects[MovingPlatform].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::MovingPlatform)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantSwitch(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(10, 11), Vector2i(172, 147), Vector2f(155, 40), Vector2f(-8, 60), Vector2f(5, -40), float(0.85));
+	auto wp = Instantiate<Area>("Block");
+	Objects[Switch].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Switch)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantNormalBlock(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
+	auto wp = Instantiate<NormalBlockClass>("NormalBlock");
+	Objects[NormalBlock].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::NormalBlock)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
+	wp.lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
+	wp.lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantDeleteBlock(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
+	auto wp = Instantiate<DeleteBlockClass>("DeleteBlock");
+	Objects[DeleteBlock].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::DeleteBlock)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
+	wp.lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
+	wp.lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantSignalBlock(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
+	auto wp=Instantiate<NormalBlockClass>("SignalBlock");
+	Objects[NormalBlock].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()),pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::SignalBlock)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
+	wp.lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
+	wp.lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantMoveableBlock(Vector2i pos) {
+	SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
+	auto wp = Instantiate<NormalBlockClass>("NormalBlock");
+	Objects[NormalBlock].push_back(wp);
+	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
+		, RenderPriorityType::PlayerAndObject);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::MoveableBlock)]);
+	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset, Vector2f(190. / 140, 1));
+	wp.lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
+	wp.lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
+	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
+	Space[pos.y - 1][pos.x - 1] = wp;
+}
+void Room::InstantPlacingSwitch(Vector2i pos) {}
+void Room::InstantLaser(Vector2i pos) {}
