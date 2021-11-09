@@ -29,8 +29,6 @@ weak_ptr<T> Instantiate() {
 	weak_ptr < GameSprite > wp = dynamic_pointer_cast<GameSprite>(sp);
 	if (!wp.expired()) {
 		SetGameSprite(wp, t);
-		if (wp.lock()->transform->wp.expired())
-			printf("WTFISTHIS\n\n");
 	}
 	sp->Start();
 	return dynamic_pointer_cast<T>(sp);

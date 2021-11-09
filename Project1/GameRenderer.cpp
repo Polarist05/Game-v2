@@ -1,6 +1,7 @@
 #include "GameRenderer.h"
 #include "WorldControl.h"
 #include <iostream>
+
 void GameRenderer::FindPlayerAndObject(weak_ptr<GameSprite> a, vector<weak_ptr<GameSprite> >& v, vector<pair<float, int > >& v1) {
 	shared_ptr<GameSprite> sp = a.lock();
 	if (sp->transform->RenderPriority == RenderPriorityType::PlayerAndObject) {
@@ -14,19 +15,9 @@ void GameRenderer::FindPlayerAndObject(weak_ptr<GameSprite> a, vector<weak_ptr<G
 	}
 }
 void GameRenderer::RenderAll() {
-	window().draw(WControl::GetCurrentRoom().lock()->GetTransform()->renderBox);
-	if (WControl::getGameMode()==GameMode::PlayMode|| WControl::getGameMode() == GameMode::ToolkitEditMode) {
-		RenderWallAndFloor();
-		if (WControl::getGameMode() == GameMode::ToolkitEditMode) 
-			RenderAreaHilight();
-		RenderPlayerAndObject();
-		RenderUX();
-	}
-	RenderUI();
 	
-	//RenderSettingView();
-
 }
+
 void GameRenderer::RenderWallAndFloor()
 {
 		RenderFloorAt(WControl::GetCurrentRoom());
@@ -94,12 +85,18 @@ void GameRenderer::RenderPlayerAndObject()
 	window().draw(WControl::player().lock()->hookGuideLine);
 }
 void GameRenderer::RenderUX() {
-	for (auto wp : WControl::GetUX().keys) {
+	for (auto wp : WControl::GetUX().lock()->keys) {
 		window().draw(wp.lock()->transform->renderBox);
 	}
-	for (auto wp : WControl::GetUX().souls) {
+	for (auto wp : WControl::GetUX().lock()->souls) {
 		window().draw(wp.lock()->transform->renderBox);
 	}
+	window().draw(WControl::GetUX().lock()->scoreHighlight);
+	for(auto wp: WControl::GetUX().lock()->score.getSprites())
+		window().draw(wp.lock()->transform->renderBox);
+	window().draw(WControl::GetUX().lock()->runTimeHighlight);
+	for (auto wp : WControl::GetUX().lock()->runTime.getSprites())
+		window().draw(wp.lock()->transform->renderBox);
 }
 void GameRenderer::RenderUI() {
 	if (!WControl::UIStack().empty()) {

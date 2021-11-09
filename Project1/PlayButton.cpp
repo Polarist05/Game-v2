@@ -2,8 +2,7 @@
 #include "WorldControl.h"
 void PlayButton::Activate()
 {
-	WControl::getMainDungeon().GenerateDungeon();
-	WControl::getGameMode() = GameMode::PlayMode;
+	currentMode() = playMode();
+	currentMode().lock()->SetUp();
 	WControl::UIStack().pop();
-	printf("Play\n");
 }

@@ -10,21 +10,11 @@
 #include "Dungeon.h"
 using namespace sf;
 using namespace std;
-void ActivateUpdate();
-void KeyHold();
 void CheckAllSpriteName(weak_ptr<GameSprite> a, int b);
-class a1 :public GameSprite {
-public:
-	a1(std::string s) :GameSprite(s) {}
-};
 int main() {
 	auto seed = time(NULL);
 	srand(seed);
 	WControl::SetUsedRoomPrefab();
-	for (map<std::string, Texture>::iterator it = WControl::objectsPrefab().begin(); it != WControl::objectsPrefab().end(); it++)
-	{
-		std::cout << it->first << endl;
-	}
 	Dungeon dungeon;
 	GameRenderer gameRenderer;
 	WorldControl::window().setFramerateLimit(60);
@@ -39,17 +29,15 @@ int main() {
 		sf::Event event;
 		while (WorldControl::window().pollEvent(event))
 		{
-			// "close requested" event: we close the
 			if (event.type == Event::Closed)
 				WorldControl::window().close();
 		}
 		WorldControl::window().setView(WControl::view());
-		MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0), Vector2f(1, 1));
-		ActivateUpdate();
-		KeyHold();
-		gameRenderer.RenderAll();
-		
-		
+		currentMode().lock()->CheckKeyPress();
+		MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0));
+		currentMode().lock()->Update();
+		currentMode().lock()->RenderGame();
+		//gameRenderer.RenderAll();
 		WorldControl::window().display();
 		
 	}

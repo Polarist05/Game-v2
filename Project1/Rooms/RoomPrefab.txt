@@ -1,3 +1,5 @@
-2
-NewSet1 14 0
+4
+NewSet1 13 0
+NewSet2 1 0
+NewSet3 0 0
 startRoom 13 1

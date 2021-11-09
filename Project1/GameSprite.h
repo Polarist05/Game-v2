@@ -104,7 +104,7 @@ public:
 	std::string name = "null";
 };
 
-void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f position, Vector2f realWorldScale);
+void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f position);
 
 
 

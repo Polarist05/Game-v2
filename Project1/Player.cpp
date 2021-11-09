@@ -71,8 +71,7 @@ void Player::Update() {
 }
 
 void Player::ActivateHooking() { isHooking = true;  }
-void Player::CancleHooking() { isHooking = false; printf("1166\n");
-}
+void Player::CancleHooking() { isHooking = false;}
 
 void Player::SetPlayerDirection(const Direction& direction) {
 	if (playerDirection != direction) {
@@ -115,17 +114,23 @@ void Player::MeleeAttack() {
 
 
 
+
 Vector2f Player::GetRealThrowingPosition()
 {
 	return transform->hitBox.getPosition()+OffsetThrowingKnife;
 }
 
-void Player::ResetSoul() { soul = SOUL_AMOUNT; WControl::GetUX().SetSoul(soul);	}
-void Player::IncreaseSoul(int a) { soul += a; if (a > SOUL_AMOUNT) soul = SOUL_AMOUNT; WControl::GetUX().SetSoul(soul);}
-void Player::LostSoul(int a) { soul -= a; WControl::GetUX().SetSoul(soul); }
+void Player::ResetSoul() { soul = SOUL_AMOUNT; 	}
+void Player::IncreaseSoul(int a) { soul = max(soul+a, SOUL_AMOUNT); }
+void Player::LostSoul(int a) { soul -= min(a,soul);}
 bool Player::HaveSoul(int a) {
 	if (soul >= a) return true; else return false;
 }
-
+int Player::GetSoul(){return soul;}
 int Player::GetScore() { return score; }
 void Player::IncreaseScore(int a) { score += a; }
+void Player::ResetScore() { score = 0; };
+
+int Player::GetKey(){return key;}
+void Player::IncreaseKey(int a) {key = std::max(key + a, KEY_AMOUNT);}
+void Player::ResetKey() { key = 0; }

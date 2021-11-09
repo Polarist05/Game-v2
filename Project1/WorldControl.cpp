@@ -4,6 +4,11 @@
 #include<vector>
 #include <iostream>
 #include <random>
+
+bool CurrentModeIs(weak_ptr<GameMode> gamemode) {
+	return currentMode().lock() == gamemode.lock();
+}
+
 using namespace std;
 
 float worldScale = (float)0.7;
@@ -16,6 +21,15 @@ View& WControl::view() { return _view; }
 
 map<type_index, vector<shared_ptr<GameBaseClass> > > AllEntities;
 map<type_index, vector<shared_ptr<GameBaseClass> > >& GetAllEntities() { return AllEntities; }
+
+shared_ptr<MainMenuMode> _mainMenuMode = Instantiate<MainMenuMode>().lock();
+shared_ptr<PlayMode> _playMode = Instantiate<PlayMode>().lock();
+shared_ptr <ToolkitMode>  _toolkitMode = Instantiate<ToolkitMode>().lock();
+weak_ptr<GameMode> _currentMode = _mainMenuMode;
+shared_ptr<MainMenuMode> mainMenuMode() { return _mainMenuMode; }
+shared_ptr<PlayMode> playMode() { return _playMode; }
+shared_ptr <ToolkitMode>  toolkitMode() { return _toolkitMode; }
+weak_ptr<GameMode>& currentMode() { return _currentMode; }
 
 map<std::string, pair<pair<bool, bool>, vector< RoomData > > > _allRoomPrefabs;
 map<std::string, pair<pair<bool, bool>, vector< RoomData > > >& WorldControl::allRoomPrefabs() { return _allRoomPrefabs; }
@@ -61,8 +75,8 @@ Dungeon* _MainDungeon;
 void WorldControl::setMainDungeon(Dungeon* dungeon) { _MainDungeon = dungeon; }
 Dungeon& WorldControl::getMainDungeon() { return *_MainDungeon; }
 
-UX _UX(KEY_AMOUNT, SOUL_AMOUNT);
-UX& WControl::GetUX() { return _UX; }
+weak_ptr<UX> _UX =Instantiate<UX>();
+weak_ptr<UX>& WControl::GetUX() { return _UX; }
 
 weak_ptr<Player> _player = Instantiate<Player>("player");
 weak_ptr<Player> WorldControl::player() { return _player; }
@@ -71,8 +85,6 @@ weak_ptr<ClickableSprite>& WControl::clickableSpriteAtCursor() { return _clickab
 
 /*bool _isGamePlaying = false;
 bool& WorldControl::isGamePlaying() { return _isGamePlaying; };*/
-GameMode gameMode = StartPageMode;
-GameMode& WorldControl::getGameMode() { return gameMode; }
 
 
 std::stack<UIType> _UIStack;

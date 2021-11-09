@@ -59,11 +59,10 @@ class Room:public Tilemap
 	RoomData originalRoomData;
 	RoomData roomData;
 	Vector2i roomPosition;
-	map<ObjectType, vector<weak_ptr<Area> > > Objects;
-	
 	void SetAllObjectsInRoom();
 	void SetFloor();
 public:
+	map<ObjectType, vector<weak_ptr<Area> > > Objects;
 	vector<vector<weak_ptr<GameSprite>>> Space= vector<vector<weak_ptr<GameSprite>>>(RSIZEY,vector<weak_ptr<GameSprite>>(RSIZEX,weak_ptr<GameSprite>()));
 	Vector2f startRoomPosition;
 	weak_ptr<Area> areas[RSIZEY][RSIZEX];
@@ -119,7 +118,6 @@ private:
 	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
 	static RoomType GetRoomType(const Direction& direction, const int& xSum, const int& ySum);
 	
-	void CheckCollisionInToolkitMode();
 	//void CheckCllisionInPlayMode();
 	
 	void CheckCollisionInRoom();
@@ -131,6 +129,4 @@ private:
 	
 	void CheckCollisionBetweenPlayerAndHookingCancler();
 	void CheckCollisionOfKnife();
-
-	void CheckUICollision();
 };

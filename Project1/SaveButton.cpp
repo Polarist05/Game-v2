@@ -84,10 +84,8 @@ void SaveButton::Activate()
 		for (int j = 0; j < RSIZEX; j++) {
 			if (WControl::GetCurrentRoom().lock()->areas[i][j].lock()->transform->renderBox.getFillColor() == Color::Blue)
 				roomData.floor[i][j] = true;
-			if (!WControl::GetCurrentRoom().lock()->Space[i][j].expired()) {
-				auto index= WControl::GetCurrentRoom().lock()->Space[i][j].lock()->transform->typeIndex;
-				
-			}
+			else
+				roomData.floor[i][j] = false;
 		}
 	}
 	if(1){

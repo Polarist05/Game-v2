@@ -160,13 +160,7 @@ void Room::SetFloor()
 }
 
 void Room::Update() {
-	if (WControl::getGameMode()==GameMode::PlayMode && WControl::GetCurrentRoomPosition() == roomPosition)
-	{
-		CheckCollisionInRoom();
-	}
-	CheckUICollision();
-	if (WControl::getGameMode() == ToolkitEditMode && WControl::GetCurrentRoomPosition() == roomPosition)
-		CheckCollisionInToolkitMode();
+	CheckCollisionInRoom();
 }
 
 void Room::DestroyAllEdge()
@@ -199,7 +193,6 @@ void Room::CheckCollisionInRoom() {
 	CheckCollisionBetweenPlayerAndRoomEdge();
 	CheckCollisionBetweenPlayerAndObject();
 	CheckCollisionBetweenPlayerAndWall();
-	
 	CheckCollisionOfKnife();
 	if (WControl::player().lock()->isHooking)
 		CheckCollisionBetweenPlayerAndHookingCancler();
@@ -350,13 +343,6 @@ void Room::CheckCollisionBetweenPlayerAndCliff() {
 	}
 }
 
-void Room::CheckCollisionInToolkitMode() {
-	if(WControl::clickableSpriteAtCursor().expired()){
-		Vector2i v = GetTransform()->GetPositionInTileAt(WControl::GetCursurPosition());
-		//printf("middleCenter: %d %d\n\n", v.x, v.y, WControl::player().lock()->transform->position.x, WControl::player().lock()->transform->position.y);
-	}
-}
-
 void Room::CheckCollisionRingHitBoxAndMeleeAttackableObject(weak_ptr<GameSprite> wp) {
 	weak_ptr<BellClass> bell = dynamic_pointer_cast<BellClass>(wp.lock());
 	if (!bell.expired()) {
@@ -429,7 +415,8 @@ void Room::CheckNearestObjectHooking() {
 			knifes.pop();
 			if (!knife.expired()) {
 				newKnifes.push(knife);
-				rects.push_back(knife.lock()->transform->pseudoRenderBox);
+				if(knife.lock()->GetIsStop())
+					rects.push_back(knife.lock()->transform->pseudoRenderBox);
 			}
 		}
 		WControl::player().lock()->knifes = newKnifes;
@@ -575,30 +562,7 @@ void Room::LoadNearbyRoom() {
 	}
 }
 
-void Room::CheckUICollision()
-{
-	Vector2f cursurPos = WControl::GetCursurPosition();
-	if (!WControl::clickableSpriteAtCursor().expired()) {
-		if (!Collision::isCollision(WControl::clickableSpriteAtCursor().lock()->transform->hitBox, cursurPos) && !Mouse::isButtonPressed(Mouse::Button::Left)) {
-			WControl::clickableSpriteAtCursor().reset();
-		}
-		else
-			return;
-	}
-	if (!WControl::UIStack().empty()) {
-		for (auto wp : WControl::AllUI()[WControl::UIStack().top()]->clickableTextureSprites) {
-			if (wp.lock()->transform->renderBox.getFillColor()!=Color::Transparent) {
-				if (Collision::isCollision(wp.lock()->transform->hitBox, cursurPos)) {
-					WControl::clickableSpriteAtCursor() = wp;
-					wp.lock()->transform->renderBox.setFillColor(Color::Yellow);
-				}
-				else {
-					wp.lock()->transform->renderBox.setFillColor(Color::White);
-				}
-			}
-		}
-	}
-}
+
 
 
 //static

@@ -77,10 +77,6 @@ void Knife::Update()
 {
 	if(!isStop)
 		transform->Move(velocity);
-	else if (transform->wp.lock() != WControl::player().lock()->knifes.back().lock()) {
-		Destroy(transform->wp, transform->typeIndex);
-	}
-
 }
 
 const bool& Knife::GetIsStop() { return isStop; }

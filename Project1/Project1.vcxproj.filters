@@ -79,6 +79,12 @@
     <Filter Include="Source Files\UI\ToolkitUI\Edit">
       <UniqueIdentifier>{14b79f38-f7d8-466d-8973-a9db1d01f909}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\GameMode">
+      <UniqueIdentifier>{a65d72d1-804e-4a7a-a438-e9d4ac7ad46f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameMode">
+      <UniqueIdentifier>{f8925ab0-261b-473d-9a1e-aa6ca56d6995}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -215,6 +221,24 @@
     </ClCompile>
     <ClCompile Include="FloorButton.cpp">
       <Filter>Source Files\UI\ToolkitUI\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="TextUI.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMode.cpp">
+      <Filter>Source Files\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuMode.cpp">
+      <Filter>Source Files\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayMode.cpp">
+      <Filter>Source Files\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolkitMode.cpp">
+      <Filter>Source Files\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Update.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -361,6 +385,27 @@
     </ClInclude>
     <ClInclude Include="FloorButton.h">
       <Filter>Header Files\UI\ToolkitUI\Edit</Filter>
+    </ClInclude>
+    <ClInclude Include="TextUI.h">
+      <Filter>Source Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMode.h">
+      <Filter>Header Files\GameMode</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuMode.h">
+      <Filter>Header Files\GameMode</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayMode.h">
+      <Filter>Header Files\GameMode</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyPress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolkitMode.h">
+      <Filter>Header Files\GameMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Update.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

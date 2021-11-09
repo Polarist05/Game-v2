@@ -17,7 +17,7 @@ private:
 	clock_t StartMeleeAttackTime;
 	int soul = 0;
 	int score = 0;
-	
+	int key = 0 ;
 public:
 	Vector2f OffsetThrowingKnife = Vector2f(0, -THROWING_LEVEL);
 	queue<weak_ptr<Knife> > knifes;
@@ -37,14 +37,19 @@ public:
 	
 	Vector2f GetRealThrowingPosition();
 	
+	int GetSoul();
 	void ResetSoul();
 	void IncreaseSoul(int a);
 	void LostSoul(int a);
 	bool HaveSoul(int a);
 	
-	
 	int GetScore();
 	void IncreaseScore(int a);
+	void ResetScore();
+
+	int GetKey();
+	void IncreaseKey(int a);
+	void ResetKey();
 
 	bool isAttacking=false;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "ClickableSprite.h"
 #include "RoomDropDownList.h"
+#include "TextUI.h"
 class RoomDropDownButton:public ClickableSprite
 {
 public:
@@ -11,8 +12,8 @@ public:
 	RoomDropDownButton();
 	RoomDropDownButton(std::string s);
 	vector<weak_ptr<RoomDropDownList>> dropDownList;
-	vector<vector<weak_ptr<GameSprite> > > textDropDown;
-	vector<weak_ptr<GameSprite> > choosedText;
+	vector<TextUI> textDropDown;
+	TextUI choosedText;
 	void GotoNextPage();
 	void GotoPreviousPage();
 	void Open();

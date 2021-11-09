@@ -1,6 +1,7 @@
 #pragma once
 #include "ClickableSprite.h"
 #include "SetDropDownListButton.h"
+#include "TextUI.h"
 class SetDropDownButton : public ClickableSprite
 {
 public:
@@ -9,8 +10,8 @@ public:
 	SetDropDownButton();
 	SetDropDownButton(string s);
 	vector<weak_ptr<SetDropDownListButton>> dropDownList;
-	vector<vector<weak_ptr<GameSprite> > > textDropDown;
-	vector<weak_ptr<GameSprite> > choosedText;
+	vector< TextUI > textDropDown;
+	TextUI choosedText;
 	void Open();
 	void Close();
 	void UpdateText();

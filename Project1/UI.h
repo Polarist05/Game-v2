@@ -7,6 +7,8 @@ enum UIType
 class UI
 {
 public:
+	static void CheckUICollision();
+
 	void SetVisible(bool b);
 	vector<weak_ptr<ClickableSprite> > clickableTextureSprites;
 	vector<weak_ptr<GameSprite> > NormalSprites;

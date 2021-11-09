@@ -23,6 +23,7 @@ void Dungeon::GenerateDungeon()
 	Rooms[startRoom.y][startRoom.x].lock()->SetRoomSeed(WControl::allRoomPrefabs()["startRoom"].second[0],false,false);
 	Rooms[startRoom.y][startRoom.x].lock()->LoadNearbyRoom();
 	WControl::player().lock()->transform->SetPosition(Rooms[startRoom.y][startRoom.x].lock()->GetTransform()->GetTile().lock()->GetRealPositionAt(Vector2i(startRoom.x, startRoom.y), Vector2f(3, 2.5)));
+	
 }
 void Dungeon::GenerateToolkitMode()
 {
@@ -395,7 +396,6 @@ void Dungeon::BreakWall() {
 	Vector2i secondPosition;
 	int firstDepth[5][5] = {}, secondDepth[5][5] = {}, horizontalMin = INT_MAX, VerticalMin = INT_MAX;
 	RunDepth(firstDepth, startRoom);
-	printf("\n");
 	secondPosition = FindMaxAndReturnPos(firstDepth);
 	RunDepth(secondDepth, secondPosition);
 	Vector2i pos, pos1;

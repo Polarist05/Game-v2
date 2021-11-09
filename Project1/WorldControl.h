@@ -11,19 +11,23 @@
 #include "UX.h"
 #include "Load.h"
 
+#include "GameMode.h"
+#include "MainMenuMode.h"
+#include "PlayMode.h"
+#include "ToolkitMode.h"
+
 #define WControl WorldControl
 #define AREA_SIZEX 190
 #define AREA_SIZEY 140
 #define SOUL_AMOUNT 3
 #define KEY_AMOUNT 3
 #define VIEW_SIZE 1
-enum GameMode {
-	ToolkitEditMode,
-	ToolkitPlayMode,
-	PlayMode,
-	PauceGamemode,
-	StartPageMode
-};
+
+shared_ptr<MainMenuMode> mainMenuMode();
+shared_ptr<PlayMode> playMode();
+shared_ptr <ToolkitMode>  toolkitMode();
+weak_ptr<GameMode>& currentMode();
+bool CurrentModeIs(weak_ptr<GameMode> gamemode);
 class WorldControl:public GameBaseClass {
 
 public:
@@ -42,7 +46,7 @@ public:
 	static weak_ptr<GameSprite> Hierarchy();
 	static weak_ptr<GameSprite> UIHierarchy();
 	
-	static UX& GetUX();
+	static weak_ptr<UX>& GetUX();
 	static weak_ptr<Player> player();
 	static weak_ptr<ClickableSprite>& clickableSpriteAtCursor();
 	
@@ -57,8 +61,6 @@ public:
 	
 	static void setMainDungeon(Dungeon* dungeon);
 	static Dungeon& getMainDungeon();
-	//static bool& isGamePlaying();
-	static GameMode& getGameMode();
 	
 	static std::stack<UIType>& UIStack();
 	static map<UIType, UI*>& AllUI();
@@ -76,6 +78,8 @@ public:
 
 	static const Vector2f& GetCursurPosition();
 	static map<int,set<int>>& GetChosedAreaPosition();
+
+
 
 	WorldControl() {
 		Room::SetObjectTypeString();

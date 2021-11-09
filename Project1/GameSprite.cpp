@@ -302,16 +302,16 @@ void SetGameSprite(weak_ptr<GameSprite> wp, type_index t) {
 		printf("wp in SetGameSprite is null\n");
 	}
 }
-void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f realWorldPosition, Vector2f realWorldScale) {
+void MoveAllSprites(weak_ptr<GameSprite> a, int b, Vector2f realWorldPosition) {
 	vector< weak_ptr<GameSprite> > v;
 	shared_ptr<GameSprite> sp = a.lock();
-	realWorldPosition += Multiple(sp->transform->position, realWorldScale);
+	realWorldPosition += sp->transform->position;
 	sp->transform->renderBox.setPosition(realWorldPosition +sp->transform->OffsetRenderBox);
 	sp->transform->pseudoRenderBox.setPosition(realWorldPosition + sp->transform->OffsetPseudoRenderBox);
 	sp->transform->hitBox.setPosition(realWorldPosition + sp->transform->OffsetHitBox);
 	for (int i = 0; i < sp->transform->childs.size(); i++) {
 		if (!sp->transform->childs[i].expired()) {
-			MoveAllSprites(sp->transform->childs[i], b + 1, realWorldPosition,  realWorldScale);
+			MoveAllSprites(sp->transform->childs[i], b + 1, realWorldPosition);
 			v.push_back(sp->transform->childs[i]);
 			sp->transform->childs[i].lock()->transform->childIndex = (int)v.size() - 1;
 		}

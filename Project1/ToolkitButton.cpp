@@ -3,7 +3,7 @@
 void ToolkitButton::Activate()
 {
 	WControl::getMainDungeon().GenerateToolkitMode();
-	WControl::getGameMode() = GameMode::ToolkitEditMode;
+	currentMode() = toolkitMode();
 	WControl::UIStack().push(UIType::ToolkitPage);
 	printf("Toolkit\n");
 }
