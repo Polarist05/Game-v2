@@ -2,7 +2,10 @@
 #include "Tile.h"
 #include "Walkable.h"
 #include "PortalClass.h"
+#include <array>
 #include <string>
+#include "Input.h"
+#include "Output.h"
 #define RSIZEX 8
 #define RSIZEY 6
 enum  Align
@@ -24,7 +27,8 @@ enum ObjectType {
 	SignalBlock,
 	MoveableBlock,
 	PlacingSwitch,
-	Laser
+	Laser,
+	Key
 	
 };
 enum RoomType {
@@ -41,6 +45,11 @@ enum RoomType {
 	Type21_Verticle,
 	Type22_Horizon,
 	Type22_Verticle
+};
+struct SwitchGroup {
+	weak_ptr<Input> input;
+	vector<weak_ptr<Output> > outputs;
+	void clear(); 
 };
 struct RoomData
 {
@@ -62,12 +71,15 @@ class Room:public Tilemap
 	void SetAllObjectsInRoom();
 	void SetFloor();
 public:
+	SwitchGroup  switchGroups[10];
 	map<ObjectType, vector<weak_ptr<Area> > > Objects;
 	vector<vector<weak_ptr<GameSprite>>> Space= vector<vector<weak_ptr<GameSprite>>>(RSIZEY,vector<weak_ptr<GameSprite>>(RSIZEX,weak_ptr<GameSprite>()));
 	Vector2f startRoomPosition;
 	weak_ptr<Area> areas[RSIZEY][RSIZEX];
 	vector<weak_ptr<Area> > Walls[4];
 	vector<weak_ptr<Area> > cliffs;
+	std::array<std::array<bool, RSIZEX+2>, RSIZEY+2> cannotPush;
+
 	static const vector<ObjectType>& WalkableObjectTypes();
 	static const vector<ObjectType>& UnwalkableObjectTypes();
 	static const vector<ObjectType>& MeleeAttackableObjectTypes();
@@ -100,25 +112,25 @@ public:
 	void CheckCollisionBetweenAttackHitBoxAndObject();
 	void CheckCollisionRingHitBoxAndMeleeAttackableObject(weak_ptr<GameSprite> bell);
 	void CheckNearestObjectHooking();
+	void CheckCollisionWithMoveableBlock();
 
-	void InstantChargeSoul(Vector2i pos);
-	void InstantBell(Vector2i pos);
-	void InstantHook(Vector2i pos);
-	void InstantPortal(Vector2i pos);
-	void InstantStrawberry(Vector2i pos);
-	void InstantMovingPlatform(Vector2i pos);
-	void InstantSwitch(Vector2i pos);
-	void InstantNormalBlock(Vector2i pos);
-	void InstantDeleteBlock(Vector2i pos);
-	void InstantSignalBlock(Vector2i pos);
-	void InstantMoveableBlock(Vector2i pos);
-	void InstantPlacingSwitch(Vector2i pos);
-	void InstantLaser(Vector2i pos);
+	void InstantChargeSoul(const Vector2i& pos);
+	void InstantBell(const Vector2i& pos);
+	void InstantHook(const Vector2i& pos);
+	void InstantPortal(const Vector2i& pos);
+	void InstantKey(const Vector2i& pos);
+	void InstantStrawberry(const Vector2i& pos);
+	void InstantMovingPlatform(const Vector2i& pos);
+	void InstantSwitch(const Vector2i& pos);
+	void InstantNormalBlock(const Vector2i& pos);
+	void InstantDeleteBlock(const Vector2i& pos);
+	void InstantSignalBlock(const Vector2i& pos);
+	void InstantMoveableBlock(const Vector2i& pos);
+	void InstantPlacingSwitch(const Vector2i& pos);
+	void InstantLaser(const Vector2i& pos);
 private:
 	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
 	static RoomType GetRoomType(const Direction& direction, const int& xSum, const int& ySum);
-	
-	//void CheckCllisionInPlayMode();
 	
 	void CheckCollisionInRoom();
 	

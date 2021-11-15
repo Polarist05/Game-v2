@@ -9,7 +9,7 @@ RoomDropDownButton::RoomDropDownButton():ClickableSprite(){}
 RoomDropDownButton::RoomDropDownButton(std::string s):ClickableSprite(s){}
 void RoomDropDownButton::InstantList()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	
 	choosedText.SetColor(Color::White);
 	choosedText.SetParent(transform->wp);
@@ -23,7 +23,7 @@ void RoomDropDownButton::InstantList()
 		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 		wp.lock()->transform->SetParent(transform->wp);
 		wp.lock()->transform->SetPosition(Vector2f(0, 45 * (i + 1)));
-		thisUI.clickableTextureSprites.push_back(wp);
+		thisUI.clickableSprites.push_back(wp);
 		thisUI.NormalSprites2.push_back(wp);
 		dropDownList.push_back(wp);
 		textDropDown.push_back(TextUI());
@@ -42,7 +42,7 @@ void RoomDropDownButton::InstantList()
 		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 		wp.lock()->transform->SetParent(transform->wp);
 		wp.lock()->transform->SetPosition(Vector2f(0, 45 * 9));
-		thisUI.clickableTextureSprites.push_back(wp);
+		thisUI.clickableSprites.push_back(wp);
 		thisUI.NormalSprites2.push_back(wp);
 	}
 	{
@@ -54,14 +54,14 @@ void RoomDropDownButton::InstantList()
 		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 		wp.lock()->transform->SetParent(transform->wp);
 		wp.lock()->transform->SetPosition(Vector2f(0, 45 * 10));
-		thisUI.clickableTextureSprites.push_back(wp);
+		thisUI.clickableSprites.push_back(wp);
 		thisUI.NormalSprites2.push_back(wp);
 	}
 	UpdateText();
 }
 void RoomDropDownButton::GotoNextPage()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	if ((dropDownPage+1) * 8< WControl::allRoomPrefabs()[thisUI.choosingSet].second.size()) {
 		dropDownPage++;
 		thisUI.ChangeRoom(dropDownPage*8);
@@ -69,7 +69,7 @@ void RoomDropDownButton::GotoNextPage()
 }
 void RoomDropDownButton::GotoPreviousPage()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	if (dropDownPage > 0) {
 		dropDownPage--;
 		thisUI.ChangeRoom(dropDownPage * 8);
@@ -77,7 +77,7 @@ void RoomDropDownButton::GotoPreviousPage()
 }
 void RoomDropDownButton::Open()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	for (auto wp : dropDownList) {
 		wp.lock()->transform->renderBox.setFillColor(Color::White);
 	}
@@ -98,7 +98,7 @@ void RoomDropDownButton::Open()
 }
 void RoomDropDownButton::Close()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	for (auto wp : dropDownList) {
 		wp.lock()->transform->renderBox.setFillColor(Color::Transparent);
 	}
@@ -119,7 +119,7 @@ void RoomDropDownButton::Close()
 }
 void RoomDropDownButton::UpdateText()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	int j = 0;
 	if (thisUI.choosingRoomIndex < WControl::allRoomPrefabs()[thisUI.choosingSet].second.size()) {
 		choosedText.SetText(WControl::allRoomPrefabs()[thisUI.choosingSet].second[thisUI.choosingRoomIndex].name);
@@ -147,7 +147,7 @@ void RoomDropDownButton::UpdateText()
 }
 void RoomDropDownButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	if (!thisUI.dropDown1.lock()->isOpen) {
 		if (!isOpen)
 			Open();

@@ -5,7 +5,7 @@
 #include "Knife.h"
 static float speed = 2.0;
 static bool holdThrowingButton;
-void CheckPlayerMovement() {
+void KeyPress::CheckPlayerMovement() {
     static shared_ptr<Player> player = WControl::player().lock();
     if (Keyboard::isKeyPressed(Keyboard::A)) {
         player->transform->Move(Vector2f(-2 * speed, 0));
@@ -24,7 +24,20 @@ void CheckPlayerMovement() {
         player->SetPlayerDirection(Direction::Down);
     }
 }
-void CheckPlayerAction() {
+char KeyPress::CheckAlphaBetOrNumberKey() {
+    for (char c = 'a'; c <= 'z'; c++) {
+        if (Keyboard::isKeyPressed((Keyboard::Key)(c - 'a' + Keyboard::Key::A))) {
+            return c;
+        }
+    }
+    for (char c = '0'; c <= '9'; c++) {
+        if (Keyboard::isKeyPressed((Keyboard::Key)(c - '0' + Keyboard::Key::Num0))) {
+            return c;
+        }
+    }
+    return 0;
+}
+void KeyPress::CheckPlayerAction() {
     if (Keyboard::isKeyPressed(Keyboard::R)) {
         WControl::player().lock()->MeleeAttack();
     }
@@ -68,16 +81,16 @@ void CheckPlayerAction() {
         holdThrowingButton = false;
     }
 }
-void CheckEscape() {
+void KeyPress::CheckEscape() {
     if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-        currentMode() = mainMenuMode();
+        Mode::currentMode() = Mode::mainMenuMode();
         while (!WControl::UIStack().empty()) {
             WControl::UIStack().pop();
         }
         WControl::UIStack().push(UIType::StartPage);
     }
 }
-void CheckClickableSprite() {
+void KeyPress::CheckClickableSprite() {
     static bool isLeftMouseHold=false;
     if (Mouse::isButtonPressed(Mouse::Button::Left)) {
         if(!isLeftMouseHold)
@@ -90,7 +103,7 @@ void CheckClickableSprite() {
         }
     }
 }
-void CheckEditArea() {
+void KeyPress::CheckEditArea() {
     if (Mouse::isButtonPressed(Mouse::Button::Left)) {
         Vector2i areaPosition = WControl::GetCurrentRoom().lock()->GetTransform()->GetPositionInTileAt(WControl::GetCursurPosition());
         if (WControl::clickableSpriteAtCursor().expired() && areaPosition.x < RSIZEX + 1 && areaPosition.y < RSIZEY + 1 && areaPosition.x>0 && areaPosition.y>0) {

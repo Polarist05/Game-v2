@@ -4,6 +4,6 @@
 
 void PreviousRoomButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	thisUI.dropDown2.lock()->GotoPreviousPage();
 }

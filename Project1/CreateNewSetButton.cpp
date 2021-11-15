@@ -6,7 +6,7 @@
 
 void CreateNewSetButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	{
 		int i = 1;
 		for (; 1; i++) {

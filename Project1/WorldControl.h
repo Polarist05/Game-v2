@@ -15,6 +15,11 @@
 #include "MainMenuMode.h"
 #include "PlayMode.h"
 #include "ToolkitMode.h"
+#include "EndGameMode.h"
+
+#include "StartUI.h"
+#include "ToolkitUI.h"
+#include "EndGameUI.h"
 
 #define WControl WorldControl
 #define AREA_SIZEX 190
@@ -23,11 +28,6 @@
 #define KEY_AMOUNT 3
 #define VIEW_SIZE 1
 
-shared_ptr<MainMenuMode> mainMenuMode();
-shared_ptr<PlayMode> playMode();
-shared_ptr <ToolkitMode>  toolkitMode();
-weak_ptr<GameMode>& currentMode();
-bool CurrentModeIs(weak_ptr<GameMode> gamemode);
 class WorldControl:public GameBaseClass {
 
 public:
@@ -63,7 +63,6 @@ public:
 	static Dungeon& getMainDungeon();
 	
 	static std::stack<UIType>& UIStack();
-	static map<UIType, UI*>& AllUI();
 	
 	static weak_ptr<Room> GetCurrentRoom();
 	static Vector2i& GetCurrentRoomPosition();
@@ -79,7 +78,8 @@ public:
 	static const Vector2f& GetCursurPosition();
 	static map<int,set<int>>& GetChosedAreaPosition();
 
-
+	static std::string& playerName();
+	static std::array<pair<string, int>, 5>& scoreboard();
 
 	WorldControl() {
 		Room::SetObjectTypeString();
@@ -89,3 +89,22 @@ public:
 		UIStack().push(UIType::StartPage);
 	}
 };
+
+namespace Mode {
+	shared_ptr<MainMenuMode> mainMenuMode();
+	shared_ptr<PlayMode> playMode();
+	shared_ptr <ToolkitMode>  toolkitMode();
+	shared_ptr <EndGameMode>  endGameMode();
+	weak_ptr<GameMode>& currentMode();
+	bool CurrentModeIs(weak_ptr<GameMode> gamemode);
+}
+namespace MyColor {
+	Color gray();
+}
+
+namespace ALLUI {
+	StartUI& startUI();
+	ToolkitUI& toolkitUI();
+	EndGameUI& endGameUI();
+	UI* GetUI(const UIType& UItype);
+}

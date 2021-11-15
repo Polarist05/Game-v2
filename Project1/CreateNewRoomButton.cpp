@@ -7,7 +7,7 @@
 
 void CreateNewRoomButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	RoomData roomData("newRoom");
 	WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.push_back(roomData);
 	Load::RefreshRoomPrefrab();

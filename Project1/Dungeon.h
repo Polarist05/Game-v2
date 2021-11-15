@@ -3,11 +3,15 @@
 #include "SFML.h"
 #include "Room.h"
 #include <vector>
+#include <array>
 using namespace std;
 class Dungeon
 {	
 	Vector2i startRoom;
+	std::array<Vector2i,3> roomKey;
 public:
+	Vector2i getStartRoom();
+	std::array<Vector2i, 3> GetKeyRoom();
 	bool bHorizonEdge[6][5] = {}, bVerticleEdge[5][6] = {};
 	bool havePast[5][5] = {};
 	vector<vector< weak_ptr<Room> > > Rooms;
@@ -18,6 +22,7 @@ public:
 	void ResetDungeon();
 	Dungeon();
 private:
+	void ChooseKeyRoom();
 	void InstantEdge();
 	void GenerateMaze();
 	void InstantRoom();

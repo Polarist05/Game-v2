@@ -121,7 +121,7 @@ Vector2f Player::GetRealThrowingPosition()
 }
 
 void Player::ResetSoul() { soul = SOUL_AMOUNT; 	}
-void Player::IncreaseSoul(int a) { soul = max(soul+a, SOUL_AMOUNT); }
+void Player::IncreaseSoul(int a) { soul = min(soul+a, SOUL_AMOUNT); }
 void Player::LostSoul(int a) { soul -= min(a,soul);}
 bool Player::HaveSoul(int a) {
 	if (soul >= a) return true; else return false;
@@ -132,5 +132,11 @@ void Player::IncreaseScore(int a) { score += a; }
 void Player::ResetScore() { score = 0; };
 
 int Player::GetKey(){return key;}
-void Player::IncreaseKey(int a) {key = std::max(key + a, KEY_AMOUNT);}
+void Player::IncreaseKey(int a) {
+	key = std::min(key + a, KEY_AMOUNT);
+	if (key == KEY_AMOUNT) {
+		//Mode::currentMode() = Mode::toolkitMode();
+		//goto endingUI
+	}
+}
 void Player::ResetKey() { key = 0; }

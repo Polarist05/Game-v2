@@ -1,7 +1,7 @@
 #include "BellClass.h"
 #include "WorldControl.h"
-BellClass::BellClass() :Area() { };
-BellClass::BellClass(std::string s) :Area(s) {};
+BellClass::BellClass() :Input() { };
+BellClass::BellClass(std::string s) :Input(s) {};
 
 void BellClass::Start() {
 	ringArea.lock()->transform->SetParent(transform->wp);
@@ -11,17 +11,17 @@ void BellClass::Start() {
 }
 void BellClass::Update() {
 	if (isActivate) {
-		if (clock() - StartActivateTime > RING_DURATION) {
-			 isActivate = false;
+		if (clock()  > StartActivateTime+ RING_DURATION) {
+			TurnOn(false);
+			isActivate = false;
 			ringArea.lock()->transform->hitBox.setFillColor(Color::Transparent);
-			lastFrameCollisionObjects.clear();
 		}
-		else
-			WControl::GetCurrentRoom().lock()->CheckCollisionRingHitBoxAndMeleeAttackableObject(transform->wp);
 	}
 }
 void BellClass::ActivateRinging()
 {
+
+	TurnOn(true);
 	isActivate = true;
 	StartActivateTime = clock();
 	ringArea.lock()->transform->hitBox.setFillColor(Color(255, 255, 255, 50));
@@ -32,6 +32,9 @@ void  BellClass::MeleeAttackActivate() {
 	}
 }
 void BellClass::interacting(weak_ptr<Knife> knife){
+	Vector2f newPos = knife.lock()->transform->GetRealposition() - transform->GetRealposition();
+	knife.lock()->transform->position = newPos;
+	knife.lock()->transform->SetParent(transform->wp);
 	knife.lock()->Stop();
 	if (!isActivate) {
 		ActivateRinging();

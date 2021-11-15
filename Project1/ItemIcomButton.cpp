@@ -3,7 +3,7 @@
 #include "ToolkitUI.h"
 void ItemIconButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	if (objectDropDowns.begin()->lock()->transform->renderBox.getFillColor()==Color::Transparent) {
 		for(auto& wp:objectDropDowns)
 			wp.lock()->transform->renderBox.setFillColor(Color::White);
@@ -29,9 +29,10 @@ void ItemIconButton::Start()
 
 void ItemIconButton::Setup()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	int i = 1;
 	for (auto& wp : WControl::objectsPrefab()) {
+		printf("In\n");
 		objectDropDowns.push_back(Instantiate<ObjectDropDown>());
 		objectDropDowns.rbegin()->lock()->SetType((ObjectType)(i));
 		objectDropDowns.rbegin()->lock()->transform->renderBox.setTexture(&WControl::objectsPrefab()[Room::ObjectTypeToString((ObjectType)(i))]);
@@ -40,7 +41,7 @@ void ItemIconButton::Setup()
 		objectDropDowns.rbegin()->lock()->transform->SetParent(transform->wp);
 		objectDropDowns.rbegin()->lock()->transform->SetPosition(Vector2f(i * 80, 0));
 		objectDropDowns.rbegin()->lock()->transform->renderBox.setFillColor(Color::Transparent);
-		thisUI.clickableTextureSprites.push_back(*objectDropDowns.rbegin());
+		thisUI.clickableSprites.push_back(*objectDropDowns.rbegin());
 		i++;
 	}
 	{
@@ -52,7 +53,7 @@ void ItemIconButton::Setup()
 		objectDropDowns.rbegin()->lock()->transform->SetParent(transform->wp);
 		objectDropDowns.rbegin()->lock()->transform->SetPosition(Vector2f(i * 80, 0));
 		objectDropDowns.rbegin()->lock()->transform->renderBox.setFillColor(Color::Transparent);
-		thisUI.clickableTextureSprites.push_back(*objectDropDowns.rbegin());
+		thisUI.clickableSprites.push_back(*objectDropDowns.rbegin());
 	}
 	{
 		thisUI.itemIconButton.lock()->cliffButton = Instantiate<CliffButton>("CliffButton");
@@ -64,7 +65,7 @@ void ItemIconButton::Setup()
 		wp.lock()->transform->SetParent(thisUI.itemIconButton);
 		wp.lock()->transform->SetPosition(Vector2f(0, -80));
 		wp.lock()->transform->renderBox.setFillColor(Color::Transparent);
-		thisUI.clickableTextureSprites.push_back(wp);
+		thisUI.clickableSprites.push_back(wp);
 	}
 	{
 		thisUI.itemIconButton.lock()->floorButton = Instantiate<FloorButton>("FloorButton");
@@ -76,6 +77,6 @@ void ItemIconButton::Setup()
 		wp.lock()->transform->SetParent(thisUI.itemIconButton);
 		wp.lock()->transform->SetPosition(Vector2f(0, -160));
 		wp.lock()->transform->renderBox.setFillColor(Color::Transparent);
-		thisUI.clickableTextureSprites.push_back(wp);
+		thisUI.clickableSprites.push_back(wp);
 	}
 }

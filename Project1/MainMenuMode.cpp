@@ -7,13 +7,13 @@ void MainMenuMode::Start()
 
 void MainMenuMode::Update()
 {
-	UpdateUX();
-	UpdateUI();
+	Update::UpdateUX();
+	Update::UpdateUI();
 }
 
 void MainMenuMode::CheckKeyPress()
 {
-	CheckClickableSprite();
+	KeyPress::CheckClickableSprite();
 }
 
 void MainMenuMode::RenderGame()

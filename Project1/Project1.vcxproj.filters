@@ -85,30 +85,45 @@
     <Filter Include="Header Files\GameMode">
       <UniqueIdentifier>{f8925ab0-261b-473d-9a1e-aa6ca56d6995}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Base">
+      <UniqueIdentifier>{47502fe3-8af2-48c9-af0f-c1736c5887dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Base">
+      <UniqueIdentifier>{caeab1ec-60ef-4484-a1bd-f69b2bbc778a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\StartUI\Button">
+      <UniqueIdentifier>{ec2adb48-3838-42cf-b81f-339525caabde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\StartUI\Button">
+      <UniqueIdentifier>{eceb06bd-6e4e-4967-9353-2a95ed061228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\ScoreUI">
+      <UniqueIdentifier>{9efdfe46-dc6b-4995-b77b-7dbe2d6904fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\ScoreUI">
+      <UniqueIdentifier>{52eeb572-7577-4690-8611-fdb8e6993b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\EndGameUI">
+      <UniqueIdentifier>{539c1be7-e08c-46a5-a0a5-a75b381421d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\EndGameUI">
+      <UniqueIdentifier>{21171135-6e55-4e32-b73a-966a11d6f9c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\EndGameUI\Button">
+      <UniqueIdentifier>{012cea34-0fb0-4875-a0c6-3e38a1802f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\EndGameUI\Button">
+      <UniqueIdentifier>{c5fc244b-8552-4831-97a8-a335fff890eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interface">
+      <UniqueIdentifier>{bee664ff-4c23-4786-bc56-0cc2c36316b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WorldControl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameBaseClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyPress.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Collision.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PortalClass.cpp">
@@ -144,26 +159,8 @@
     <ClCompile Include="UI.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="ExitButton.cpp">
-      <Filter>Source Files\UI\StartUI</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayButton.cpp">
-      <Filter>Source Files\UI\StartUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ToolkitButton.cpp">
-      <Filter>Source Files\UI\StartUI</Filter>
-    </ClCompile>
-    <ClCompile Include="SettingButton.cpp">
-      <Filter>Source Files\UI\StartUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreButton.cpp">
-      <Filter>Source Files\UI\StartUI</Filter>
-    </ClCompile>
     <ClCompile Include="ClickableSprite.cpp">
       <Filter>Source Files\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UX.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ToolkitUI.cpp">
       <Filter>Source Files\UI\ToolkitUI</Filter>
@@ -179,9 +176,6 @@
     </ClCompile>
     <ClCompile Include="RoomDropDownList.cpp">
       <Filter>Source Files\UI\ToolkitUI\Room</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectDropDown.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CreateNewRoomButton.cpp">
       <Filter>Source Files\UI\ToolkitUI\Other</Filter>
@@ -213,9 +207,6 @@
     <ClCompile Include="ChoosingEdge.cpp">
       <Filter>Source Files\UI\ToolkitUI\Edit</Filter>
     </ClCompile>
-    <ClCompile Include="Load.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CliffButton.cpp">
       <Filter>Source Files\UI\ToolkitUI\Edit</Filter>
     </ClCompile>
@@ -237,30 +228,87 @@
     <ClCompile Include="ToolkitMode.cpp">
       <Filter>Source Files\GameMode</Filter>
     </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GameBaseClass.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRenderer.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSprite.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyPress.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Load.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldControl.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
     <ClCompile Include="Update.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="UX.cpp">
+      <Filter>Source Files\UX</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyClass.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="StartUI.cpp">
+      <Filter>Source Files\UI\StartUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ExitButton.cpp">
+      <Filter>Source Files\UI\StartUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayButton.cpp">
+      <Filter>Source Files\UI\StartUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreButton.cpp">
+      <Filter>Source Files\UI\StartUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingButton.cpp">
+      <Filter>Source Files\UI\StartUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolkitButton.cpp">
+      <Filter>Source Files\UI\StartUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreUI.cpp">
+      <Filter>Source Files\UI\ScoreUI</Filter>
+    </ClCompile>
+    <ClCompile Include="EndGameMode.cpp">
+      <Filter>Source Files\GameMode</Filter>
+    </ClCompile>
+    <ClCompile Include="EndGameUI.cpp">
+      <Filter>Source Files\UI\EndGameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangeRunNameButton.cpp">
+      <Filter>Source Files\UI\EndGameUI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveableBlockClass.cpp">
+      <Filter>Source Files\Objects\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectDropDown.cpp">
+      <Filter>Source Files\UI\ToolkitUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Output.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="SignalBlock.cpp">
+      <Filter>Source Files\Objects\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="Switch.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SFML.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldControl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameBaseClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Collision.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Walkable.h">
@@ -305,21 +353,6 @@
     <ClInclude Include="UI.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="PlayButton.h">
-      <Filter>Header Files\UI\StartUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreButton.h">
-      <Filter>Header Files\UI\StartUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ToolkitButton.h">
-      <Filter>Header Files\UI\StartUI</Filter>
-    </ClInclude>
-    <ClInclude Include="SettingButton.h">
-      <Filter>Header Files\UI\StartUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ExitButton.h">
-      <Filter>Header Files\UI\StartUI</Filter>
-    </ClInclude>
     <ClInclude Include="ClickableSprite.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
@@ -343,9 +376,6 @@
     </ClInclude>
     <ClInclude Include="RoomDropDownList.h">
       <Filter>Header Files\UI\ToolkitUI\Room</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectDropDown.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CreateNewRoomButton.h">
       <Filter>Header Files\UI\ToolkitUI\Other</Filter>
@@ -377,17 +407,11 @@
     <ClInclude Include="ChoosingEdge.h">
       <Filter>Header Files\UI\ToolkitUI\Edit</Filter>
     </ClInclude>
-    <ClInclude Include="Load.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CliffButton.h">
       <Filter>Header Files\UI\ToolkitUI\Edit</Filter>
     </ClInclude>
     <ClInclude Include="FloorButton.h">
       <Filter>Header Files\UI\ToolkitUI\Edit</Filter>
-    </ClInclude>
-    <ClInclude Include="TextUI.h">
-      <Filter>Source Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="GameMode.h">
       <Filter>Header Files\GameMode</Filter>
@@ -398,14 +422,89 @@
     <ClInclude Include="PlayMode.h">
       <Filter>Header Files\GameMode</Filter>
     </ClInclude>
-    <ClInclude Include="KeyPress.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ToolkitMode.h">
       <Filter>Header Files\GameMode</Filter>
     </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GameBaseClass.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRenderer.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSprite.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyPress.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Load.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="SFML.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
     <ClInclude Include="Update.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldControl.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyClass.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="StartUI.h">
+      <Filter>Header Files\UI\StartUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ExitButton.h">
+      <Filter>Header Files\UI\StartUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayButton.h">
+      <Filter>Header Files\UI\StartUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreButton.h">
+      <Filter>Header Files\UI\StartUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingButton.h">
+      <Filter>Header Files\UI\StartUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolkitButton.h">
+      <Filter>Header Files\UI\StartUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreUI.h">
+      <Filter>Header Files\UI\ScoreUI</Filter>
+    </ClInclude>
+    <ClInclude Include="EndGameMode.h">
+      <Filter>Header Files\GameMode</Filter>
+    </ClInclude>
+    <ClInclude Include="EndGameUI.h">
+      <Filter>Header Files\UI\EndGameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeRunNameButton.h">
+      <Filter>Header Files\UI\EndGameUI\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveableBlockClass.h">
+      <Filter>Header Files\Objects\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectDropDown.h">
+      <Filter>Header Files\UI\ToolkitUI</Filter>
+    </ClInclude>
+    <ClInclude Include="TextUI.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Output.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="SignalBlockClass.h">
+      <Filter>Header Files\Objects\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="SwitchClass.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

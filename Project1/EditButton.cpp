@@ -3,7 +3,7 @@
 #include "WorldControl.h"
 void EditButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI =ALLUI::toolkitUI();
 	thisUI.newRoomData = WControl::allRoomPrefabs()[thisUI.choosingSet].second[thisUI.choosingRoomIndex];
 	switch(thisUI.newRoomData.roomType) {
 	case RoomType::Type00:

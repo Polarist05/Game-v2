@@ -17,18 +17,18 @@ void PlayMode::Update()
 {
 	runTime += clock() - lastFrameTime;
 	lastFrameTime = clock();
-	UpdatePlayer();
-	UpdateUX();
-	UpdateKnife();
-	UpdateObject();
-	UpdateRoom();
+	Update::UpdatePlayer();
+	Update::UpdateUX();
+	Update::UpdateKnife();
+	Update::UpdateObject();
+	Update::UpdateRoom();
 }
 
 void PlayMode::CheckKeyPress()
 {
-	CheckPlayerMovement();
-	CheckPlayerAction();
-	CheckEscape();
+	KeyPress::CheckPlayerMovement();
+	KeyPress::CheckPlayerAction();
+	KeyPress::CheckEscape();
 }
 
 void PlayMode::RenderGame()

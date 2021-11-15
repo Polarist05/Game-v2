@@ -6,7 +6,7 @@
 #include <iostream>
 void DeleteRoomButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	if (WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.size() > 0&&!WorldControl::allRoomPrefabs()[thisUI.choosingSet].first.second) {
 		WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.erase(WorldControl::allRoomPrefabs()[thisUI.choosingSet].second.begin() + thisUI.choosingRoomIndex);
 		Load::RefreshRoomPrefrab();

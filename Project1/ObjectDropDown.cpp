@@ -18,7 +18,7 @@ void InstantLaser(Vector2i pos) { WControl::GetCurrentRoom().lock()->InstantLase
 
 void ObjectDropDown::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	for (auto& x : WControl::GetChosedAreaPosition()) {
 		for (auto& y : x.second) {
 			if (!WControl::GetCurrentRoom().lock()->Space[y - 1][x.first - 1].expired()) {

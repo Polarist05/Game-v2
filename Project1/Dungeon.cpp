@@ -12,6 +12,12 @@
 #include <filesystem>
 #include <random>
 
+Vector2i Dungeon::getStartRoom() { return startRoom; }
+
+std::array<Vector2i, 3> Dungeon::GetKeyRoom()
+{
+	return roomKey;
+}
 
 void Dungeon::GenerateDungeon()
 {
@@ -71,6 +77,23 @@ Dungeon::Dungeon() {
 	InstantRoom();
 	WControl::SetCurrentRoomPositon(Vector2i(0, 0));
 }
+void Dungeon::ChooseKeyRoom()
+{
+	int x,y;
+	for (int i = 0;i<3;i++) {
+		int j ;
+		do {
+			x = rand() % 5;
+			y = rand() % 5;
+			for (j=0;j<i;j++) {
+				if (x == roomKey[j].x && y == roomKey[j].y)
+					break;
+			}
+		} while ((x == startRoom.x && y == startRoom.y)||j!=i);
+		roomKey[i].x = x; roomKey[i].y = y;
+	}
+}
+
 void Dungeon::InstantEdge() {
 	Color color(32, 32, 32, 255);
 	for (size_t i = 0; i < 5; i++)
@@ -239,9 +262,9 @@ void Dungeon::GenerateMaze() {
 	MakeEdges(horizonEdgeWeight, verticleEdgeWeight);
 	startRoom = Vector2i(rand() % 5, rand() % 5);
 	printf("Start position is %d %d\n", startRoom.y, startRoom.x);
-	PrintDungeon();
 	for (int i = 0; i < 3; i++)
-		BreakWall();
+		BreakWall(); 
+	ChooseKeyRoom();
 	PrintDungeon();
 }
 void Dungeon::InstantRoom() {
@@ -463,8 +486,20 @@ void Dungeon::PrintDungeon() {
 			else {
 				printf("|");
 			}
-			if (j < 5)
-				printf(" ");
+			if (j < 5) {
+				bool b = false;
+				for (size_t k = 0; k < 3; k++)
+				{
+					if (roomKey[k].x == j && roomKey[k].y == i)
+						b = true;
+				}
+				if (startRoom.x == j && startRoom.y == i)
+					printf("S");
+				else if (b)
+					printf("K");
+				else
+					printf(" ");
+			}
 		}
 		printf("\n");
 	}
@@ -478,6 +513,10 @@ void Dungeon::PrintDungeon() {
 		}
 	}
 	printf("+\n");
+	/*printf("key1 : %d %d\n", roomKey[0].x,roomKey[0].y);
+	printf("key2 : %d %d\n", roomKey[1].x, roomKey[1].y);
+	printf("key3 : %d %d\n", roomKey[2].x, roomKey[2].y);
+	printf("StartRoom : %d %d\n", startRoom.x, startRoom.y);*/
 }
 std::string Dungeon::EnumDirectionName(int a) {
 	const string direction[10] = { "Up","Down","Right","Left" ,"Null" };

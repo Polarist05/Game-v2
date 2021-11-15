@@ -4,7 +4,7 @@
 #include <iostream>
 void SetDropDownButton::InstantList()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	for (int i = 0; i < 10; i++) {
 		weak_ptr<GameSprite> wp = Instantiate<GameSprite>();
 		
@@ -19,7 +19,7 @@ void SetDropDownButton::InstantList()
 		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 		wp.lock()->transform->SetParent(transform->wp);
 		wp.lock()->transform->SetPosition(Vector2f(0, 45 * (i + 1)));
-		thisUI.clickableTextureSprites.push_back(wp);
+		thisUI.clickableSprites.push_back(wp);
 		thisUI.NormalSprites2.push_back(wp);
 		dropDownList.push_back(wp);
 
@@ -36,7 +36,7 @@ SetDropDownButton::SetDropDownButton() :ClickableSprite() {}
 SetDropDownButton::SetDropDownButton(string s) : ClickableSprite(s) {}
 void SetDropDownButton::Open()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	for (auto wp : dropDownList) {
 		wp.lock()->transform->renderBox.setFillColor(Color::White);
 	}
@@ -54,7 +54,7 @@ void SetDropDownButton::Open()
 }
 void SetDropDownButton::Close()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	for (auto wp : dropDownList) {
 		wp.lock()->transform->renderBox.setFillColor(Color::Transparent);
 	}
@@ -72,7 +72,7 @@ void SetDropDownButton::Close()
 }
 void SetDropDownButton::UpdateText()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];	
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	choosedText.SetText(thisUI.choosingSet); 
 	int i = 0;
 	for (auto& roomSet : WControl::allRoomPrefabs()) {
@@ -90,7 +90,7 @@ void SetDropDownButton::UpdateText()
 	}
 }
 void SetDropDownButton::Activate() {
-	ToolkitUI& thisUI = *(ToolkitUI*)WControl::AllUI()[UIType::ToolkitPage];
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	if (!thisUI.dropDown2.lock()->isOpen) { 
 		if (!isOpen)
 			Open();

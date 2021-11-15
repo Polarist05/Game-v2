@@ -33,10 +33,10 @@ int main() {
 				WorldControl::window().close();
 		}
 		WorldControl::window().setView(WControl::view());
-		currentMode().lock()->CheckKeyPress();
+		Mode::currentMode().lock()->CheckKeyPress();
 		MoveAllSprites(WorldControl::Hierarchy(), 0, Vector2f(0, 0));
-		currentMode().lock()->Update();
-		currentMode().lock()->RenderGame();
+		Mode::currentMode().lock()->Update();
+		Mode::currentMode().lock()->RenderGame();
 		//gameRenderer.RenderAll();
 		WorldControl::window().display();
 		

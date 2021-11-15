@@ -16,7 +16,7 @@ private:
 	RenderWindow& window();
 	clock_t StartMeleeAttackTime;
 	int soul = 0;
-	int score = 0;
+	int score = 3;
 	int key = 0 ;
 public:
 	Vector2f OffsetThrowingKnife = Vector2f(0, -THROWING_LEVEL);

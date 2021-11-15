@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BellClass.cpp" />
+    <ClCompile Include="ChangeRunNameButton.cpp" />
     <ClCompile Include="ChoosingEdge.cpp" />
     <ClCompile Include="ClickableSprite.cpp" />
     <ClCompile Include="CliffButton.cpp" />
@@ -159,20 +160,26 @@
     <ClCompile Include="DeleteSetButton.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="EditButton.cpp" />
+    <ClCompile Include="EndGameMode.cpp" />
+    <ClCompile Include="EndGameUI.cpp" />
     <ClCompile Include="ExitButton.cpp" />
     <ClCompile Include="FloorButton.cpp" />
     <ClCompile Include="GameBaseClass.cpp" />
     <ClCompile Include="GameMode.cpp" />
     <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="GameSprite.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="ItemIcomButton.cpp" />
+    <ClCompile Include="KeyClass.cpp" />
     <ClCompile Include="KeyPress.cpp" />
     <ClCompile Include="Knife.cpp" />
     <ClCompile Include="Load.cpp" />
     <ClCompile Include="MainMenuMode.cpp" />
+    <ClCompile Include="MoveableBlockClass.cpp" />
     <ClCompile Include="NextRoomButton.cpp" />
     <ClCompile Include="NormalBlockClass.cpp" />
     <ClCompile Include="ObjectDropDown.cpp" />
+    <ClCompile Include="Output.cpp" />
     <ClCompile Include="PlayButton.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayMode.cpp" />
@@ -184,11 +191,15 @@
     <ClCompile Include="RoomDropDownList.cpp" />
     <ClCompile Include="SaveButton.cpp" />
     <ClCompile Include="ScoreButton.cpp" />
+    <ClCompile Include="ScoreUI.cpp" />
     <ClCompile Include="SetDropDownButton.cpp" />
     <ClCompile Include="SetDropDownListButton.cpp" />
     <ClCompile Include="SettingButton.cpp" />
+    <ClCompile Include="SignalBlock.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="StartUI.cpp" />
     <ClCompile Include="StrawberryClass.cpp" />
+    <ClCompile Include="Switch.cpp" />
     <ClCompile Include="TextUI.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="ToolkitButton.cpp" />
@@ -201,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BellClass.h" />
+    <ClInclude Include="ChangeRunNameButton.h" />
     <ClInclude Include="ChoosingEdge.h" />
     <ClInclude Include="ClickableSprite.h" />
     <ClInclude Include="CliffButton.h" />
@@ -211,6 +223,8 @@
     <ClInclude Include="DeleteSetButton.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="EditButton.h" />
+    <ClInclude Include="EndGameMode.h" />
+    <ClInclude Include="EndGameUI.h" />
     <ClInclude Include="ExitButton.h" />
     <ClInclude Include="FloorButton.h" />
     <ClInclude Include="GameBaseClass.h" />
@@ -219,16 +233,20 @@
     <ClInclude Include="GameSprite.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="AllButton.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="ItemIcomButton.h" />
+    <ClInclude Include="KeyClass.h" />
     <ClInclude Include="KeyPress.h" />
     <ClInclude Include="Knife.h" />
     <ClInclude Include="KnifeInteractable.h" />
     <ClInclude Include="Load.h" />
     <ClInclude Include="MainMenuMode.h" />
     <ClInclude Include="MeleeAttackable.h" />
+    <ClInclude Include="MoveableBlockClass.h" />
     <ClInclude Include="NextRoomButton.h" />
     <ClInclude Include="NormalBlockClass.h" />
     <ClInclude Include="ObjectDropDown.h" />
+    <ClInclude Include="Output.h" />
     <ClInclude Include="PlayButton.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayMode.h" />
@@ -240,10 +258,14 @@
     <ClInclude Include="RoomDropDownList.h" />
     <ClInclude Include="SaveButton.h" />
     <ClInclude Include="ScoreButton.h" />
+    <ClInclude Include="ScoreUI.h" />
     <ClInclude Include="SetDropDownButton.h" />
     <ClInclude Include="SetDropDownListButton.h" />
     <ClInclude Include="SettingButton.h" />
+    <ClInclude Include="SignalBlockClass.h" />
+    <ClInclude Include="StartUI.h" />
     <ClInclude Include="StrawberryClass.h" />
+    <ClInclude Include="SwitchClass.h" />
     <ClInclude Include="TextUI.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="ToolkitButton.h" />

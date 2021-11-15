@@ -14,8 +14,8 @@
 #include "ItemIcomButton.h"
 class ToolkitUI:public UI
 {
-	static void setText(vector<weak_ptr<GameSprite>>& textSprites, const std::string& s);
 public:
+	ToolkitUI();
 	RoomData newRoomData;
 	bool isOpendropDown2 = false;
 	weak_ptr<GameSprite> taskbar;

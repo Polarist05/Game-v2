@@ -5,7 +5,7 @@
 #include <filesystem>
 void SaveButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	bool isFlipX=0, isFlipY=0;
 	RoomData& roomData=thisUI.newRoomData;
 	{
@@ -89,7 +89,7 @@ void SaveButton::Activate()
 		}
 	}
 	if(1){
-		ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+		ToolkitUI& thisUI = ALLUI::toolkitUI();
 		for (auto& wp : thisUI.choosingEdges)
 			wp.lock()->transform->renderBox.setFillColor(Color::Transparent);
 		thisUI.itemIconButton.lock()->transform->renderBox.setFillColor(Color::Transparent);

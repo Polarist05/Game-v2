@@ -2,9 +2,10 @@
 #include "MeleeAttackable.h"
 #include "KnifeInteractable.h"
 #include "Tile.h"
+#include "Input.h"
 #include <set>
 #define RING_DURATION 2000
-class BellClass:public Area,public MeleeAttackable,public KnifeInteractable
+class BellClass :public Input, public MeleeAttackable, public KnifeInteractable
 {
 	bool isActivate=false;
 	clock_t StartActivateTime=0;

@@ -1,6 +1,9 @@
 #pragma once
-void CheckPlayerMovement();
-void CheckPlayerAction();
-void CheckEscape();
-void CheckClickableSprite();
-void CheckEditArea();
+namespace KeyPress {
+	void CheckPlayerMovement();
+	char CheckAlphaBetOrNumberKey();
+	void CheckPlayerAction();
+	void CheckEscape();
+	void CheckClickableSprite();
+	void CheckEditArea();
+}

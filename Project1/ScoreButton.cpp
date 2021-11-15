@@ -2,6 +2,7 @@
 #include "WorldControl.h"
 void ScoreButton::Activate()
 {
-	WControl::getMainDungeon().ResetDungeon();
+	Mode::currentMode() = Mode::endGameMode();
+	Mode::currentMode().lock()->SetUp();
 	printf("Score\n");
 }

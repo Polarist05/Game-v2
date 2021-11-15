@@ -12,9 +12,9 @@ void UI::CheckUICollision()
 			return;
 	}
 	if (!WControl::UIStack().empty()) {
-		for (auto wp : WControl::AllUI()[WControl::UIStack().top()]->clickableTextureSprites) {
+		for (auto wp : ALLUI::GetUI(WControl::UIStack().top())->clickableSprites) {
 			if (wp.lock()->transform->renderBox.getFillColor() != Color::Transparent) {
-				if (Collision::isCollision(wp.lock()->transform->hitBox, cursurPos)) {
+				if (Collision::isCollision(wp.lock()->transform->renderBox, cursurPos)) {
 					WControl::clickableSpriteAtCursor() = wp;
 					wp.lock()->transform->renderBox.setFillColor(Color::Yellow);
 				}
@@ -29,14 +29,14 @@ void UI::CheckUICollision()
 void UI::SetVisible(bool b)
 {
 	if (b) {
-		for (weak_ptr<ClickableSprite> wp : clickableTextureSprites) {
+		for (weak_ptr<ClickableSprite> wp : clickableSprites) {
 			Color color = wp.lock()->transform->renderBox.getFillColor();
 			color.a = 255;
 			wp.lock()->transform->renderBox.setFillColor(color);
 		}
 	}
 	else{
-		for (weak_ptr<ClickableSprite> wp : clickableTextureSprites) {
+		for (weak_ptr<ClickableSprite> wp : clickableSprites) {
 			Color color = wp.lock()->transform->renderBox.getFillColor();
 			color.a = 0;
 			wp.lock()->transform->renderBox.setFillColor(color);

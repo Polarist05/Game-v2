@@ -6,7 +6,7 @@
 
 void DeleteSetButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	if (WControl::allRoomPrefabs().size() > 1&& !WorldControl::allRoomPrefabs()[thisUI.choosingSet].first.second) {
 		WControl::allRoomPrefabs().erase(thisUI.choosingSet);
 		Load::RefreshRoomPrefrab();

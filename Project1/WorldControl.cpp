@@ -4,10 +4,7 @@
 #include<vector>
 #include <iostream>
 #include <random>
-
-bool CurrentModeIs(weak_ptr<GameMode> gamemode) {
-	return currentMode().lock() == gamemode.lock();
-}
+#include <filesystem>
 
 using namespace std;
 
@@ -25,11 +22,16 @@ map<type_index, vector<shared_ptr<GameBaseClass> > >& GetAllEntities() { return 
 shared_ptr<MainMenuMode> _mainMenuMode = Instantiate<MainMenuMode>().lock();
 shared_ptr<PlayMode> _playMode = Instantiate<PlayMode>().lock();
 shared_ptr <ToolkitMode>  _toolkitMode = Instantiate<ToolkitMode>().lock();
+shared_ptr <EndGameMode>  _endGameMode = Instantiate<EndGameMode>().lock();
 weak_ptr<GameMode> _currentMode = _mainMenuMode;
-shared_ptr<MainMenuMode> mainMenuMode() { return _mainMenuMode; }
-shared_ptr<PlayMode> playMode() { return _playMode; }
-shared_ptr <ToolkitMode>  toolkitMode() { return _toolkitMode; }
-weak_ptr<GameMode>& currentMode() { return _currentMode; }
+shared_ptr<MainMenuMode> Mode::mainMenuMode() {  return _mainMenuMode;  }
+shared_ptr<PlayMode> Mode::playMode() {  return _playMode; }
+shared_ptr <ToolkitMode>  Mode::toolkitMode() {  return _toolkitMode; }
+shared_ptr <EndGameMode>  Mode::endGameMode() {  return _endGameMode; }
+weak_ptr<GameMode>& Mode::currentMode() { return _currentMode; }
+bool Mode::CurrentModeIs(weak_ptr<GameMode> gamemode) {
+	return Mode::currentMode().lock() == gamemode.lock();
+}
 
 map<std::string, pair<pair<bool, bool>, vector< RoomData > > > _allRoomPrefabs;
 map<std::string, pair<pair<bool, bool>, vector< RoomData > > >& WorldControl::allRoomPrefabs() { return _allRoomPrefabs; }
@@ -83,15 +85,8 @@ weak_ptr<Player> WorldControl::player() { return _player; }
 weak_ptr<ClickableSprite> _clickableSpriteAtCursor;
 weak_ptr<ClickableSprite>& WControl::clickableSpriteAtCursor() { return _clickableSpriteAtCursor; };
 
-/*bool _isGamePlaying = false;
-bool& WorldControl::isGamePlaying() { return _isGamePlaying; };*/
-
-
 std::stack<UIType> _UIStack;
 std::stack<UIType>& WorldControl::UIStack() { return _UIStack; }
-
-map<UIType, UI*> _AllUI;
-map<UIType, UI*>& WorldControl::AllUI() { return _AllUI; }
 
 weak_ptr<ClickableSprite> _HoldItem;
 weak_ptr<ClickableSprite> WorldControl::HoldItem() { return _HoldItem; }
@@ -144,8 +139,41 @@ weak_ptr<GameSprite> GameSprite::GameTransform::Hierachy() { return _hierarchy; 
 weak_ptr<GameSprite>GameRenderer::Hierachy() { return _hierarchy; }
 weak_ptr<Tile> Tilemap::TilemapTransform::NotrenderTile() { return _notRenderTile; }
 weak_ptr<Tilemap> Area::AreaTransform::NotrenderTilemap() { return _notRenderTilemap; }
-weak_ptr<WorldControl> WorldControlInstant = Instantiate<WorldControl>();
 
 Vector2f Multiple(const Vector2f& a, const Vector2f& b) { return Vector2f(a.x * b.x, a.y * b.y); }
 Vector2f Multiple(const Vector2f& a, const Vector2f& b, const Vector2f& c) { return Vector2f(a.x * b.x * c.x, a.y * b.y * c.y); }
 Vector2f Flip(const Vector2f& a) { return Vector2f(a.y, a.x); }
+
+std::string _playerName="player";
+std::string& WorldControl::playerName() { return _playerName; };
+
+std::array<pair<string, int>, 5> _scoreboard;
+std::array<pair<string, int>, 5>& WorldControl::scoreboard() { return _scoreboard; }
+
+Color MyColor::gray() {return Color(32, 32, 32, 255);}
+
+
+weak_ptr<WorldControl> WorldControlInstant = Instantiate<WorldControl>();
+
+StartUI _startUI;
+ToolkitUI _toolkitUI;
+EndGameUI _endGameUI;
+StartUI& ALLUI::startUI() { return _startUI; }
+ToolkitUI& ALLUI::toolkitUI() { return _toolkitUI; }
+EndGameUI& ALLUI::endGameUI() { return _endGameUI; }
+UI* ALLUI::GetUI(const UIType& UItype) {
+	switch (UItype)
+	{
+	case StartPage:
+		return &ALLUI::startUI();
+		break;
+	case ToolkitPage:
+		return &ALLUI::toolkitUI();
+		break;
+	case EndGamePage:
+		return &ALLUI::endGameUI();
+		break;
+	default:
+		break;
+	}
+}

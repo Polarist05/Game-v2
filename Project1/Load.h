@@ -8,12 +8,13 @@ class Load
 	static void LoadAllObjectPrefab();
 	static void LoadPlayerPerfab();
 	static void LoadAllOtherPrefab();
+	static void LoadObjectPrefab(const string& name, const string& path, const IntRect& intRect);
 	static void LoadOtherPrefab(const string& name, const string& path, const IntRect& intRect);
 	static void LoadAllASCII();
-	static void LoadAllUI();
-	static void LoadStartUI();
-	static void LoadToolkitUI();
+	static void LoadScoreboard();
 public:
+	
+	static void SaveScoreboard();
 	static void SaveAllRoomPrefab();
 	static void RefreshRoomPrefrab();
 	static void LoadData();

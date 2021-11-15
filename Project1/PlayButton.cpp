@@ -2,7 +2,8 @@
 #include "WorldControl.h"
 void PlayButton::Activate()
 {
-	currentMode() = playMode();
-	currentMode().lock()->SetUp();
+	WControl::getMainDungeon().ResetDungeon();
+	Mode::currentMode() = Mode::playMode();
+	Mode::currentMode().lock()->SetUp();
 	WControl::UIStack().pop();
 }

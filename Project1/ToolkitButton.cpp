@@ -2,8 +2,9 @@
 #include "WorldControl.h"
 void ToolkitButton::Activate()
 {
+	WControl::getMainDungeon().ResetDungeon();
 	WControl::getMainDungeon().GenerateToolkitMode();
-	currentMode() = toolkitMode();
+	Mode::currentMode() = Mode::toolkitMode();
 	WControl::UIStack().push(UIType::ToolkitPage);
 	printf("Toolkit\n");
 }

@@ -4,7 +4,7 @@
 
 void SetDropDownListButton::Activate()
 {
-	ToolkitUI& thisUI = *(ToolkitUI*)(WControl::AllUI()[UIType::ToolkitPage]);
+	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	thisUI.dropDown2.lock()->isOpen = false;
 	thisUI.ChangeSet(name);
 	dynamic_pointer_cast<SetDropDownButton>(transform->parent.lock())->Close();
