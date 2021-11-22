@@ -67,7 +67,7 @@ void UX::Update()
 	score.SetText("Score "+ to_string(WControl::player().lock()->GetScore()));
 	int second = (Mode::playMode()->getRunTime() / 1000);
 	int minuite = second / 60;
-	runTime.SetText("Time " +to_string((minuite / 10) % 10)+to_string(minuite%10)  + ':' + to_string((second / 10)%10)+to_string(second % 10) );
+	runTime.SetText("Time " +to_string((minuite / 10) % 10)+to_string(minuite%10)  + ':' + to_string((second / 10)%6)+to_string(second % 10) );
 	scoreHighlight.setPosition(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom()+ score.GetPosition());
 	runTimeHighlight.setPosition(WControl::GetCurrentRoom().lock()->MiddlePositionOfRoom() + runTime.GetPosition());
 }

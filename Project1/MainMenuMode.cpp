@@ -1,5 +1,6 @@
 #include "MainMenuMode.h"
 #include "Update.h"
+#include "WorldControl.h"
 void MainMenuMode::Start()
 {
 
@@ -19,4 +20,9 @@ void MainMenuMode::CheckKeyPress()
 void MainMenuMode::RenderGame()
 {
 	GameRenderer::RenderUI();
+}
+
+void MainMenuMode::SetUp()
+{
+	WControl::player().lock()->ResetScore();
 }

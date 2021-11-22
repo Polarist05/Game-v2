@@ -9,6 +9,7 @@ class Dungeon
 {	
 	Vector2i startRoom;
 	std::array<Vector2i,3> roomKey;
+	void InstantSingleWall(const Vector2i& roomPos,const int& index,const Vector2i& posInRoom,Texture* texture);
 public:
 	Vector2i getStartRoom();
 	std::array<Vector2i, 3> GetKeyRoom();

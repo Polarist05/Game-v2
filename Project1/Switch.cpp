@@ -1,8 +1,12 @@
 #include "SwitchClass.h"
-
+#include "WorldControl.h"
 void SwitchClass::Fliping()
 {
 	TurnOn(!GetIsOn());
+	if (GetIsOn())
+		transform->renderBox.setTexture(&WControl::objectsPrefab()["Switch2"]);
+	else
+		transform->renderBox.setTexture(&WControl::objectsPrefab()["Switch"]);
 }
 
 SwitchClass::SwitchClass():Input(){}

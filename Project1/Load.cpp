@@ -15,7 +15,22 @@ void Load::LoadData() {
 }
 void Load::LoadAllOtherPrefab() {
 	LoadOtherPrefab("Knife", "Sprites", IntRect(0, 0, 280, 70));
+	LoadOtherPrefab("player2", "Sprites", IntRect(0, 0, 1068, 1350));
 	LoadOtherPrefab("Null", "Sprites", IntRect(0, 0, 190, 250));
+	LoadOtherPrefab("CornerUL", "Sprites\\Wall\\Corner", IntRect(0, 0, 190 , 140));
+	LoadOtherPrefab("CornerUR", "Sprites\\Wall\\Corner", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("CornerDL", "Sprites\\Wall\\Corner", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("CornerDR", "Sprites\\Wall\\Corner", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("CornerRUL", "Sprites\\Wall\\CornerR", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("CornerRUR", "Sprites\\Wall\\CornerR", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("CornerRDL", "Sprites\\Wall\\CornerR", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("CornerRDR", "Sprites\\Wall\\CornerR", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("SideU", "Sprites\\Wall\\Side", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("SideD", "Sprites\\Wall\\Side", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("SideL", "Sprites\\Wall\\Side", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("SideR", "Sprites\\Wall\\Side", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("Floor", "Sprites", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("StartFloor", "Sprites", IntRect(0, 0, 190, 140));
 	{
 		std::string path = "Sprites\\UI\\Toolkit";
 		LoadOtherPrefab("TaskBar", path, IntRect(0, 0, 295, 45));
@@ -85,9 +100,10 @@ void Load::LoadPlayerPerfab() {
 	}
 	Vector2f scale(0.8, 0.8);
 	WControl::playerPrefab()->setSmooth(true);
-	WControl::player().lock()->transform->renderBox.setTexture(WControl::playerPrefab());
-	SpriteOffsetData spriteOffset(Vector2i(26, 26), Vector2i(98, 193), Vector2f(80, 65), Vector2f(0, 65), Vector2f(0, 0), float(0.75));
+	WControl::player().lock()->transform->renderBox.setTexture(&WControl::otherPrefab()["player2"]);
+	SpriteOffsetData spriteOffset(Vector2i(0,0),Vector2i(PLAYERSIZE_X,PLAYERSIZE_Y), Vector2f(50, 20), Vector2f(0, 35), Vector2f(0, 0), float(1.2));
 	WControl::player().lock()->transform->SetAllSpriteOffset(spriteOffset);
+	WControl::player().lock()->transform->SetSize(Vector2f(100, 130), PseudoRenderBox);
 	WControl::player().lock()->transform->SetSize(WControl::player().lock()->transform->pseudoRenderBox.getSize() - Vector2f(20, 0), PseudoRenderBox);
 }
 void Load::LoadAllObjectPrefab() {
@@ -100,13 +116,12 @@ void Load::LoadAllObjectPrefab() {
 	LoadObjectPrefab("Strawberry", path, objectRect);
 	LoadObjectPrefab("MovingPlatform", path, objectRect);
 	LoadObjectPrefab("Switch", path, objectRect);
+	LoadObjectPrefab("Switch2", path, objectRect);
 	LoadObjectPrefab("NormalBlock", path, objectRect);
 	LoadObjectPrefab("DeleteBlock", path, objectRect);
 	LoadObjectPrefab("SignalBlock", path, objectRect);
 	LoadObjectPrefab("MoveableBlock", path, objectRect);
-	LoadObjectPrefab("PlacingSwitch", path, objectRect);
 	LoadObjectPrefab("Key", path, IntRect(0, 0, 250, 250));
-	LoadObjectPrefab("Laser", path, objectRect);
 }
 void Load::LoadAllRoomPrefab() {
 	WorldControl::allRoomPrefabs().clear();

@@ -27,7 +27,7 @@ void ObjectDropDown::Activate()
 				Destroy(wp,index);
 			}
 			func(Vector2i(x.first, y));
-			thisUI.newRoomData.objects[y-1][x.first-1]=saveInt;
+			thisUI.newRoomData.objects[y - 1][x.first - 1]=saveInt;
 		}
 	}
 		

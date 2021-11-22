@@ -44,16 +44,18 @@ void GameRenderer::RenderEdge() {
 }
 void GameRenderer::RenderFloorAt(weak_ptr<Room> renderRoom) {
 	if (!renderRoom.expired()) {
+
 		for (int i = 0; i < RSIZEY; i++)
 		{
 			for (int j = 0; j < RSIZEX; j++) {
-				window().draw(renderRoom.lock()->areas[i][j].lock()->transform->renderBox);
+				if(!renderRoom.lock()->areas[i][j].expired())
+					window().draw(renderRoom.lock()->areas[i][j].lock()->transform->renderBox);
 			}
 		}
 	}
 }
 void GameRenderer::RenderWallAt(weak_ptr<Room> renderRoom) {
-	for (int j = 0; j < 4; j++) {
+	for (int j = 0; j < 5; j++) {
 		for (int i = 0; i < renderRoom.lock()->Walls[j].size(); i++) {
 			window().draw(renderRoom.lock()->Walls[j][i].lock()->GetTransform()->renderBox);
 		}

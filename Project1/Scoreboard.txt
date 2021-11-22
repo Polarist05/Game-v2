@@ -1,5 +1,5 @@
-silver 5
-vorapol 3
-player 3
-player 3
-player 3
+number 3400
+diablo 2600
+diablo 2600
+dragon 2400
+dragon 2400

@@ -27,7 +27,6 @@ bool MoveableBlockClass::PushBlock(const Direction& direction)
 				lastPosition = WControl::GetCurrentRoom().lock()->GetTransform()->GetRealPositionAt(blockPosition);
 				WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y][blockPosition.x] = true;
 				//GetTransform()->SetPositionInTilemap(blockPosition);
-				
 				isMove = true;
 			}
 			break;
@@ -40,7 +39,6 @@ bool MoveableBlockClass::PushBlock(const Direction& direction)
 				lastPosition = WControl::GetCurrentRoom().lock()->GetTransform()->GetRealPositionAt(blockPosition);
 				WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y][blockPosition.x] = true;
 				//GetTransform()->SetPositionInTilemap(blockPosition );
-				
 				isMove = true;
 			}
 			break;

@@ -26,6 +26,12 @@ void PlayMode::Update()
 
 void PlayMode::CheckKeyPress()
 {
+	if (Keyboard::isKeyPressed(Keyboard::K)) {
+		WControl::player().lock()->IncreaseKey(1);
+	}
+	if (Keyboard::isKeyPressed(Keyboard::L)) {
+		WControl::GetCurrentRoom().lock()->RestartRoom();
+	}
 	KeyPress::CheckPlayerMovement();
 	KeyPress::CheckPlayerAction();
 	KeyPress::CheckEscape();

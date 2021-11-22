@@ -76,7 +76,7 @@ public:
 	vector<vector<weak_ptr<GameSprite>>> Space= vector<vector<weak_ptr<GameSprite>>>(RSIZEY,vector<weak_ptr<GameSprite>>(RSIZEX,weak_ptr<GameSprite>()));
 	Vector2f startRoomPosition;
 	weak_ptr<Area> areas[RSIZEY][RSIZEX];
-	vector<weak_ptr<Area> > Walls[4];
+	vector<weak_ptr<Area> > Walls[6];
 	vector<weak_ptr<Area> > cliffs;
 	std::array<std::array<bool, RSIZEX+2>, RSIZEY+2> cannotPush;
 

@@ -10,62 +10,48 @@ void Knife::Start()
 	
 	transform->renderBox.setTexture(&WControl::otherPrefab()["Knife"]);
 	transform->SetAllSpriteOffset(spriteOffset);
-	transform->		SetAnchorType(AnchorType::MiddleCentor, HitBox, FIX_ALL_RECT_POSITION);
-	transform->SetSize(transform->pseudoRenderBox.getSize() + Vector2f(-60, 0), PseudoRenderBox);
+	transform->SetAnchorType(AnchorType::MiddleCentor, HitBox, FIX_ALL_RECT_POSITION);
+	transform->SetSize(transform->pseudoRenderBox.getSize() + Vector2f(-30, 0), PseudoRenderBox);
+	transform->SetSize(transform->pseudoRenderBox.getSize(), HitBox);
+	transform->SetAnchorType(AnchorType::MiddleLeft, PseudoRenderBox, FIX_ALL_RECT_POSITION);
+	transform->SetAnchorType(AnchorType::MiddleLeft, HitBox, FIX_ALL_RECT_POSITION);
+	transform->SetAnchorType(AnchorType::MiddleLeft, RenderBox, FIX_ALL_RECT_POSITION);
+	transform->SetPositionOffset(Vector2f(0, 0), RenderBox);
+	transform->SetPositionOffset(Vector2f(0, 0), PseudoRenderBox);
+	transform->SetPositionOffset(Vector2f(0, 0), HitBox);
 	transform->pseudoRenderBox.setFillColor(Color::Yellow);
 	transform->RenderPriority = RenderPriorityType::KnifeType;
 	transform->SetPosition(WControl::player().lock()->transform->hitBox.getPosition()+ WControl::player().lock()->OffsetThrowingKnife);
+	Vector2f flip(transform->pseudoRenderBox.getSize().y, transform->pseudoRenderBox.getSize().x);
 	switch (direction)
 	{
 	case Up:
 		transform->renderBox.setRotation(-90);
-		
-		transform->SetSize(Vector2f(transform->pseudoRenderBox.getSize().y, transform->pseudoRenderBox.getSize().x), HitBox);
-		transform->SetSize(Vector2f(transform->pseudoRenderBox.getSize().y, transform->pseudoRenderBox.getSize().x), PseudoRenderBox);
-		
-		transform->renderBox.setOrigin(30, transform->renderBox.getOrigin().y);
-		transform->hitBox.setOrigin(Vector2f(transform->pseudoRenderBox.getOrigin().x, transform->pseudoRenderBox.getSize().y - 30));
-		transform->pseudoRenderBox.setOrigin(Vector2f( transform->pseudoRenderBox.getOrigin().x, transform->pseudoRenderBox.getSize().y - 30));
-		
-		transform->Move(Vector2f(0, WControl::player().lock()->transform->pseudoRenderBox.getSize().y/2-30) );
+		transform->SetSize(flip, HitBox);
+		transform->SetSize(flip, PseudoRenderBox);
+		transform->SetAnchorType(AnchorType::DownCentor, PseudoRenderBox, FIX_ONLY_ANCHOR_POSITION);
+		transform->SetAnchorType(AnchorType::DownCentor, HitBox, FIX_ONLY_ANCHOR_POSITION);
 		velocity=Vector2f(0, -THROWING_SPEED);
 		break;
 	case Down:
-		transform->MoveOffset((Vector2f(0, WControl::player().lock()->transform->renderBox.getSize().y - WControl::player().lock()->transform->renderBox.getOrigin().y - transform->pseudoRenderBox.getOrigin().y)), PseudoRenderBox);
 		transform->renderBox.setRotation(90);
-		
-		transform->SetSize(Vector2f(transform->pseudoRenderBox.getSize().y, transform->pseudoRenderBox.getSize().x), HitBox);
-		transform->SetSize(Vector2f(transform->pseudoRenderBox.getSize().y, transform->pseudoRenderBox.getSize().x), PseudoRenderBox);
-		
-		transform->renderBox.setOrigin(Vector2f(30, transform->renderBox.getOrigin().y));
-		transform->hitBox.setOrigin(Vector2f(transform->pseudoRenderBox.getOrigin().x, 30));
-		transform->pseudoRenderBox.setOrigin(Vector2f(transform->pseudoRenderBox.getOrigin().x, 30));
+		transform->SetSize(flip, HitBox);
+		transform->SetSize(flip, PseudoRenderBox);
+		transform->SetAnchorType(AnchorType::TopCentor, PseudoRenderBox, FIX_ONLY_ANCHOR_POSITION);
+		transform->SetAnchorType(AnchorType::TopCentor, HitBox, FIX_ONLY_ANCHOR_POSITION);
 		
 		transform->Move(Vector2f(0, 30));
 		velocity = Vector2f(0, THROWING_SPEED);
 		break;
 	case Right:
-		transform->SetSize(transform->pseudoRenderBox.getSize(), HitBox);
-		transform->MoveOffset(-WControl::player().lock()->OffsetThrowingKnife -Vector2f(0,WControl::player().lock()->transform->hitBox.getSize().y / 2), HitBox);
-		
-		transform->hitBox.setOrigin(Vector2f(30, transform->pseudoRenderBox.getOrigin().y));
-		transform->renderBox.setOrigin(Vector2f(30, transform->renderBox.getOrigin().y));
-		transform->pseudoRenderBox.setOrigin(Vector2f(30, transform->pseudoRenderBox.getOrigin().y));
-		
-		transform->Move(Vector2f(WControl::player().lock()->transform->renderBox.getSize().x / 2+ (float)30., 0));
+		transform->MoveOffset(Vector2f(0, 20), HitBox);
 		velocity = Vector2f( THROWING_SPEED,0);
 		break;
 	case Left:
-		transform->SetSize(transform->pseudoRenderBox.getSize(), HitBox);
-		transform->MoveOffset(-WControl::player().lock()->OffsetThrowingKnife - Vector2f(0, WControl::player().lock()->transform->hitBox.getSize().y / 2), HitBox);
-		
 		transform->renderBox.setRotation(180);
-		
-		transform->hitBox.setOrigin(Vector2f(transform->pseudoRenderBox.getSize().x - 30, transform->pseudoRenderBox.getOrigin().y));
-		transform->renderBox.setOrigin(30, transform->renderBox.getOrigin().y);
-		transform->pseudoRenderBox.setOrigin(Vector2f(transform->pseudoRenderBox.getSize().x-30, transform->pseudoRenderBox.getOrigin().y));
-		
-		transform->Move(Vector2f(-WControl::player().lock()->transform->renderBox.getSize().x / 2 - 30., 0));
+		transform->SetAnchorType(AnchorType::MiddleRight, PseudoRenderBox, FIX_ONLY_ANCHOR_POSITION);
+		transform->SetAnchorType(AnchorType::MiddleRight, HitBox, FIX_ONLY_ANCHOR_POSITION);
+		transform->MoveOffset(Vector2f(0, 20), HitBox);
 		velocity = Vector2f(-THROWING_SPEED,0);
 		break;
 	default:

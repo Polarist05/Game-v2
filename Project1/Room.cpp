@@ -18,7 +18,7 @@
 #include <time.h>
 #include <stdio.h>
 
-vector<ObjectType> _walkableObjectTypes({ Strawberry, Portal  });
+vector<ObjectType> _walkableObjectTypes({ Strawberry, Portal ,Key });
 vector<ObjectType> _unwalkableObjectTypes({ Bell,ChargeSoul,Hook,Switch,NormalBlock,DeleteBlock,MoveableBlock,SignalBlock,Switch });
 vector<ObjectType> _meleeAttackableObjectTypes({ ChargeSoul ,Bell,Switch });
 vector<ObjectType> _hookAbleableObjectTypes({ Hook });
@@ -85,8 +85,6 @@ void Room::SetAllObjectsInRoom() {
 				InstantPortal(Vector2i(j + 1, i + 1));
 				break;
 			case  Strawberry:
-				cout <<"roomposition :" << roomPosition.x << " " << roomPosition.y << endl;
-				cout << "startRoom" << WControl::getMainDungeon().getStartRoom().x << " " << WControl::getMainDungeon().getStartRoom().y << endl << endl;
 				if (!haveKey) {
 					for (auto pos : WControl::getMainDungeon().GetKeyRoom()) {
 						if (pos == roomPosition) {
@@ -159,9 +157,52 @@ void Room::ResetRoom() {
 }
 void Room::RestartRoom()
 {
+	vector<Vector2i> st,ke;
+	for (auto& a : WControl::GetCurrentRoom().lock()->Objects[Strawberry])
+	{
+		if (!a.expired()) {
+			st.push_back(a.lock()->GetTransform()->GetPositionInTilemap());
+		}
+		
+	}
+	for (auto& a : WControl::GetCurrentRoom().lock()->Objects[Key])
+	{
+		if (!a.expired())
+			ke.push_back(a.lock()->GetTransform()->GetPositionInTilemap());
+	}
+	while (!WControl::player().lock()->knifes.empty())
+	{
+		auto index = WControl::player().lock()->knifes.front().lock()->transform->typeIndex;
+		auto wp = WControl::player().lock()->knifes.front().lock()->transform->wp;
+		Destroy(wp, index);
+		WControl::player().lock()->knifes.pop();
+	}
 	ResetRoom();
 	SetRoomSeed(originalRoomData,false,false);
+	{
+		for (auto& a : WControl::GetCurrentRoom().lock()->Objects[Strawberry])
+		{
+			auto index = a.lock()->transform->typeIndex;
+			auto wp = a.lock()->transform->wp;
+			Destroy(wp, index);
+		}
+		WControl::GetCurrentRoom().lock()->Objects[Strawberry].clear();
+		for (auto pos : st)
+			InstantStrawberry(pos);
+	}
+	{
+		for (auto& a : WControl::GetCurrentRoom().lock()->Objects[Key])
+		{
+			auto index = a.lock()->transform->typeIndex;
+			auto wp = a.lock()->transform->wp;
+			Destroy(wp, index);
+		}
+		WControl::GetCurrentRoom().lock()->Objects[Key].clear();
+		for (auto pos : ke)
+			InstantKey(pos);
+	}
 	WControl::player().lock()->transform->position = startRoomPosition;
+	WControl::player().lock()->ResetSoul();
 }
 
 void Room::SetFloor()
@@ -172,18 +213,14 @@ void Room::SetFloor()
 		{
 			if (roomData.floor[i][j] == false) {
 				areas[i][j] = Instantiate<Area>("Floor");
-				if ((i + j) % 2)
-					areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1) 
-						, RenderPriorityType::Floor, Color::Magenta);
-				else
-					areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1) 
-						, RenderPriorityType::Floor, Color::Black);
+				areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j + 1, i + 1) , RenderPriorityType::Floor);
+				areas[i][j].lock()->GetTransform()->renderBox.setTexture(&WControl::otherPrefab()["Floor"]);
 			}
 			else {
 				areas[i][j] = Instantiate<Area>("Floor");
 				cliffs.push_back(areas[i][j]);
 				areas[i][j].lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), Vector2i(j+1, i + 1) 
-					, RenderPriorityType::Floor, Color::Blue);
+					, RenderPriorityType::Floor, Color::Black);
 				cannotPush[i+1][j+1] = true;
 			}
 		}
@@ -210,9 +247,11 @@ void Room::DestroyAllObjects()
 	for (auto& ObjectsByType : Objects) {
 		for (auto object : ObjectsByType.second)
 		{
-			weak_ptr<GameSprite> wp = object.lock()->transform->wp;
-			type_index typeI = object.lock()->transform->typeIndex;
-			Destroy(wp, typeI);
+			if (!object.expired()) {
+				weak_ptr<GameSprite> wp = object.lock()->transform->wp;
+				type_index typeI = object.lock()->transform->typeIndex;
+				Destroy(wp, typeI);
+			}
 		}
 		ObjectsByType.second.clear();
 	}
@@ -220,13 +259,12 @@ void Room::DestroyAllObjects()
 
 void Room::CheckCollisionInRoom() {
 	WControl::player().lock()->lastFrameHitBox = WControl::player().lock()->transform->hitBox;
-	//CheckCollisionWithMoveableBlock();
 	CheckCollisionBetweenPlayerAndCliff();
 	CheckCollisionBetweenPlayerAndRoomEdge();
 	CheckCollisionBetweenPlayerAndObject();
 	CheckCollisionBetweenPlayerAndWall();
 	CheckCollisionOfKnife();
-	if (WControl::player().lock()->isHooking)
+	if (WControl::player().lock()->playerState==e_Hooking)
 		CheckCollisionBetweenPlayerAndHookingCancler();
 }
 
@@ -247,6 +285,13 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 	static clock_t delay = 0.05 * CLOCKS_PER_SEC;
 	if (!Collision::isCollision(GetTransform()->renderBox, WControl::player().lock()->transform->hitBox) && clock() - startTime >= delay) {
 		//RestartRoom();
+		while (!WControl::player().lock()->knifes.empty()) 
+		{
+			auto index = WControl::player().lock()->knifes.front().lock()->transform->typeIndex;
+			auto wp = WControl::player().lock()->knifes.front().lock()->transform->wp;
+			Destroy(wp, index);
+			WControl::player().lock()->knifes.pop();
+		}
 		startTime = clock();
 		Vector2f distance = WControl::player().lock()->transform->position - MiddlePositionOfRoom();
 		int x = roomPosition.x, y = roomPosition.y;
@@ -331,8 +376,7 @@ void Room::CheckCollisionBetweenPlayerAndObject() {
 			Objects[obj] = v;
 		}
 	}
-	if (!WControl::player().lock()->isHooking) {
-
+	if (WControl::player().lock()->playerState!=e_Hooking) {
 		for (int i = 0; i < UnwalkableObjectTypes().size(); i++) {
 			ObjectType obj = UnwalkableObjectTypes()[i];
 			vector<weak_ptr<Area> > v;
@@ -388,7 +432,7 @@ void Room::CheckCollisionBetweenPlayerAndObject() {
 }
 void Room::CheckCollisionBetweenPlayerAndCliff() {
 	WControl::player().lock()->lastFrameHitBox = WControl::player().lock()->transform->hitBox;
-	if (!WControl::player().lock()->isHooking) {
+	if (WControl::player().lock()->playerState!=e_Hooking) {
 		for (auto& cliff : cliffs) {
 			if (!cliff.expired()) {
 				Vector2f result;
@@ -727,7 +771,7 @@ void Room::InstantBell(const Vector2i& pos) {
 	cannotPush[pos.y][pos.x] = true;
 }
 void Room::InstantHook(const Vector2i& pos) {
-	SpriteOffsetData spriteOffset(Vector2i(34, 29), Vector2i(125, 212), Vector2f(70, 70), Vector2f(0, 70), Vector2f(0, -40), float(0.80));
+	SpriteOffsetData spriteOffset(Vector2i(34, 29), Vector2i(125, 212), Vector2f(70, 60), Vector2f(0, 80), Vector2f(0, -60), float(0.80));
 	auto wp = Instantiate<Area>("Hook");
 	Objects[Hook].push_back(wp);
 	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
@@ -756,7 +800,7 @@ void Room::InstantPortal(const Vector2i& pos) {
 		wp.lock()->Linking(Portals[roomData.objects[pos.y-1][pos.x-1] % 10]);
 	}
 	Space[pos.y - 1][pos.x - 1] = wp;
-	cannotPush[pos.y - 1][pos.x - 1] = true;
+	cannotPush[pos.y][pos.x] = true;
 }
 void Room::InstantStrawberry(const Vector2i& pos) {
 	SpriteOffsetData spriteOffset(Vector2i(22, 9), Vector2i(154, 205), Vector2f(120, 60), Vector2f(0, 70), Vector2f(0, -32), float(0.75));
@@ -773,7 +817,7 @@ void Room::InstantStrawberry(const Vector2i& pos) {
 void Room::InstantKey(const Vector2i& pos) {
 	SpriteOffsetData spriteOffset(Vector2i(38, 22), Vector2i(193, 204), Vector2f(120, 60), Vector2f(0, 70), Vector2f(0, 0), 0.6);
 	auto wp = Instantiate<KeyClass>("Key");
-	Objects[Strawberry].push_back(wp);
+	Objects[Key].push_back(wp);
 	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
 		, RenderPriorityType::PlayerAndObject);
 	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()["Key"]);
@@ -804,7 +848,7 @@ void Room::InstantSwitch(const Vector2i& pos) {
 	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
 	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
 	Space[pos.y - 1][pos.x - 1] = wp;
-	cannotPush[pos.y - 1][pos.x - 1] = true;
+	cannotPush[pos.y][pos.x] = true;
 }
 void Room::InstantNormalBlock(const Vector2i& pos) {
 	SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
@@ -832,7 +876,7 @@ void Room::InstantDeleteBlock(const Vector2i& pos) {
 	wp.lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
 	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
 	Space[pos.y - 1][pos.x - 1] = wp;
-	cannotPush[pos.y - 1][pos.x - 1] = true;
+	cannotPush[pos.y][pos.x] = true;
 }
 void Room::InstantSignalBlock(const Vector2i& pos) {
 	SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(150, 250), Vector2f(150, 140), Vector2f(0, 55), Vector2f(0, -55), float(1));
@@ -859,7 +903,7 @@ void Room::InstantMoveableBlock(const Vector2i& pos) {
 	wp.lock()->GetTransform()->SetSize(Vector2f(190, 140), PseudoRenderBox);
 	wp.lock()->GetTransform()->MoveOffset(Vector2f(0, 55), PseudoRenderBox);
 	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
-	wp.lock()->SetPosition(Vector2i(pos.y, pos.x));
+	wp.lock()->SetPosition(pos);
 	Space[pos.y - 1][pos.x - 1] = wp;
 	cannotPush[pos.y][pos.x] = true;
 }

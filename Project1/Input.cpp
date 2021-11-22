@@ -21,7 +21,7 @@ void Input::TurnOn(const bool& b)
 {
 	isOn = b;
 	for (auto& wp : m_switchGroup->outputs) {
-		printf("In");
-		wp.lock()->TurnOn(b);
+		if(!wp.expired())
+			wp.lock()->TurnOn(b);
 	}
 }

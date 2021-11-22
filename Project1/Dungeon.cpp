@@ -12,6 +12,8 @@
 #include <filesystem>
 #include <random>
 
+
+
 Vector2i Dungeon::getStartRoom() { return startRoom; }
 
 std::array<Vector2i, 3> Dungeon::GetKeyRoom()
@@ -26,7 +28,15 @@ void Dungeon::GenerateDungeon()
 	WControl::SetCurrentRoomPositon(Vector2i(startRoom.x, startRoom.y));
 	WControl::getMainDungeon().havePast[startRoom.y][startRoom.x] = true;
 	WControl::player().lock()->ResetSoul();
-	Rooms[startRoom.y][startRoom.x].lock()->SetRoomSeed(WControl::allRoomPrefabs()["startRoom"].second[0],false,false);
+	Rooms[startRoom.y][startRoom.x].lock()->SetRoomSeed(RoomData(),false,false);
+	for (int i = 2; i < 6; i++) {
+		Rooms[startRoom.y][startRoom.x].lock()->areas[2][i].lock()->GetTransform()->renderBox.setTexture(&WControl::otherPrefab()["StartFloor"]);
+		Rooms[startRoom.y][startRoom.x].lock()->areas[3][i].lock()->GetTransform()->renderBox.setTexture(&WControl::otherPrefab()["StartFloor"]);
+	}
+	for (int i = 1; i < 5; i++) {
+		Rooms[startRoom.y][startRoom.x].lock()->areas[i][3].lock()->GetTransform()->renderBox.setTexture(&WControl::otherPrefab()["StartFloor"]);
+		Rooms[startRoom.y][startRoom.x].lock()->areas[i][4].lock()->GetTransform()->renderBox.setTexture(&WControl::otherPrefab()["StartFloor"]);
+	}
 	Rooms[startRoom.y][startRoom.x].lock()->LoadNearbyRoom();
 	WControl::player().lock()->transform->SetPosition(Rooms[startRoom.y][startRoom.x].lock()->GetTransform()->GetTile().lock()->GetRealPositionAt(Vector2i(startRoom.x, startRoom.y), Vector2f(3, 2.5)));
 	
@@ -96,56 +106,113 @@ void Dungeon::ChooseKeyRoom()
 
 void Dungeon::InstantEdge() {
 	Color color(32, 32, 32, 255);
+	SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(190, 140), Vector2f(190, 140), Vector2f(0, 0), Vector2f(0, 0), float(1));
 	for (size_t i = 0; i < 5; i++)
 	{
 		for (size_t j = 0; j < 5; j++)
 		{
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(0, 0), &WControl::otherPrefab()["CornerUL"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(RSIZEX+1, 0), &WControl::otherPrefab()["CornerUR"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(0, RSIZEY+1), &WControl::otherPrefab()["CornerDL"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(RSIZEX+1, RSIZEY+1), &WControl::otherPrefab()["CornerDR"]);
+
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(1, 0), &WControl::otherPrefab()["SideU"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(2, 0), &WControl::otherPrefab()["SideU"]);
+			if (bHorizonEdge[i][j])
+			{
+				InstantSingleWall(Vector2i(j, i), 4, Vector2i(3, 0), &WControl::otherPrefab()["CornerRDR"]);
+				InstantSingleWall(Vector2i(j, i), 4, Vector2i(6, 0), &WControl::otherPrefab()["CornerRDL"]);
+			}
+			else
+			{
+				for (int k = 3; k < 7; k++)
+				{
+					InstantSingleWall(Vector2i(j, i), 4, Vector2i(k, 0), &WControl::otherPrefab()["SideU"]);
+				}
+			}
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(7, 0), &WControl::otherPrefab()["SideU"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(8, 0), &WControl::otherPrefab()["SideU"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(1, RSIZEY+1), &WControl::otherPrefab()["SideD"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(2, RSIZEY+1), &WControl::otherPrefab()["SideD"]);
+			if (bHorizonEdge[i + 1][j])
+			{
+				InstantSingleWall(Vector2i(j, i), 4, Vector2i(3, RSIZEY + 1), &WControl::otherPrefab()["CornerRUR"]);
+				InstantSingleWall(Vector2i(j, i), 4, Vector2i(6, RSIZEY + 1), &WControl::otherPrefab()["CornerRUL"]);
+			}
+			else
+			{
+				for (int k = 3; k < 7; k++)
+				{
+					InstantSingleWall(Vector2i(j, i), 4, Vector2i(k, RSIZEY + 1), &WControl::otherPrefab()["SideD"]);
+				}
+			}
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(7, RSIZEY+1), &WControl::otherPrefab()["SideD"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(8, RSIZEY+1), &WControl::otherPrefab()["SideD"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(0, 1), &WControl::otherPrefab()["SideL"]);
+			if (bVerticleEdge[i][j])
+			{
+				InstantSingleWall(Vector2i(j, i), 4, Vector2i(0, 2), &WControl::otherPrefab()["CornerRDR"]);
+				InstantSingleWall(Vector2i(j, i), 4, Vector2i(0, 5), &WControl::otherPrefab()["CornerRUR"]);
+			}
+			else
+			{
+				for (int k = 2; k < RSIZEY; k++)
+				{
+					InstantSingleWall(Vector2i(j, i), 4, Vector2i(0, k), &WControl::otherPrefab()["SideL"]);
+				}
+			}
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(0, RSIZEY), &WControl::otherPrefab()["SideL"]);
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(RSIZEX+1, 1), &WControl::otherPrefab()["SideR"]);
+			if (bVerticleEdge[i][j + 1])
+			{
+				InstantSingleWall(Vector2i(j, i), 4, Vector2i(RSIZEX + 1,2 ), &WControl::otherPrefab()["CornerRDL"]);
+				InstantSingleWall(Vector2i(j, i), 4, Vector2i(RSIZEX + 1,5 ), &WControl::otherPrefab()["CornerRUL"]);
+			}
+			else  
+			{
+				for (int k = 2; k < RSIZEY; k++)
+				{
+					InstantSingleWall(Vector2i(j, i), 4, Vector2i(RSIZEX + 1, k), &WControl::otherPrefab()["SideR"]);
+				}
+			}
+			InstantSingleWall(Vector2i(j, i), 4, Vector2i(RSIZEX+1, RSIZEY), &WControl::otherPrefab()["SideR"]);
 			int middleX = RSIZEX / 2, middleY = RSIZEY / 2;
 			if (bVerticleEdge[i][j]) {
 				EdgeFloors.push_back(Instantiate<Area>("Edge"));
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(0, middleY), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(0, middleY), RenderPriorityType::Floor);
 				EdgeFloors.push_back(Instantiate<Area>("Edge"));
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(0, middleY + 1), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(0, middleY + 1), RenderPriorityType::Floor);
 				{
 					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].push_back(Instantiate<Area>("Wall"));
-					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-							, Vector2i(0, 0), RenderPriorityType::Floor, color);
-					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-						->GetTransform()->SetAnchorType(AnchorType::TopCentor, RenderBox, FIX_ALL_RECT_POSITION);
-					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY /2)), RenderBox);
+					auto& wall = *WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].rbegin();
+					wall.lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock(), Vector2i(0, 0), RenderPriorityType::Floor, color);
+					wall.lock()->GetTransform()->SetAnchorType(AnchorType::TopCentor, RenderBox, FIX_ALL_RECT_POSITION);
+					wall.lock()->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY /2)), RenderBox);
 				}
 				{
 					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].push_back(Instantiate<Area>("Wall"));
-					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-						->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-							, Vector2i(0, RSIZEY+1), RenderPriorityType::Floor, color);
-					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-						->GetTransform()->SetAnchorType(AnchorType::DownCentor, RenderBox, FIX_ALL_RECT_POSITION);
-					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-						->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY / 2)), RenderBox);
+					auto& wall = *WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].rbegin();
+					wall.lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock(), Vector2i(0, RSIZEY+1), RenderPriorityType::Floor, color);
+					wall.lock()->GetTransform()->SetAnchorType(AnchorType::DownCentor, RenderBox, FIX_ALL_RECT_POSITION);
+					wall.lock()->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(1, RSIZEY / 2)), RenderBox);
 				}
 			}
 			else {
 				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].push_back(Instantiate<Area>("Wall"));
-				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-					->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-						, Vector2i(0,0), RenderPriorityType::Floor, color);
-				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-					->GetTransform()->SetAnchorType(AnchorType::TopCentor, RenderBox, FIX_ALL_RECT_POSITION);
-				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].size() - 1].lock()
-					->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(),Vector2f(1,RSIZEY+2)),RenderBox);
+				auto& wall =*WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Left].rbegin();
+				wall.lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock(), Vector2i(0,0), RenderPriorityType::Floor, color);
+				wall.lock()->GetTransform()->SetAnchorType(AnchorType::TopCentor, RenderBox, FIX_ALL_RECT_POSITION);
+				wall.lock()->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(),Vector2f(1,RSIZEY+2)),RenderBox);
 			}
 			if (bVerticleEdge[i][j + 1]) {
 				EdgeFloors.push_back(Instantiate<Area>("Edge"));
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(RSIZEX + 1, middleY), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(RSIZEX + 1, middleY), RenderPriorityType::Floor);
 				EdgeFloors.push_back(Instantiate<Area>("Edge"));
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(RSIZEX + 1, middleY + 1), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(RSIZEX + 1, middleY + 1), RenderPriorityType::Floor);
 				{
 					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Right].push_back(Instantiate<Area>("Wall"));
 					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Right][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Right].size() - 1].lock()
@@ -180,10 +247,10 @@ void Dungeon::InstantEdge() {
 			if (bHorizonEdge[i][j]) {
 				EdgeFloors.push_back(Instantiate<Area>("Edge"));
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(middleX, 0), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(middleX, 0), RenderPriorityType::Floor);
 				EdgeFloors.push_back(Instantiate<Area>("Edge"));
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(middleX + 1, 0), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(middleX + 1, 0), RenderPriorityType::Floor);
 				{
 					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Up].push_back(Instantiate<Area>("Wall"));
 					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Up][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Up].size() - 1].lock()
@@ -218,10 +285,10 @@ void Dungeon::InstantEdge() {
 			if (bHorizonEdge[i + 1][j]) {
 				EdgeFloors.push_back(Instantiate<Area>());
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(middleX, RSIZEY + 1), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(middleX, RSIZEY + 1), RenderPriorityType::Floor);
 				EdgeFloors.push_back(Instantiate<Area>());
 				EdgeFloors[EdgeFloors.size() - 1].lock()->GetTransform()->SetAll(WControl::getMainDungeon().Rooms[i][j].lock()
-					, Vector2i(middleX + 1, RSIZEY + 1), RenderPriorityType::Floor, Color::Cyan);
+					, Vector2i(middleX + 1, RSIZEY + 1), RenderPriorityType::Floor);
 				{
 					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Down].push_back(Instantiate<Area>("Wall"));
 					WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Down][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Down].size() - 1].lock()
@@ -253,8 +320,23 @@ void Dungeon::InstantEdge() {
 				WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Down][WControl::getMainDungeon().Rooms[i][j].lock()->Walls[Direction::Down].size() - 1].lock()
 					->GetTransform()->SetSize(Multiple(WControl::MainTile().lock()->GetAreaSize(), Vector2f(RSIZEX + 2, 1)), RenderBox);
 			}
+
+			for(auto& wp:EdgeFloors)
+			{
+				wp.lock()->GetTransform()->renderBox.setTexture(&WControl::otherPrefab()["Floor"]);
+			}
 		}
 	}
+}
+void Dungeon::InstantSingleWall(const Vector2i& roomPos, const int& index, const Vector2i& posInRoom, Texture* texture)
+{
+	const SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(190, 140), Vector2f(190, 140), Vector2f(0, 0), Vector2f(0, 0), float(1));
+	auto& room = WControl::getMainDungeon().Rooms[roomPos.y][roomPos.x];
+	room.lock()->Walls[index].push_back(Instantiate<Area>("Wall"));
+	auto& wall = *room.lock()->Walls[index].rbegin();
+	wall.lock()->GetTransform()->SetAll(room, posInRoom, RenderPriorityType::Floor);
+	wall.lock()->GetTransform()->SetAllSpriteOffset(spriteOffsetData);
+	wall.lock()->GetTransform()->renderBox.setTexture(texture);
 }
 void Dungeon::GenerateMaze() {
 	int horizonEdgeWeight[6][5] = {}, verticleEdgeWeight[5][6] = {};

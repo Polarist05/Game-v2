@@ -7,5 +7,6 @@ public:
 	void Update()override;
 	void CheckKeyPress()override;
 	void RenderGame() override;
+	void SetUp() override;
 };
 

@@ -169,9 +169,9 @@ bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const 
 		{
 			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
 			Vector2f maxPos = minPos + Rects[i].getSize();
-			if (inBetween(minPos.y, point.y, maxPos.y) && minPos.x > point.x && minPos.x - point.x < mn) {
+			if (inBetween(minPos.y, point.y, maxPos.y) && inBetween(minPos.x-mn, point.x, maxPos.x )) {
 				mn = minPos.x - point.x;	
-				sizeX = (maxPos.x - minPos.x)/2;
+				sizeX = maxPos.x - minPos.x;
 			}
 		}
 		if (mn != FLT_MAX) {
@@ -189,9 +189,9 @@ bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const 
 		{
 			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
 			Vector2f maxPos = minPos + Rects[i].getSize();
-			if (inBetween(minPos.y, point.y, maxPos.y) && maxPos.x < point.x && point.x - maxPos.x < mn) {
+			if (inBetween(minPos.y, point.y, maxPos.y) && inBetween(maxPos.x , point.x , maxPos.x + mn)) {
 				mn = point.x - maxPos.x;
-				sizeX = (maxPos.x - minPos.x)/2;
+				sizeX = maxPos.x - minPos.x;
 			}
 		}
 		if (mn != FLT_MAX) {
@@ -209,9 +209,9 @@ bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const 
 		{
 			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
 			Vector2f maxPos = minPos + Rects[i].getSize();
-			if (inBetween(minPos.x, point.x, maxPos.x) && minPos.y > point.y && minPos.y-point.y < mn) {
+			if (inBetween(minPos.x, point.x, maxPos.x) && inBetween(minPos.y-mn,point.y,maxPos.y)) {
 				mn = minPos.y - point.y;
-				sizeY = (maxPos.y - minPos.y)/2;
+				sizeY = maxPos.y - minPos.y;
 			}
 		}
 		if (mn != FLT_MAX) {
@@ -228,8 +228,8 @@ bool Collision::findShortestCollisionOfPointAtDirection(Vector2f& result, const 
 		{
 			Vector2f minPos(Rects[i].getPosition().x - Rects[i].getOrigin().x, Rects[i].getPosition().y - Rects[i].getOrigin().y);
 			Vector2f maxPos = minPos + Rects[i].getSize();
-			if (inBetween(minPos.x, point.x, maxPos.x) && maxPos.y < point.y && point.y - maxPos.y < mn) {
-				mn = point.y - maxPos.y;
+			if (inBetween(minPos.x, point.x, maxPos.x) && minPos.y < point.y && point.y - minPos.y < mn) {
+				mn = point.y - minPos.y;
 			}
 		}
 		if (mn != FLT_MAX) {

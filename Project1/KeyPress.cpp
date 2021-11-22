@@ -7,22 +7,21 @@ static float speed = 2.0;
 static bool holdThrowingButton;
 void KeyPress::CheckPlayerMovement() {
     static shared_ptr<Player> player = WControl::player().lock();
+    static bool isMoveLastFrame=false;
+    Vector2f v;
     if (Keyboard::isKeyPressed(Keyboard::A)) {
-        player->transform->Move(Vector2f(-2 * speed, 0));
-        player->SetPlayerDirection(Direction::Left);
+        v += Vector2f(-2 * speed, 0);
     }
     if (Keyboard::isKeyPressed(Keyboard::D)) {
-        player->transform->Move(Vector2f(2 * speed, 0));
-        player->SetPlayerDirection(Direction::Right);
+        v += Vector2f(2 * speed, 0);
     }
     if (Keyboard::isKeyPressed(Keyboard::W)) {
-        player->transform->Move(Vector2f(0, -2 * speed));
-        player->SetPlayerDirection(Direction::Up);
+        v += Vector2f(0, -2 * speed);
     }
     if (Keyboard::isKeyPressed(Keyboard::S)) {
-        player->transform->Move(Vector2f(0, 2 * speed));
-        player->SetPlayerDirection(Direction::Down);
+        v += Vector2f(0, 2 * speed);
     }
+    WControl::player().lock()->Walk(v);
 }
 char KeyPress::CheckAlphaBetOrNumberKey() {
     for (char c = 'a'; c <= 'z'; c++) {
@@ -42,30 +41,41 @@ void KeyPress::CheckPlayerAction() {
         WControl::player().lock()->MeleeAttack();
     }
     if (Keyboard::isKeyPressed(Keyboard::F)) {
-        if (!WControl::player().lock()->isHoldHookButton) {
-            WControl::player().lock()->isHoldHookButton = true;
-            WControl::player().lock()->HoldingDirection = WControl::player().lock()->GetPlayerDirection();
-            switch (WControl::player().lock()->HoldingDirection)
-            {
-            case Right:
-            case Left:
-                WControl::player().lock()->hookGuideLine.setRotation(0);
-                break;
-            case Up:
-            case Down:
-                WControl::player().lock()->hookGuideLine.setRotation(90);
-                break;
+        if (WControl::player().lock()->playerState != e_Attacking && WControl::player().lock()->playerState != e_Hooking) 
+        {
+            if (WControl::player().lock()->playerState != e_Aiming) {
+                WControl::player().lock()->playerState = e_Aiming;
+                Direction playerDirecction= WControl::player().lock()->GetPlayerDirection();
+                WControl::player().lock()->HoldingDirection = playerDirecction;
+                WControl::player().lock()->SetTexture(PlayerState::e_Aiming, playerDirecction);
+                switch (WControl::player().lock()->HoldingDirection)
+                {
+                case Right:
+                case Left:
+                    WControl::player().lock()->hookGuideLine.setRotation(0);
+                    break;
+                case Up:
+                case Down:
+                    WControl::player().lock()->hookGuideLine.setRotation(90);
+                    break;
+                }
+                
             }
+            WControl::GetCurrentRoom().lock()->CheckNearestObjectHooking();
+            if (WControl::player().lock()->hookGuideLine.getFillColor() != Color::Red)
+                WControl::player().lock()->hookGuideLine.setFillColor(Color::Red);
         }
-        WControl::GetCurrentRoom().lock()->CheckNearestObjectHooking();
-        if (WControl::player().lock()->hookGuideLine.getFillColor() != Color::Red)
-            WControl::player().lock()->hookGuideLine.setFillColor(Color::Red);
     }
-    else if (WControl::player().lock()->isHoldHookButton) {
+    else if (WControl::player().lock()->playerState==e_Aiming) {
         if (WControl::player().lock()->canHook) {
             WControl::player().lock()->ActivateHooking();
+            WControl::player().lock()->playerState = e_Hooking;
         }
-        WControl::player().lock()->isHoldHookButton = false;
+        else 
+        {
+            WControl::player().lock()->playerState = e_Stop;
+            WControl::player().lock()->SetTexture(e_Stop,WControl::player().lock()->GetPlayerDirection());
+        }
         WControl::player().lock()->hookGuideLine.setFillColor(Color::Transparent);
     }
     if (Keyboard::isKeyPressed(Keyboard::C)) {
