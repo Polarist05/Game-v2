@@ -275,7 +275,6 @@ void GameSprite::GameTransform::SetAllSpriteOffset(const SpriteOffsetData& sprit
 GameSprite::GameSprite() {}
 GameSprite::GameSprite(std::string s) : name(s) { }
 GameSprite::~GameSprite() {
-	//cout << name << " has been destroy" << endl;
 	for (int i = 0; i < transform->childs.size(); i++) {
 		if (!transform->childs[i].expired()) {
 			type_index typeIndex = transform->childs[i].lock()->transform->typeIndex;

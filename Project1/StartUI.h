@@ -9,6 +9,7 @@ class StartUI:public UI
 {
 public:
 	StartUI();
+	weak_ptr<GameSprite> logoSprite;
 	weak_ptr<ExitButton> exitButton;
 	weak_ptr<PlayButton> playButton;
 	weak_ptr<ScoreButton> scoreButton;

@@ -4,9 +4,7 @@ void EndGameUI::StartScoreBoard()
 {
 	positionInScoreboard = -1;
 	int score = WControl::player().lock()->GetScore();
-	cout << "startscore" << endl;
 	for (int i=0;i<5;i++) {
-		cout << WControl::scoreboard()[i].first << " " << WControl::scoreboard()[i].second << endl;
 		if (WControl::scoreboard()[i].second < score) {
 			for (int j = i + 1; j < 5; j++) {
 				WControl::scoreboard()[j].first= WControl::scoreboard()[j - 1].first;

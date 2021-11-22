@@ -20,14 +20,11 @@ enum ObjectType {
 	Hook,
 	Portal,
 	Strawberry,
-	MovingPlatform,
 	Switch,
 	NormalBlock,
 	DeleteBlock,
 	SignalBlock,
 	MoveableBlock,
-	PlacingSwitch,
-	Laser,
 	Key
 	
 };
@@ -120,14 +117,11 @@ public:
 	void InstantPortal(const Vector2i& pos);
 	void InstantKey(const Vector2i& pos);
 	void InstantStrawberry(const Vector2i& pos);
-	void InstantMovingPlatform(const Vector2i& pos);
 	void InstantSwitch(const Vector2i& pos);
 	void InstantNormalBlock(const Vector2i& pos);
 	void InstantDeleteBlock(const Vector2i& pos);
 	void InstantSignalBlock(const Vector2i& pos);
 	void InstantMoveableBlock(const Vector2i& pos);
-	void InstantPlacingSwitch(const Vector2i& pos);
-	void InstantLaser(const Vector2i& pos);
 private:
 	static void getSumOfAlignEdge(int& xSum, int& ySum, const int& x, const int& y);
 	static RoomType GetRoomType(const Direction& direction, const int& xSum, const int& ySum);

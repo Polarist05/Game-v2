@@ -31,11 +31,11 @@ void ItemIconButton::Setup()
 {
 	ToolkitUI& thisUI = ALLUI::toolkitUI();
 	int i = 1;
-	for (auto& wp : WControl::objectsPrefab()) {
-		printf("In\n");
+	const std::array<std::string, 10> s = { "ChargeSoul","Bell","Hook","Portal","Strawberry","Switch","NormalBlock","DeleteBlock","SignalBlock","MoveableBlock" };
+	for (auto& name : s) {
 		objectDropDowns.push_back(Instantiate<ObjectDropDown>());
 		objectDropDowns.rbegin()->lock()->SetType((ObjectType)(i));
-		objectDropDowns.rbegin()->lock()->transform->renderBox.setTexture(&WControl::objectsPrefab()[Room::ObjectTypeToString((ObjectType)(i))]);
+		objectDropDowns.rbegin()->lock()->transform->renderBox.setTexture(&WControl::objectsPrefab()[name]);
 		SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(190, 250), Vector2f(190, 250), Vector2f(0, 0), Vector2f(0, 0), 0.3);
 		objectDropDowns.rbegin()->lock()->transform->SetAllSpriteOffset(spriteOffsetData);
 		objectDropDowns.rbegin()->lock()->transform->SetParent(transform->wp);
@@ -44,6 +44,7 @@ void ItemIconButton::Setup()
 		thisUI.clickableSprites.push_back(*objectDropDowns.rbegin());
 		i++;
 	}
+	objectDropDowns[3].lock()->transform->renderBox.setTexture(&WControl::objectsPrefab()["Portal0"]);
 	{
 		objectDropDowns.push_back(Instantiate<ObjectDropDown>());
 		objectDropDowns.rbegin()->lock()->SetType(ObjectType::Null);

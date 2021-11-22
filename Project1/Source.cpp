@@ -21,10 +21,6 @@ int main() {
 	WorldControl::window().setKeyRepeatEnabled(false);
 	while (WorldControl::window().isOpen())
 	{
-		if (Keyboard::isKeyPressed(Keyboard::J)) {
-			std::cout << seed << " " << endl;
-			CheckAllSpriteName(WControl::Hierarchy(),0);
-		}
 		WorldControl::window().clear(sf::Color::Red);
 		sf::Event event;
 		while (WorldControl::window().pollEvent(event))

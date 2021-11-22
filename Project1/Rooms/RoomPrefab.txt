@@ -1,10 +1,10 @@
 14
-01 1 0
+01 2 0
 02 1 0
 10 1 0
 11Hor 1 0
 11Ver 1 0
-12Hor 1 0
+12Hor 2 0
 12Ver 1 0
 20 1 0
 21Hor 2 0
@@ -12,4 +12,4 @@
 22Hor 0 0
 22Ver 0 0
 NewSet1 0 0
-startRoom 13 1
+startRoom 14 1

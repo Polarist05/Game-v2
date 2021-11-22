@@ -41,6 +41,13 @@ RoomData& WorldControl::emptyRoom() { return _emptyRoom; }
 map< RoomType, vector< RoomData > > _usedRoomPrefabs;
 map< RoomType, vector< RoomData > >& WorldControl::usedRoomPrefabs() { return _usedRoomPrefabs; };
 
+map<std::string, SoundBuffer> _soundBuffers;
+map<std::string, SoundBuffer>& WorldControl::soundBuffers() { return _soundBuffers; }
+map<std::string, Sound> _sound;
+map<std::string, Sound>& WorldControl::sound() { return _sound; }
+static sf::Music _music;
+sf::Music& WorldControl::music() { return _music; }
+
 map<char, Texture> _ASCIIPrefab;
 map<char, Texture>& WorldControl::ASCIIPrefab() { return _ASCIIPrefab; }
 
@@ -151,6 +158,8 @@ std::array<pair<string, int>, 5> _scoreboard;
 std::array<pair<string, int>, 5>& WorldControl::scoreboard() { return _scoreboard; }
 
 Color MyColor::gray() {return Color(32, 32, 32, 255);}
+Color MyColor::brown() { return Color(210, 105, 30, 255); }
+Color MyColor::pink() { return Color(255, 192, 203, 255); }
 
 
 weak_ptr<WorldControl> WorldControlInstant = Instantiate<WorldControl>();

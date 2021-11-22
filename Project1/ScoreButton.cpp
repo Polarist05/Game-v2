@@ -4,5 +4,4 @@ void ScoreButton::Activate()
 {
 	Mode::currentMode() = Mode::endGameMode();
 	Mode::currentMode().lock()->SetUp();
-	printf("Score\n");
 }

@@ -80,8 +80,8 @@ void GameRenderer::RenderPlayerAndObject()
 	std::sort(v1.begin(), v1.end());
 	for (int i = 0; i < v.size(); i++)
 	{
-		window().draw(v[v1[i].second].lock()->transform->pseudoRenderBox);
-		window().draw(v[v1[i].second].lock()->transform->hitBox);
+		//window().draw(v[v1[i].second].lock()->transform->pseudoRenderBox);
+		//window().draw(v[v1[i].second].lock()->transform->hitBox);
 		window().draw(v[v1[i].second].lock()->transform->renderBox);
 	}
 	window().draw(WControl::player().lock()->hookGuideLine);
@@ -114,12 +114,10 @@ void GameRenderer::RenderUI() {
 			if (wp.lock()->transform->renderBox.getFillColor() != Color::Transparent) {
 				window().draw(wp.lock()->transform->hitBox);
 				window().draw(wp.lock()->transform->renderBox);
-				//window().draw(wp.lock()->transform->pseudoRenderBox);
 			}
 		}
 		for (auto wp : ALLUI::GetUI(WControl::UIStack().top())->NormalSprites2) {
 			if (wp.lock()->transform->renderBox.getFillColor() != Color::Transparent) {
-				//window().draw(wp.lock()->transform->hitBox);
 				window().draw(wp.lock()->transform->renderBox);
 			}
 		}
@@ -135,7 +133,6 @@ void GameRenderer::RenderAreaHilight() {
 		for (auto& pos:X.second) {
 			Vector2f v = WControl::GetCurrentRoom().lock()->GetTransform()->GetRealPositionAt(Vector2i(X.first, pos));
 			hilightRect.setPosition(v);
-			//printf("%d %d %f %f\n",X.first,pos,v.x,v.y);
 			WControl::window().draw(hilightRect);
 		}
 	}

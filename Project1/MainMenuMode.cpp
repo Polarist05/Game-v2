@@ -25,4 +25,7 @@ void MainMenuMode::RenderGame()
 void MainMenuMode::SetUp()
 {
 	WControl::player().lock()->ResetScore();
+	for (auto& a : WControl::sound())
+		a.second.stop();
+	WControl::music().stop();
 }

@@ -89,8 +89,6 @@ void Room::SetAllObjectsInRoom() {
 					for (auto pos : WControl::getMainDungeon().GetKeyRoom()) {
 						if (pos == roomPosition) {
 							InstantKey(Vector2i(j + 1, i + 1));
-							printf("Key ");
-							cout << to_string(ObjectType::Key) << endl;
 							haveKey = true;
 						}
 					}
@@ -102,16 +100,10 @@ void Room::SetAllObjectsInRoom() {
 				else 
 					InstantStrawberry(Vector2i(j + 1, i + 1));
 				break;
-			case  MovingPlatform:
-				InstantMovingPlatform(Vector2i(j + 1, i + 1));
-				break;
 			case  Switch:
 				InstantSwitch(Vector2i(j + 1, i + 1));
 				dynamic_pointer_cast<SwitchClass>(Objects[Switch].rbegin()->lock())->Setup(&switchGroups[roomData.objects[i][j] % 10]);
 				dynamic_pointer_cast<SwitchClass>(Objects[Switch].rbegin()->lock())->TurnOn(false);
-				break;
-			case  ObjectType::PlacingSwitch:
-				InstantPlacingSwitch(Vector2i(j + 1, i + 1));
 				break;
 			case  ObjectType::NormalBlock:
 				InstantNormalBlock(Vector2i(j + 1, i + 1));
@@ -301,7 +293,6 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 					WControl::SetCurrentRoomPositon(Vector2i(++x, y));
 					WControl::player().lock()->transform->position =
 						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(1, RSIZEY / 2 ));
-					printf("%d %d Right\n", roomPosition.x, roomPosition.y);
 				}
 				else {
 					WControl::player().lock()->transform->position =
@@ -313,7 +304,6 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 					WControl::SetCurrentRoomPositon(Vector2i(--x, y));
 					WControl::player().lock()->transform->position =
 						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX, RSIZEY / 2 ));
-					printf("%d %d Left\n", roomPosition.x, roomPosition.y);
 				}
 				else {
 					WControl::player().lock()->transform->position =
@@ -327,7 +317,6 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 					WControl::SetCurrentRoomPositon(Vector2i(x, ++y));
 					WControl::player().lock()->transform->position =
 						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX / 2+0.5 , 0.5));
-					printf("%d %d Down\n", roomPosition.x, roomPosition.y);
 				}
 				else {
 					WControl::player().lock()->transform->position =
@@ -339,7 +328,6 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 					WControl::SetCurrentRoomPositon(Vector2i(x, --y));
 					WControl::player().lock()->transform->position =
 						GetTransform()->GetTile().lock()->GetRealPositionAt(WControl::GetCurrentRoomPosition(), Vector2f(RSIZEX / 2 +0.5, RSIZEY-0.5));
-					printf("%d %d Up\n", roomPosition.x, roomPosition.y);
 				}
 				else {
 					WControl::player().lock()->transform->position =
@@ -464,6 +452,7 @@ void Room::CheckCollisionRingHitBoxAndMeleeAttackableObject(weak_ptr<GameSprite>
 				if (!Objects[obj][j].expired()) {
 					if (Collision::isCollision(bell.lock()->ringArea.lock()->transform->hitBox, Objects[obj][j].lock()->GetTransform()->pseudoRenderBox)) {
 						if (bell.lock()->lastFrameCollisionObjects.find(Objects[obj][j].lock()->GetTransform()) == bell.lock()->lastFrameCollisionObjects.end()) {
+							WControl::sound()["Hit"].play();
 							dynamic_pointer_cast<MeleeAttackable>(Objects[obj][j].lock())->MeleeAttackActivate();
 						}
 						newSet.insert(Objects[obj][j].lock()->GetTransform());
@@ -490,6 +479,7 @@ void Room::CheckCollisionBetweenAttackHitBoxAndObject() {
 				if (Collision::isCollision(WControl::player().lock()->meleeAttackHitbox.lock()->transform->hitBox, Objects[obj][j].lock()->GetTransform()->pseudoRenderBox)) {
 					weak_ptr<MeleeAttackable> wp = dynamic_pointer_cast<MeleeAttackable>(Objects[obj][j].lock());
 					if (!wp.expired()) {
+						WControl::sound()["Hit"].play();
 						wp.lock()->MeleeAttackActivate();
 					}
 				}
@@ -601,6 +591,7 @@ void Room::CheckCollisionOfKnife() {
 						if (!knife.expired() && !knife.lock()->GetIsStop() && Collision::isCollision(knife.lock()->transform->hitBox, object.lock()->transform->hitBox)) {
 							weak_ptr<KnifeInteractable> wp = dynamic_pointer_cast<KnifeInteractable>(object.lock());
 							if (!wp.expired()) {
+								WControl::sound()["Hit"].play();
 								wp.lock()->interacting(knife);
 							}
 						}
@@ -727,9 +718,6 @@ void Room::SetObjectTypeString() {
 	ObjectTypeString[(int)ObjectType::Bell] = "Bell";
 	ObjectTypeString[ObjectType::ChargeSoul] = "ChargeSoul";
 	ObjectTypeString[ObjectType::Hook] = "Hook";
-	ObjectTypeString[ObjectType::Laser] = "Laser";
-	ObjectTypeString[ObjectType::MovingPlatform] = "MovingPlatform";
-	ObjectTypeString[ObjectType::PlacingSwitch] = "PlacingSwitch";
 	ObjectTypeString[ObjectType::Portal] = "Portal";
 	ObjectTypeString[ObjectType::NormalBlock] = "NormalBlock";
 	ObjectTypeString[ObjectType::DeleteBlock] = "DeleteBlock";
@@ -788,7 +776,7 @@ void Room::InstantPortal(const Vector2i& pos) {
 	Objects[Portal].push_back(wp);
 	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
 		, RenderPriorityType::PlayerAndObject);
-	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::Portal)]);
+	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()["Portal"+to_string(roomData.objects[pos.y - 1][pos.x - 1] % 10)]);
 	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
 	wp.lock()->GetTransform()->SetSize(Objects[Portal][Objects[Portal].size() - 1].lock()->GetTransform()->pseudoRenderBox.getSize() - Vector2f(15, 15), PseudoRenderBox);
 	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
@@ -821,18 +809,6 @@ void Room::InstantKey(const Vector2i& pos) {
 	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
 		, RenderPriorityType::PlayerAndObject);
 	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()["Key"]);
-	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
-	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
-	Space[pos.y - 1][pos.x - 1] = wp;
-	cannotPush[pos.y][pos.x] = true;
-}
-void Room::InstantMovingPlatform(const Vector2i& pos) {
-	SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(190, 140), Vector2f(190, 140), Vector2f(0, 0), Vector2f(0, 0), float(1));
-	auto wp = Instantiate<Area>("Block");
-	Objects[MovingPlatform].push_back(wp);
-	wp.lock()->GetTransform()->SetAll(dynamic_pointer_cast<Tilemap>(transform->wp.lock()), pos
-		, RenderPriorityType::PlayerAndObject);
-	wp.lock()->GetTransform()->renderBox.setTexture(&WControl::objectsPrefab()[ObjectTypeToString(ObjectType::MovingPlatform)]);
 	wp.lock()->GetTransform()->SetAllSpriteOffset(spriteOffset);
 	wp.lock()->GetTransform()->pseudoRenderBox.setFillColor(Color::Yellow);
 	Space[pos.y - 1][pos.x - 1] = wp;
@@ -907,8 +883,6 @@ void Room::InstantMoveableBlock(const Vector2i& pos) {
 	Space[pos.y - 1][pos.x - 1] = wp;
 	cannotPush[pos.y][pos.x] = true;
 }
-void Room::InstantPlacingSwitch(const Vector2i& pos) {}
-void Room::InstantLaser(const Vector2i& pos) {}
 
 void SwitchGroup::clear()
 {

@@ -44,6 +44,9 @@ void EndGameMode::RenderGame()
 
 void EndGameMode::SetUp()
 {
+	for (auto& a : WControl::sound())
+		a.second.stop();
+	WControl::music().stop();
 	while (!WControl::UIStack().empty())
 		WControl::UIStack().pop();
 	WControl::UIStack().push(UIType::EndGamePage);

@@ -8,7 +8,12 @@ void PlayMode::Start()
 
 void PlayMode::SetUp()
 {
+	WControl::music().setPlayingOffset(Time());
+	WControl::music().play();
 	WControl::getMainDungeon().GenerateDungeon();
+	WControl::player().lock()->SetPlayerDirection(Direction::Down);
+	WControl::player().lock()->playerState = e_Stop;
+	WControl::GetCurrentRoom().lock()->startRoomPosition= WControl::GetCurrentRoom().lock()->GetTransform()->GetRealPositionAt(Vector2i(4,3));
 	runTime = 0;
 	lastFrameTime = clock();
 }
@@ -26,10 +31,10 @@ void PlayMode::Update()
 
 void PlayMode::CheckKeyPress()
 {
-	if (Keyboard::isKeyPressed(Keyboard::K)) {
+	if (Keyboard::isKeyPressed(Keyboard::O)) {
 		WControl::player().lock()->IncreaseKey(1);
 	}
-	if (Keyboard::isKeyPressed(Keyboard::L)) {
+	if (Keyboard::isKeyPressed(Keyboard::T)) {
 		WControl::GetCurrentRoom().lock()->RestartRoom();
 	}
 	KeyPress::CheckPlayerMovement();

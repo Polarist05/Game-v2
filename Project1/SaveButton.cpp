@@ -38,9 +38,7 @@ void SaveButton::Activate()
 			sumX+= thisUI.choosingEdges[Direction::Right].lock()->transform->renderBox.getTexture() != &WControl::otherPrefab()["Wall"] ? 1 : 0;
 			int sumY = 1;
 			sumY += thisUI.choosingEdges[Direction::Down].lock()->transform->renderBox.getTexture() != &WControl::otherPrefab()["Wall"] ? 1 : 0;
-			printf("Type %d %d\n", sumY, sumX);
 			if (sumX == 1 && thisUI.choosingEdges[Direction::Right].lock()->transform->renderBox.getTexture() != &WControl::otherPrefab()["Wall"]) {
-				printf("FlipX\n");
 				isFlipX = true;
 			}
 			switch (sumX+sumY*3)
@@ -59,9 +57,7 @@ void SaveButton::Activate()
 		sumX += thisUI.choosingEdges[Direction::Right].lock()->transform->renderBox.getTexture() != &WControl::otherPrefab()["Wall"] ? 1 : 0;
 		int sumY = thisUI.choosingEdges[Direction::Up].lock()->transform->renderBox.getTexture() != &WControl::otherPrefab()["Wall"] ? 1 : 0;
 		sumY += thisUI.choosingEdges[Direction::Down].lock()->transform->renderBox.getTexture() != &WControl::otherPrefab()["Wall"] ? 1 : 0;
-		printf("Type %d %d\n",sumY,sumX);
 		if (sumY == 1 && thisUI.choosingEdges[Direction::Down].lock()->transform->renderBox.getTexture() != &WControl::otherPrefab()["Wall"]) {
-			printf("FlipY\n");
 			isFlipY = true;
 		}
 		switch (sumX + sumY * 3)
@@ -82,7 +78,7 @@ void SaveButton::Activate()
 	
 	for (int i = 0; i < RSIZEY; i++) {
 		for (int j = 0; j < RSIZEX; j++) {
-			if (WControl::GetCurrentRoom().lock()->areas[i][j].lock()->transform->renderBox.getFillColor() == Color::Blue)
+			if (WControl::GetCurrentRoom().lock()->areas[i][j].lock()->transform->renderBox.getFillColor() == Color::Black)
 				roomData.floor[i][j] = true;
 			else
 				roomData.floor[i][j] = false;

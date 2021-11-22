@@ -4,6 +4,16 @@ StartUI::StartUI()
 {
 	Texture texture;
 	std::string path = "Sprites\\UI\\StartUI\\";
+	{
+		logoSprite = Instantiate<GameSprite>("Logo");
+		SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(915, 445), Vector2f(0,0), Vector2f(0, 0), Vector2f(0, 0), 0.9*VIEW_SIZE);
+		logoSprite.lock()->transform->renderBox.setTexture(&WControl::otherPrefab()["Logo"]);
+		logoSprite.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
+		logoSprite.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
+		logoSprite.lock()->transform->SetParent(WControl::UIHierarchy());
+		logoSprite.lock()->transform->SetPosition(Vector2f(0, -350));
+		NormalSprites2.push_back(logoSprite);
+	}
 	if (texture.loadFromFile(path + "Play" + ".png", IntRect(0, 0, 250, 65))) {
 		Texture* newTexture = new Texture(texture);
 		SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(250, 65), Vector2f(250, 65), Vector2f(0, 0), Vector2f(0, 0), VIEW_SIZE);

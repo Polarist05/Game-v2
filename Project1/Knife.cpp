@@ -5,6 +5,7 @@ Knife::Knife(std::string s):GameSprite(s){}
 const Direction& Knife::GetDirection(){return direction;}
 void Knife::Start()
 {
+	WControl::sound()["Throw"].play();
 	direction = WControl::player().lock()->GetPlayerDirection();
 	SpriteOffsetData spriteOffset(Vector2i(1, 5), Vector2i(276, 63), Vector2f(276, 63), Vector2f(0, 0), Vector2f(0, 0), float(0.6));
 	
@@ -69,6 +70,7 @@ const bool& Knife::GetIsStop() { return isStop; }
 
 void Knife::Stop()
 {
+	WControl::sound()["KnifeStop"].play();
 	isStop = true;
 }
 

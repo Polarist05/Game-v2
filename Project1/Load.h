@@ -12,8 +12,10 @@ class Load
 	static void LoadOtherPrefab(const string& name, const string& path, const IntRect& intRect);
 	static void LoadAllASCII();
 	static void LoadScoreboard();
+	static void LoadAudio();
+	static void LoadMusic();
 public:
-	
+	static void LoadSingleSoundBuffer(const std::string& name, const std::string& path, const std::string& type,bool isLoop);
 	static void SaveScoreboard();
 	static void SaveAllRoomPrefab();
 	static void RefreshRoomPrefrab();

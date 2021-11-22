@@ -37,13 +37,14 @@ char KeyPress::CheckAlphaBetOrNumberKey() {
     return 0;
 }
 void KeyPress::CheckPlayerAction() {
-    if (Keyboard::isKeyPressed(Keyboard::R)) {
+    if (Keyboard::isKeyPressed(Keyboard::J)) {
         WControl::player().lock()->MeleeAttack();
     }
-    if (Keyboard::isKeyPressed(Keyboard::F)) {
+    if (Keyboard::isKeyPressed(Keyboard::L)) {
         if (WControl::player().lock()->playerState != e_Attacking && WControl::player().lock()->playerState != e_Hooking) 
         {
             if (WControl::player().lock()->playerState != e_Aiming) {
+                WControl::sound()["Charge"].play();
                 WControl::player().lock()->playerState = e_Aiming;
                 Direction playerDirecction= WControl::player().lock()->GetPlayerDirection();
                 WControl::player().lock()->HoldingDirection = playerDirecction;
@@ -67,6 +68,7 @@ void KeyPress::CheckPlayerAction() {
         }
     }
     else if (WControl::player().lock()->playerState==e_Aiming) {
+        WControl::sound()["Charge"].stop();
         if (WControl::player().lock()->canHook) {
             WControl::player().lock()->ActivateHooking();
             WControl::player().lock()->playerState = e_Hooking;
@@ -78,7 +80,7 @@ void KeyPress::CheckPlayerAction() {
         }
         WControl::player().lock()->hookGuideLine.setFillColor(Color::Transparent);
     }
-    if (Keyboard::isKeyPressed(Keyboard::C)) {
+    if (Keyboard::isKeyPressed(Keyboard::K)) {
 
         if (!holdThrowingButton && WControl::player().lock()->HaveSoul(1)) {
             WControl::player().lock()->knifes.push(Instantiate<Knife>("knife"));
@@ -94,6 +96,7 @@ void KeyPress::CheckPlayerAction() {
 void KeyPress::CheckEscape() {
     if (Keyboard::isKeyPressed(Keyboard::Escape)) {
         Mode::currentMode() = Mode::mainMenuMode();
+        Mode::currentMode().lock()->SetUp();
         while (!WControl::UIStack().empty()) {
             WControl::UIStack().pop();
         }

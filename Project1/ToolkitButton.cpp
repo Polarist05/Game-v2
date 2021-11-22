@@ -6,5 +6,4 @@ void ToolkitButton::Activate()
 	WControl::getMainDungeon().GenerateToolkitMode();
 	Mode::currentMode() = Mode::toolkitMode();
 	WControl::UIStack().push(UIType::ToolkitPage);
-	printf("Toolkit\n");
 }

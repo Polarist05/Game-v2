@@ -83,12 +83,13 @@ void Player::Update() {
 		}
 		if (StartPosition() ==  EndPosition()) {
 			CancleHooking();
+			
 		}
 	}
 }
 
-void Player::ActivateHooking() { playerState = e_Hooking; }
-void Player::CancleHooking() { playerState = e_Stop; }
+void Player::ActivateHooking() { playerState = e_Hooking; WControl::sound()["Wind"].play();}
+void Player::CancleHooking() { playerState = e_Stop;}
 
 void Player::SetPlayerDirection(const Direction& direction) {
 	if (playerDirection != direction) {
@@ -121,7 +122,9 @@ void Player::SetPlayerDirection(const Direction& direction) {
 }
 const Direction& Player::GetPlayerDirection() { return playerDirection; }
 void Player::MeleeAttack() {
-	if (playerState!=e_Attacking&&playerState!=e_Hooking) {
+	if (playerState!=e_Attacking&&playerState!=e_Hooking) 
+	{
+		WControl::sound()["Attack"].play();
 		meleeAttackHitbox.lock()->transform->hitBox.setFillColor(Color::Red);
 		StartMeleeAttackTime = clock();
 		playerState = e_Attacking;
@@ -151,14 +154,22 @@ void Player::Walk(const Vector2f& v)
 	else if (v.y < 0) direction = Up;
 	else 
 	{
+		WControl::sound()["FootStep"].stop();
 		if (playerState == e_Walking)
 		{
+			playerState = e_Stop;
 			SetTexture(e_Stop, playerDirection);
 		}
 		return;
 	}
-	if(playerState == e_Stop)
+	if (WControl::sound()["FootStep"].getStatus() == SoundSource::Status::Stopped&& playerState == e_Walking)
+	{
+		WControl::sound()["FootStep"].play();
+	}
+	if (playerState == e_Stop) 
+	{
 		playerState = e_Walking;
+	}
 	if(playerState!=e_Attacking)
 		SetPlayerDirection(direction);
 }

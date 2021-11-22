@@ -5,7 +5,7 @@
 #include "Knife.h"
 #include <queue>
 #define ATTACK_DURATION 600
-#define THROWING_LEVEL 25
+#define THROWING_LEVEL 30
 #define GUIDELINE_THICKNESS 10
 #define HOOKIN_MOVEMENT_X_PER_FRAME 20
 #define HOOKIN_MOVEMENT_Y_PER_FRAME 20

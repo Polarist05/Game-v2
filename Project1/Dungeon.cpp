@@ -343,7 +343,6 @@ void Dungeon::GenerateMaze() {
 	RandomEdge(horizonEdgeWeight, verticleEdgeWeight);
 	MakeEdges(horizonEdgeWeight, verticleEdgeWeight);
 	startRoom = Vector2i(rand() % 5, rand() % 5);
-	printf("Start position is %d %d\n", startRoom.y, startRoom.x);
 	for (int i = 0; i < 3; i++)
 		BreakWall(); 
 	ChooseKeyRoom();
@@ -525,11 +524,9 @@ void Dungeon::BreakWall() {
 	}
 	if (horizontalMin <= VerticalMin) {
 		bHorizonEdge[pos.x][pos.y] = true;
-		printf("Delete Horizon: %d %d \n", pos.x, pos.y);
 	}
 	else {
 		bVerticleEdge[pos1.x][pos1.y] = true;
-		printf("Delete Verticle: %d %d \n", pos1.x, pos1.y);
 	}
 }
 Vector2i Dungeon::FindMaxAndReturnPos(int(*arr)[5]) {
@@ -595,10 +592,6 @@ void Dungeon::PrintDungeon() {
 		}
 	}
 	printf("+\n");
-	/*printf("key1 : %d %d\n", roomKey[0].x,roomKey[0].y);
-	printf("key2 : %d %d\n", roomKey[1].x, roomKey[1].y);
-	printf("key3 : %d %d\n", roomKey[2].x, roomKey[2].y);
-	printf("StartRoom : %d %d\n", startRoom.x, startRoom.y);*/
 }
 std::string Dungeon::EnumDirectionName(int a) {
 	const string direction[10] = { "Up","Down","Right","Left" ,"Null" };

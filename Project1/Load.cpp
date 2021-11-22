@@ -12,6 +12,8 @@ void Load::LoadData() {
 	LoadAllObjectPrefab();
 	LoadAllRoomPrefab();
 	LoadScoreboard();
+	LoadAudio();
+	LoadMusic();
 }
 void Load::LoadAllOtherPrefab() {
 	LoadOtherPrefab("Knife", "Sprites", IntRect(0, 0, 280, 70));
@@ -31,6 +33,7 @@ void Load::LoadAllOtherPrefab() {
 	LoadOtherPrefab("SideR", "Sprites\\Wall\\Side", IntRect(0, 0, 190, 140));
 	LoadOtherPrefab("Floor", "Sprites", IntRect(0, 0, 190, 140));
 	LoadOtherPrefab("StartFloor", "Sprites", IntRect(0, 0, 190, 140));
+	LoadOtherPrefab("Logo", "Sprites", IntRect(0, 0, 915, 455));
 	{
 		std::string path = "Sprites\\UI\\Toolkit";
 		LoadOtherPrefab("TaskBar", path, IntRect(0, 0, 295, 45));
@@ -112,7 +115,8 @@ void Load::LoadAllObjectPrefab() {
 	LoadObjectPrefab("ChargeSoul", path, objectRect);
 	LoadObjectPrefab("Bell", path, objectRect);
 	LoadObjectPrefab("Hook", path, objectRect);
-	LoadObjectPrefab("Portal", path, objectRect);
+	for(int i=0;i<10;i++)
+		LoadObjectPrefab("Portal"+to_string(i), path+"\\Portals", objectRect);
 	LoadObjectPrefab("Strawberry", path, objectRect);
 	LoadObjectPrefab("MovingPlatform", path, objectRect);
 	LoadObjectPrefab("Switch", path, objectRect);
@@ -183,11 +187,9 @@ void Load::SaveScoreboard() {
 	save.close();
 }
 void Load::LoadScoreboard() {
-	printf("loading scoreboard\n");
 	std::ifstream load("Scoreboard.txt");
 	for (auto& wp : WControl::scoreboard()) {
 		load >> wp.first>>wp.second;
-		cout<< wp.first <<" " << wp.second<<" " <<WControl::scoreboard()[1].first<< endl;
 	}
 	
 }
@@ -232,4 +234,32 @@ void Load::RefreshRoomPrefrab() {
 		save << it.first << " " << it.second.second.size() << " " << it.second.first.second << endl;
 	}
 	save.close();
+}
+void Load::LoadAudio() 
+{
+	std::string path = "Audio";
+	LoadSingleSoundBuffer("FootStep",path,"wav",true);
+	LoadSingleSoundBuffer("Charge", path, "wav", true);
+	LoadSingleSoundBuffer("Hit", path, "wav", false);
+	LoadSingleSoundBuffer("Push", path, "wav", false);
+	LoadSingleSoundBuffer("KnifeStop", path, "wav", false);
+	LoadSingleSoundBuffer("Throw", path, "wav", false);
+	LoadSingleSoundBuffer("Wind", path, "wav", false);
+	LoadSingleSoundBuffer("Beep", path, "wav", false);
+	LoadSingleSoundBuffer("Attack", path, "wav", false);
+	WControl::sound()["Attack"].setVolume(10);
+	WControl::sound()["Wind"].setVolume(20);
+}
+void Load::LoadMusic()
+{
+	WControl::music().openFromFile("Audio\\Zelda.ogg");
+	WControl::music().setVolume(10);
+	WControl::music().setLoop(true);
+}
+void Load::LoadSingleSoundBuffer(const std::string& name, const std::string& path, const std::string& type, bool isLoop)
+{
+	WControl::soundBuffers()[name].loadFromFile(path+"\\"+name+"."+type);
+	WControl::sound()[name].setBuffer(WControl::soundBuffers()[name]);
+	WControl::sound()[name].setLoop(isLoop);
+	WControl::sound()[name].setVolume(30);
 }

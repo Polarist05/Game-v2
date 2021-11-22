@@ -8,7 +8,7 @@ bool MoveableBlockClass::PushBlock(const Direction& direction)
 		case Left:
 			
 			if (blockPosition.x - 1 > 0 && !WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y][blockPosition.x - 1]) {
-				printf("Left\n");
+				WControl::sound()["Push"].play();
 				WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y][blockPosition.x] = false;
 				blockPosition += Vector2i(-1, 0);
 				velocity = Vector2f(-10, 0);
@@ -20,7 +20,7 @@ bool MoveableBlockClass::PushBlock(const Direction& direction)
 			break;
 		case Right:
 			if (blockPosition.x + 1 <= RSIZEX && !WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y][blockPosition.x + 1]) {
-				printf("Right\n");
+				WControl::sound()["Push"].play();
 				WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y][blockPosition.x] = false;
 				blockPosition += Vector2i(1, 0);
 				velocity = Vector2f(10, 0);
@@ -32,7 +32,7 @@ bool MoveableBlockClass::PushBlock(const Direction& direction)
 			break;
 		case Up:
 			if (blockPosition.y - 1 > 0 && !WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y - 1][blockPosition.x]) {
-				printf("Up\n");
+				WControl::sound()["Push"].play();
 				WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y][blockPosition.x] = false;
 				blockPosition += Vector2i(0, -1);
 				velocity = Vector2f(0, -10);
@@ -44,7 +44,7 @@ bool MoveableBlockClass::PushBlock(const Direction& direction)
 			break;
 		case Down:
 			if (blockPosition.y + 1 <= RSIZEY && !WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y + 1][blockPosition.x]) {
-				printf("Down\n");
+				WControl::sound()["Push"].play();
 				WControl::GetCurrentRoom().lock()->cannotPush[blockPosition.y][blockPosition.x] = false;
 				blockPosition += Vector2i(0, 1);
 				velocity = Vector2f(0, 10);

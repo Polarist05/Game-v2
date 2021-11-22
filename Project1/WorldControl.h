@@ -55,6 +55,9 @@ public:
 	static map<char, Texture>& ASCIIPrefab();
 	static map<std::string, Texture>& objectsPrefab();
 	static map<std::string, Texture>& otherPrefab();
+	static map<std::string, SoundBuffer>& soundBuffers();
+	static map<std::string, Sound>& sound();
+	static sf::Music& music();
 	static Texture* playerPrefab();
 
 	static map< RoomType, vector< RoomData > >& usedRoomPrefabs();
@@ -100,6 +103,8 @@ namespace Mode {
 }
 namespace MyColor {
 	Color gray();
+	Color brown();
+	Color pink();
 }
 
 namespace ALLUI {

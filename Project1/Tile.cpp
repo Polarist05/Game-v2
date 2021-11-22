@@ -34,7 +34,6 @@ const Vector2i Tilemap::TilemapTransform::GetPositionInTileAt(const Vector2f& po
 const Vector2f Tilemap::TilemapTransform::GetRealPositionAt(const Vector2i& pos)
 {
 	Vector2f v = GetRealposition()+Multiple(GetAreaSize(),(Vector2f)pos);
-	//printf("%f %f\n", v.x,v.y);
 	return v;
 }
 void Tilemap::TilemapTransform::SetParent(weak_ptr<GameSprite> tileParent)
