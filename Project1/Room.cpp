@@ -338,6 +338,18 @@ void Room::CheckCollisionBetweenPlayerAndRoomEdge() {
 		if (!WControl::getMainDungeon().havePast[y][x]) {
 			WControl::getMainDungeon().havePast[y][x] = true;
 			WControl::GetCurrentRoom().lock()->startRoomPosition = WControl::player().lock()->transform->position;
+			
+			for (int k = 0,  a = rand(); k < a % 5; k++)
+			{
+				auto& wp = WControl::getMainDungeon().Rooms[y][x]; 
+				SpriteOffsetData spriteOffset(Vector2i(0, 0), Vector2i(40, 40), Vector2f(40, 40), Vector2f(0, 0), Vector2f(0, 0), float(0.5));
+				wp.lock()->fireflies.push_back(Instantiate<GameSprite>("Fireflies"));
+				wp.lock()->fireflies.rbegin()->lock()->transform->RenderPriority = PlayerAndObject;
+				wp.lock()->fireflies.rbegin()->lock()->transform->renderBox.setTexture(&WControl::otherPrefab()["Fireflies"]);
+				wp.lock()->fireflies.rbegin()->lock()->transform->SetAllSpriteOffset(spriteOffset);
+				
+				wp.lock()->fireflies.rbegin()->lock()->transform->SetPosition(wp.lock()->GetTransform()->GetRealPositionAt(Vector2i((rand() % RSIZEX) + 1, (rand() % RSIZEY) + 1)));
+			}
 		}
 		Room::UnLoadNearbyRoom();
 		WControl::getMainDungeon().Rooms[y][x].lock()->LoadNearbyRoom();

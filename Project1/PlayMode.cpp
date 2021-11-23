@@ -27,6 +27,7 @@ void PlayMode::Update()
 	Update::UpdateKnife();
 	Update::UpdateObject();
 	Update::UpdateRoom();
+	Update::UpdateFireFlies();
 }
 
 void PlayMode::CheckKeyPress()
@@ -48,6 +49,7 @@ void PlayMode::RenderGame()
 	GameRenderer::RenderPlayerAndObject();
 	GameRenderer::RenderKnife();
 	GameRenderer::RenderUX();
+	GameRenderer::Renderfireflies();
 }
 
 time_t PlayMode::getRunTime()

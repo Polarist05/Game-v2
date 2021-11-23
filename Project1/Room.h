@@ -68,6 +68,7 @@ class Room:public Tilemap
 	void SetAllObjectsInRoom();
 	void SetFloor();
 public:
+	vector<weak_ptr<GameSprite>> fireflies;
 	SwitchGroup  switchGroups[10];
 	map<ObjectType, vector<weak_ptr<Area> > > Objects;
 	vector<vector<weak_ptr<GameSprite>>> Space= vector<vector<weak_ptr<GameSprite>>>(RSIZEY,vector<weak_ptr<GameSprite>>(RSIZEX,weak_ptr<GameSprite>()));

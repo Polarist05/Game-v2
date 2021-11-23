@@ -34,6 +34,7 @@ void Load::LoadAllOtherPrefab() {
 	LoadOtherPrefab("Floor", "Sprites", IntRect(0, 0, 190, 140));
 	LoadOtherPrefab("StartFloor", "Sprites", IntRect(0, 0, 190, 140));
 	LoadOtherPrefab("Logo", "Sprites", IntRect(0, 0, 915, 455));
+	LoadOtherPrefab("Fireflies", "Sprites", IntRect(0, 0, 915, 455));
 	{
 		std::string path = "Sprites\\UI\\Toolkit";
 		LoadOtherPrefab("TaskBar", path, IntRect(0, 0, 295, 45));

@@ -17,6 +17,7 @@ public:
 	static void RenderUX();
 	static void RenderSettingView();
 	static void RenderAreaHilight();
+	static void Renderfireflies();
 	
 private:
 	static void RenderEdge();

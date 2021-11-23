@@ -6,4 +6,5 @@ namespace Update {
 	void UpdateRoom();
 	void UpdateObject();
 	void UpdateUI();
+	void UpdateFireFlies();
 }

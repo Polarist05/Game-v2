@@ -137,4 +137,14 @@ void GameRenderer::RenderAreaHilight() {
 		}
 	}
 }
+void GameRenderer::Renderfireflies()
+{
+	for(auto& firefly:WControl::GetCurrentRoom().lock()->fireflies)
+	{
+		if (!firefly.expired()) 
+		{
+			window().draw(firefly.lock()->transform->renderBox);
+		}
+	}
+}
 void GameRenderer::RenderSettingView() {}
