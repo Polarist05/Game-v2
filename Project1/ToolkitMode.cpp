@@ -23,6 +23,9 @@ void ToolkitMode::CheckKeyPress()
 		weak_ptr<PortalClass> portal = dynamic_pointer_cast<PortalClass>(WControl::GetCurrentRoom().lock()->Space[areaPosition.y-1][areaPosition.x-1].lock());
 		if (!in.expired()||!out.expired()||!portal.expired() ) 
 		{
+			WControl::GetCurrentRoom().lock()->Space[areaPosition.y - 1][areaPosition.x - 1].lock()->transform->renderBox.setFillColor(Color::Cyan);
+			RenderGame();
+			WorldControl::window().display();
 			cout << "Enter group index you want" << endl;
 			char c;
 			while (1) {
@@ -36,7 +39,7 @@ void ToolkitMode::CheckKeyPress()
 				if (Keyboard::isKeyPressed(Keyboard::BackSpace))
 					break;
 			}
-			
+			WControl::GetCurrentRoom().lock()->Space[areaPosition.y - 1][areaPosition.x - 1].lock()->transform->renderBox.setFillColor(Color::White);
 			
 		}
 	}

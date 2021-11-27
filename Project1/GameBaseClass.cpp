@@ -2,21 +2,6 @@
 #include "GameSprite.h"
 #include<queue>
 using namespace std;
-queue<weak_ptr<GameBaseClass> > qStart;
-queue<weak_ptr<GameBaseClass> > qUpdate;
-void PushQUpdate(weak_ptr<GameBaseClass> _a) { qUpdate.push(_a);}
-void ActivateUpdate() {
-	queue<weak_ptr<GameBaseClass> > _q;
-	while (!qUpdate.empty())
-	{
-		if (!qUpdate.front().expired()) {
-			qUpdate.front().lock()->Update();
-			_q.push(qUpdate.front());
-		}
-		qUpdate.pop();
-	}
-	qUpdate = _q;
-}
 void Destroy(weak_ptr<GameBaseClass> _wp, type_index typeIndex) {
 
 	if (_wp.expired()) { printf("This entity is null or expired\n"); return; }
@@ -28,4 +13,5 @@ void Destroy(weak_ptr<GameBaseClass> _wp, type_index typeIndex) {
 	}
 }
 
-
+void GameBaseClass::Start(){}
+void GameBaseClass::Update(){}

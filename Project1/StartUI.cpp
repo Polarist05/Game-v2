@@ -23,7 +23,7 @@ StartUI::StartUI()
 		wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
 		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 		wp.lock()->transform->SetParent(WControl::UIHierarchy());
-		wp.lock()->transform->SetPosition(Vector2f(0, -100));
+		wp.lock()->transform->SetPosition(Vector2f(0, -50));
 		clickableSprites.push_back(wp);
 		playButton =  dynamic_pointer_cast<PlayButton>(wp.lock());
 	}
@@ -36,7 +36,7 @@ StartUI::StartUI()
 		wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
 		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 		wp.lock()->transform->SetParent(WControl::UIHierarchy());
-		wp.lock()->transform->SetPosition(Vector2f(0, 0));
+		wp.lock()->transform->SetPosition(Vector2f(0, 50));
 		clickableSprites.push_back(wp);
 		scoreButton = dynamic_pointer_cast<ScoreButton>(wp.lock());;
 	}
@@ -49,22 +49,9 @@ StartUI::StartUI()
 		wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
 		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 		wp.lock()->transform->SetParent(WControl::UIHierarchy());
-		wp.lock()->transform->SetPosition(Vector2f(0, 100));
+		wp.lock()->transform->SetPosition(Vector2f(0, 150));
 		clickableSprites.push_back(wp);
 		toolkitButton = dynamic_pointer_cast<ToolkitButton>(wp.lock());;
-	}
-	if (texture.loadFromFile(path + "Setting" + ".png", IntRect(0, 0, 250, 65))) {
-		Texture* newTexture = new Texture(texture);
-		SpriteOffsetData spriteOffsetData(Vector2i(0, 0), Vector2i(250, 65), Vector2f(250, 65), Vector2f(0, 0), Vector2f(0, 0), VIEW_SIZE);
-		texture.setSmooth(true);
-		weak_ptr<ClickableSprite> wp = Instantiate<SettingButton>();
-		wp.lock()->transform->renderBox.setTexture(newTexture);
-		wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
-		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
-		wp.lock()->transform->SetParent(WControl::UIHierarchy());
-		wp.lock()->transform->SetPosition(Vector2f(0, 200));
-		clickableSprites.push_back(wp);
-		settingButton = dynamic_pointer_cast<SettingButton>(wp.lock());
 	}
 	if (texture.loadFromFile(path + "Exit" + ".png", IntRect(0, 0, 250, 65))) {
 		Texture* newTexture = new Texture(texture);
@@ -75,7 +62,7 @@ StartUI::StartUI()
 		wp.lock()->transform->SetAllSpriteOffset(spriteOffsetData);
 		wp.lock()->transform->RenderPriority = RenderPriorityType::UIPriority;
 		wp.lock()->transform->SetParent(WControl::UIHierarchy());
-		wp.lock()->transform->SetPosition(Vector2f(0, 300));
+		wp.lock()->transform->SetPosition(Vector2f(0, 250));
 		clickableSprites.push_back(wp);
 		exitButton = dynamic_pointer_cast<ExitButton>(wp.lock());
 	}
