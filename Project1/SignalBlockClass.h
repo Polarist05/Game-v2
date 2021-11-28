@@ -3,8 +3,10 @@
 #include "KnifeInteractable.h"
 class SignalBlockClass:public Output,public KnifeInteractable
 {
+	bool isWait = false;
 public:
 	SignalBlockClass();
+	void Update()override;
 	SignalBlockClass(std::string s);
 	vector<weak_ptr<Knife>> knifeChilds;
 	void TurnOn(const bool& b)override;

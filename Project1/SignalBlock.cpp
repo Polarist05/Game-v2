@@ -1,11 +1,23 @@
 #include "SignalBlockClass.h"
-
+#include "WorldControl.h"
 SignalBlockClass::SignalBlockClass():Output(){}
+
+void SignalBlockClass::Update()
+{
+	Vector2i pos = GetTransform()->GetPositionInTilemap();
+	if (isWait&&!WControl::GetCurrentRoom().lock()->cannotPush[pos.y][pos.x])
+	{
+		WControl::GetCurrentRoom().lock()->cannotPush[pos.y][pos.x] = true;
+		transform->renderBox.setFillColor(Color::White);
+		isWait = false;
+	}
+}
 
 SignalBlockClass::SignalBlockClass(std::string s):Output(s){}
 
 void SignalBlockClass::TurnOn(const bool& b)
 {
+	Vector2i pos = GetTransform()->GetPositionInTilemap();
 	if (b)
 	{
 		for (auto& wp : knifeChilds)
@@ -18,9 +30,20 @@ void SignalBlockClass::TurnOn(const bool& b)
 			}
 		}
 		knifeChilds.clear();
+		WControl::GetCurrentRoom().lock()->cannotPush[pos.y][pos.x]=false;
+		transform->renderBox.setFillColor(Color::Transparent);
+		isWait = false;
+	}
+	else if(!WControl::GetCurrentRoom().lock()->cannotPush[pos.y][pos.x])
+	{
+		WControl::GetCurrentRoom().lock()->cannotPush[pos.y][pos.x] = true;
+		transform->renderBox.setFillColor(Color::White);
+	}
+	else
+	{
+		isWait = true;
 	}
 	Output::TurnOn(b);
-	transform->renderBox.setFillColor(!b?Color::White:Color::Transparent);
 }
 
 void SignalBlockClass::interacting(weak_ptr<Knife> knife)

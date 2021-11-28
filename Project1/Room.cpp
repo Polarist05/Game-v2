@@ -674,22 +674,22 @@ void Room::LoadNearbyRoom() {
 	if (x + 1 < 5 && !WControl::getMainDungeon().havePast[y][x + 1] && WControl::getMainDungeon().bVerticleEdge[y][x + 1]) {
 		bool flipX = false, flipY = false;
 		RoomType roomType = GetRoomType(Direction::Left, Vector2i(x + 1, y),&flipX,&flipY);
-		WControl::getMainDungeon().Rooms[y][x + 1].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][0],flipX,flipY);
+		WControl::getMainDungeon().Rooms[y][x + 1].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][rand()% WControl::usedRoomPrefabs()[roomType].size()],flipX,flipY);
 	}
 	if (x - 1 >= 0 && !WControl::getMainDungeon().havePast[y][x - 1] && WControl::getMainDungeon().bVerticleEdge[y][x]) {
 		bool flipX = false, flipY = false;
 		RoomType roomType = GetRoomType(Direction::Right, Vector2i(x-1, y), &flipX, &flipY);
-		WControl::getMainDungeon().Rooms[y][x - 1].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][0], flipX, flipY);
+		WControl::getMainDungeon().Rooms[y][x - 1].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][rand() % WControl::usedRoomPrefabs()[roomType].size()], flipX, flipY);
 	}
 	if (y + 1 < 5 && !WControl::getMainDungeon().havePast[y + 1][x] && WControl::getMainDungeon().bHorizonEdge[y + 1][x]) {
 		bool flipX = false, flipY = false;
 		RoomType roomType = GetRoomType(Direction::Up, Vector2i(x , y+1), &flipX, &flipY);
-		WControl::getMainDungeon().Rooms[y+1][x].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][0], flipX, flipY);
+		WControl::getMainDungeon().Rooms[y+1][x].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][rand() % WControl::usedRoomPrefabs()[roomType].size()], flipX, flipY);
 	}
 	if (y - 1 >= 0 && !WControl::getMainDungeon().havePast[y - 1][x] && WControl::getMainDungeon().bHorizonEdge[y][x]) {
 		bool flipX = false, flipY = false;
 		RoomType roomType = GetRoomType(Direction::Down, Vector2i(x, y-1), &flipX, &flipY);
-		WControl::getMainDungeon().Rooms[y-1][x].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][0], flipX, flipY);
+		WControl::getMainDungeon().Rooms[y-1][x].lock()->SetRoomSeed(WControl::usedRoomPrefabs()[roomType][rand() % WControl::usedRoomPrefabs()[roomType].size()], flipX, flipY);
 	}
 }
 

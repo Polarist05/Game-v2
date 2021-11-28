@@ -277,8 +277,9 @@ GameSprite::GameSprite(std::string s) : name(s) { }
 GameSprite::~GameSprite() {
 	for (int i = 0; i < transform->childs.size(); i++) {
 		if (!transform->childs[i].expired()) {
-			type_index typeIndex = transform->childs[i].lock()->transform->typeIndex;
-			Destroy(transform->childs[i], typeIndex);
+			auto wp= transform->childs[i].lock()->transform->wp;
+			auto index = transform->childs[i].lock()->transform->typeIndex;
+			Destroy(wp, index);
 		}
 	}
 }
